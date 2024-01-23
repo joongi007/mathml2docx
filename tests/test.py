@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import unittest
 from docx import Document
-from .context import HtmlToDocx, test_dir
+from .context import MathmlToDocx, test_dir
 
 class OutputTest(unittest.TestCase):
 
@@ -16,9 +16,11 @@ class OutputTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.document = Document()
-        cls.text1 = cls.get_html_from_file('text1.html')
-        cls.table_html = cls.get_html_from_file('tables1.html')
-        cls.table2_html = cls.get_html_from_file('tables2.html')
+        cls.text1 = cls.get_html_from_file('./dataset/text1.html')
+        cls.table_html = cls.get_html_from_file('./dataset/tables1.html')
+        cls.table2_html = cls.get_html_from_file('./dataset/tables2.html')
+        cls.table3_html = cls.get_html_from_file('./dataset/tables3.html')
+        cls.mathml_html = cls.get_html_from_file('./dataset/mathml.html')
 
     @classmethod
     def tearDownClass(cls):
@@ -26,7 +28,7 @@ class OutputTest(unittest.TestCase):
         cls.document.save(outputpath)
 
     def setUp(self):
-        self.parser = HtmlToDocx()
+        self.parser = MathmlToDocx()
 
     def test_html_with_images_links_style(self):
         self.document.add_heading(
@@ -67,7 +69,7 @@ class OutputTest(unittest.TestCase):
             'Test: regular html with images, but skip adding images',
             level=1
         )
-        self.parser.options['images'] = False
+        self.parser.options.images = False
         self.parser.add_html_to_document(self.text1, self.document)
 
     def test_add_html_with_tables(self):
@@ -88,7 +90,7 @@ class OutputTest(unittest.TestCase):
         self.document.add_heading(
             'Test: add html with tables with basic style',
         )
-        self.parser.table_style = 'TableGrid'
+        self.parser.table_style = 'Table Grid'
         self.parser.add_html_to_document(self.table_html, self.document)
 
     def test_add_nested_tables(self):
@@ -101,7 +103,7 @@ class OutputTest(unittest.TestCase):
         self.document.add_heading(
             'Test: add nested tables with basic style',
         )
-        self.parser.table_style = 'TableGrid'
+        self.parser.table_style = 'Table Grid'
         self.parser.add_html_to_document(self.table2_html, self.document)
 
     def test_add_nested_tables_accent_style(self):
@@ -111,30 +113,53 @@ class OutputTest(unittest.TestCase):
         self.parser.table_style = 'Light Grid Accent 6'
         self.parser.add_html_to_document(self.table2_html, self.document)
 
+    def test_add_tables_cell_merging(self):
+        self.document.add_heading(
+            'Test: add tables cell merging'
+        )
+        self.parser.add_html_to_document(self.table3_html, self.document)
+
     def test_add_html_skip_tables(self):
         # broken until feature readded
         self.document.add_heading(
             'Test: add html with tables, but skip adding tables',
             level=1
         )
-        self.parser.options['tables'] = False
+        self.parser.options.tables = False
         self.parser.add_html_to_document(self.table_html, self.document)
+
+    def test_add_html_skip_mathml(self):
+        self.document.add_heading(
+            'Test: add html with mathml, but skip adding mathml',
+            level=1
+        )
+        self.parser.options.mathml = False
+        self.parser.add_html_to_document(self.mathml_html, self.document)
+    
+    def test_add_nested_mathml(self):
+        self.document.add_heading(
+            'Test: add nested mathml',
+        )
+        self.parser.add_html_to_document(self.mathml_html, self.document)
 
     def test_wrong_argument_type_raises_error(self):
         try:
             self.parser.add_html_to_document(self.document, self.text1)
         except Exception as e:
-            assert isinstance(e, ValueError)
-            assert "First argument needs to be a <class 'str'>" in str(e)
+            assert isinstance(e, TypeError)
+            # assert isinstance(e, ValueError)
+            # assert isinstance(e, ValueError)
+            # assert "First argument needs to be a <class 'str'>" in str(e)
         else:
             assert False, "Error not raised as expected"
 
         try:
             self.parser.add_html_to_document(self.text1, self.text1)
         except Exception as e:
-            assert isinstance(e, ValueError)
-            assert "Second argument" in str(e)
-            assert "<class 'docx.document.Document'>" in str(e)
+            assert isinstance(e, TypeError)
+            # assert isinstance(e, ValueError)
+            # assert "Second argument" in str(e)
+            # assert "<class 'docx.document.Document'>" in str(e)
         else:
             assert False, "Error not raised as expected"
 

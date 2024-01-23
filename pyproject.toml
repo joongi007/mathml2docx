@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mathml2docx"
+version = "0.1.0"
+authors = [
+  { name="joongi007" },
+]
+description = "The fork in https://github.com/pqzx/html2docx converts html (including mathml) to docx"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "LICENSE"}
+keywords = ["html", "mathml", "docx", "convert"]
+classifiers = [
+    "License :: OSI Approved :: MIT License"
+]
+dynamic = ["dependencies"]
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.urls]
+Repository = "https://github.com/joongi007/mathml2docx"
