@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mathml2docx"
-version = "0.1.0"
+version = "0.1.2"
 authors = [
   { name="joongi007" },
 ]
@@ -17,8 +17,17 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dynamic = ["dependencies"]
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mathml2docx*"]
+exclude = ["tests"]
+
+[tool.setuptools.package-data]
+random_package = ["*.XSL"]
 
 [project.urls]
 Repository = "https://github.com/joongi007/mathml2docx"
