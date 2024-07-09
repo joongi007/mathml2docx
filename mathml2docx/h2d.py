@@ -39,6 +39,7 @@ class HtmlToDocx(HTMLParser):
             'tables': True,
             'mathml': True,
             'styles': True,
+            'img_src_base_path':None,
         }
         self.table_row_selectors = [
             'table > tr',
@@ -64,6 +65,7 @@ class HtmlToDocx(HTMLParser):
         self.include_images = self.options['images']
         self.include_mathml = self.options['mathml']
         self.include_styles = self.options['styles']
+        self.img_src_base_path = self.options['img_src_base_path']
         self.paragraph = None
         self.run = None
         self.skip = False
@@ -217,12 +219,22 @@ class HtmlToDocx(HTMLParser):
             except urllib.error.URLError:
                 image = None
         else:
+            
             image = src_attr
+            print(self.img_src_base_path)
             if image and image.startswith('data:image/'):
                 #-- convert to bytes ready to insert to docx
                 image = image.split(',')[1]
                 image = base64.b64decode(image)
                 image = io.BytesIO(image)
+            elif image and self.img_src_base_path:
+                image = os.path.abspath(os.path.join(self.img_src_base_path, image))
+                print(image)
+                if os.path.isfile(image):
+                    with open(image, "rb") as fp:
+                        image = io.BytesIO(fp.read())
+                else:
+                    image = None
             else:
                 image = None
                 

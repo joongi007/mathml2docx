@@ -13,10 +13,19 @@ class MathmlToDocx:
                  tables = True, 
                  mathml = True, 
                  styles = True, 
+                 img_src_base_path = None,
                  table_style = DEFAULT_TABLE_STYLE, 
                  paragraph_style = DEFAULT_PARAGRAPH_STYLE):
         self.__h2d = HtmlToDocx()
-        self.__options = MathmlTODocxOption(self.__h2d, fix_html, images, tables, mathml, styles)
+        self.__options = MathmlTODocxOption(
+            self.__h2d, 
+            fix_html, 
+            images, 
+            tables, 
+            mathml, 
+            styles, 
+            img_src_base_path
+        )
         self.__h2d.table_style = table_style
         self.__h2d.paragraph_style = paragraph_style
 
@@ -97,7 +106,7 @@ class MathmlToDocx:
         self.__h2d.add_styles_to_run(style)
 
 class MathmlTODocxOption:
-    def __init__(self, h2d, fix_html, images, tables, mathml, styles):
+    def __init__(self, h2d, fix_html, images, tables, mathml, styles, img_src_base_path):
         # init
         self.__h2d = h2d
         self.__fix_html = fix_html
@@ -105,6 +114,7 @@ class MathmlTODocxOption:
         self.__tables = tables
         self.__mathml = mathml
         self.__styles = styles
+        self.__img_src_base_path = img_src_base_path
 
         # h2d options init
         self.__h2d.options["fix-html"] = self.__fix_html
@@ -112,6 +122,7 @@ class MathmlTODocxOption:
         self.__h2d.options["tables"] = self.__tables
         self.__h2d.options["mathml"] = self.__mathml
         self.__h2d.options["styles"] = self.__styles
+        self.__h2d.options["img_src_base_path"] = self.__img_src_base_path
 
     @property
     def fix_html(self) -> bool:
@@ -162,6 +173,16 @@ class MathmlTODocxOption:
     def styles(self, styles : bool):
         self.__styles = styles
         self.__h2d.options["styles"] = styles
+
+    @property
+    def img_src_base_path(self) -> Union[str, None]:
+        self.__img_src_base_path = self.__h2d.options["img_src_base_path"]
+        return self.__img_src_base_path
+    
+    @img_src_base_path.setter
+    def img_src_base_path(self, img_src_base_path : Union[str, None]):
+        self.__img_src_base_path = img_src_base_path
+        self.__h2d.options["img_src_base_path"] = img_src_base_path
 
 if __name__=='__main__':
     arg_parser = argparse.ArgumentParser(description='Convert .html file into .docx file with formatting')

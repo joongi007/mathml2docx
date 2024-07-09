@@ -1,9 +1,9 @@
 import os
-from .context import HtmlToDocx, test_dir
+from .context import MathmlToDocx, test_dir
 
 # Manual test (requires inspection of result) for converting code and pre blocks.
 
 filename = os.path.join(test_dir, 'dataset', 'code.html')
-d = HtmlToDocx()
+d = MathmlToDocx()
 
 d.parse_html_file(filename)
