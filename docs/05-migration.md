@@ -17,7 +17,7 @@ parser.parse_latex(r'\frac{1}{2} + x^2').save('equation.docx')
 
 ## 달라지는 동작
 
-- Python 3.10 이상이 필요합니다.
+- 배포 패키지는 Python 3.6 이상을 지원합니다. 개발·문서 도구는 Python 3.10 이상에서 uv로 관리합니다.
 - `parse_html_file(input, output)`은 `.docx`를 중복해서 붙이지 않습니다.
   출력 이름 생략 시 입력 파일의 확장자를 `.docx`로 바꿉니다. 생성 경로를 반환합니다.
 - HTML은 항상 BeautifulSoup 트리로 처리합니다. `fix_html` 옵션은 기존 호출 호환용이며

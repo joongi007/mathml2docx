@@ -38,11 +38,11 @@ def main():
         "Python 실행 예제 22개를 문서 빌드에서 실제 실행해 DOCX로 만듭니다.",
         "",
         "```sh",
-        "python -m pip install '.[latex,test]' -r requirements-examples.txt",
-        "python -m examples.run_all",
+        "uv sync --locked --extra latex --extra markdown --group docs --group examples",
+        "uv run --no-sync python -m examples.run_all",
         "```",
         "",
-        "모든 결과는 `examples/output/`에 저장됩니다. 개별 실행은 `python -m examples.01_quickstart`처럼 합니다.",
+        "저장소를 내려받고 위 설치 명령을 실행한 환경에서 사용합니다. 모든 결과는 `examples/output/`에 저장됩니다. 개별 실행은 `python -m examples.01_quickstart`처럼 합니다.",
         "",
         "[전체 예제 코드·자산 ZIP](../downloads/mathml2docx-examples.zip)",
         "",
@@ -91,7 +91,6 @@ def main():
                 and "__pycache__" not in path.parts
             ):
                 archive.write(path, path.relative_to(ROOT))
-        archive.write(ROOT / "requirements-examples.txt", "requirements-examples.txt")
 
     pages = [ROOT / "docs" / "index.md"] + sorted(
         (ROOT / "docs").glob("[0-9][0-9]-*.md")

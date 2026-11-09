@@ -80,7 +80,7 @@ def color(value, background="FFFFFF"):
             base = [int(background[i : i + 2], 16) for i in (0, 2, 4)]
             channels = [
                 round(max(0, min(255, c)) * alpha + bg * (1 - alpha))
-                for c, bg in zip(channels, base, strict=True)
+                for c, bg in zip(channels, base)
             ]
             return "".join(f"{c:02X}" for c in channels)
         return "".join(f"{c:02X}" for c in ImageColor.getrgb(value)[:3])

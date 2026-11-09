@@ -151,7 +151,8 @@ class PublicApiTests(unittest.TestCase):
             '<p>middle</p><p><a href="https://example.com">link</a></p>',
         )
         self.assertEqual(
-            [p.text for p in doc.paragraphs], ["before", "middle", "link", "after"]
+            ["".join(p._p.xpath(".//w:t/text()")) for p in doc.paragraphs],
+            ["before", "middle", "link", "after"],
         )
         with BytesIO() as out:
             doc.save(out)

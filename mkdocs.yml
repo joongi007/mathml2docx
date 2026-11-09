@@ -36,6 +36,7 @@ nav:
       - Markdown 연동: examples/22_markdown.md
   - AI와 스킬: 03-agents.md
   - 문서 운영: 04-publishing.md
+  - 개발·호환성·PyPI: 09-development-release.md
   - 1.0.0 마이그레이션: 05-migration.md
   - XSL 출처: 06-xsl-provenance.md
   - 원본 이슈 검토: 07-upstream-audit.md

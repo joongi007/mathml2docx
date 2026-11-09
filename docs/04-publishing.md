@@ -5,8 +5,8 @@
 Python 3.10 이상에서 저장소 루트를 기준으로 실행합니다.
 
 ```sh
-python -m pip install -r requirements-docs.txt -r requirements-examples.txt '.[latex,test]'
-python scripts/build_docs.py
+uv sync --locked --extra latex --extra markdown --group docs --group examples
+uv run --no-sync python scripts/build_docs.py
 python -m http.server 8000 --directory site
 ```
 

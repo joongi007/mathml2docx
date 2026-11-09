@@ -444,7 +444,7 @@ class _Renderer:
             ):
                 base = Path(self.config.options["img_src_base_path"]).resolve()
                 path = (base / source).resolve()
-                if path.is_relative_to(base) and path.is_file():
+                if (path == base or base in path.parents) and path.is_file():
                     image = BytesIO(path.read_bytes())
             if image is not None:
                 dimensions = self.computed.get(id(node), css(node.get("style", "")))

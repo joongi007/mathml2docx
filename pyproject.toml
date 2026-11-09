@@ -1,47 +1,81 @@
 [build-system]
-requires = ["setuptools>=77"]
-build-backend = "setuptools.build_meta"
+# 3.12 is the last flit_core supporting Python 3.6/3.7 and supports PEP 639.
+requires = ["flit_core>=3.11,<4"]
+build-backend = "flit_core.buildapi"
 
 [project]
 name = "mathml2docx"
 version = "1.0.0"
-authors = [
-  { name="joongi007" },
-]
-description = "The fork in https://github.com/pqzx/html2docx converts html (including mathml) to docx"
+authors = [{ name = "joongi007" }]
+description = "Convert HTML, MathML and optional LaTeX/Markdown to Word documents"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.6"
 license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["html", "mathml", "docx", "convert"]
-dynamic = ["dependencies"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "beautifulsoup4>=4.12,<5",
+    "python-docx>=0.8.11,<2",
+    "lxml>=4.9,<7",
+    "tinycss2>=1.1,<2",
+    "Pillow>=8.4,<13",
+    "cssselect2>=0.4,<1",
+]
 
 [project.optional-dependencies]
-latex = ["latex2mathml>=3.77,<4"]
-markdown = ["Markdown>=3.5,<4"]
-test = ["pytest>=8,<10", "docxtpl>=0.20,<1", "Markdown>=3.5,<4"]
+latex = [
+    "latex2mathml>=2.0,<4",
+    # The backend selected on 3.6.0/3.6.1 imports pkg_resources.
+    "setuptools>=40.8,<60; python_full_version < '3.6.2'",
+]
+markdown = ["Markdown>=3.3,<4"]
+test = ["pytest>=6.2,<10", "docxtpl>=0.16,<1", "Markdown>=3.3,<4"]
 
 [project.scripts]
 mathml2docx = "mathml2docx.__main__:main"
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["mathml2docx*"]
-exclude = ["tests"]
 
 [project.urls]
 Documentation = "https://joongi007.github.io/mathml2docx/"
 Repository = "https://github.com/joongi007/mathml2docx"
 
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.9,<1", "build>=1,<2", "twine>=6,<7"]
+docs = ["mkdocs==1.6.1"]
+examples = ["docxtpl>=0.20,<1", "Markdown>=3.5,<4"]
+
+[tool.uv]
+required-version = ">=0.13.7"
+
+[tool.uv.dependency-groups]
+dev = { requires-python = ">=3.10" }
+docs = { requires-python = ">=3.10" }
+examples = { requires-python = ">=3.10" }
+
+[tool.flit.sdist]
+include = ["docs/", "examples/", "scripts/", "skills/", "tests/", ".github/", "mkdocs.yml", "uv.lock", ".python-version"]
+exclude = ["docs/downloads/", "docs/llms.txt", "docs/llms-full.txt", "examples/output/", "**/__pycache__/", "**/*.pyc"]
+
 [tool.ruff]
-target-version = "py310"
+# Ruff's oldest target is 3.7. Python 3.6 is additionally tested on real CPython.
+target-version = "py37"
 line-length = 88
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "B", "UP"]
+# zip(strict=...) is not available on the supported legacy runtimes.
+ignore = ["B905", "UP021", "UP022"]
 
 [tool.pytest.ini_options]
 python_files = ["test.py", "test_*.py"]

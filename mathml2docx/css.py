@@ -43,9 +43,7 @@ def declarations(source):
                     if len(fields) == 3
                     else fields
                 )
-                for side, field in zip(
-                    ["top", "right", "bottom", "left"], sides, strict=True
-                ):
+                for side, field in zip(["top", "right", "bottom", "left"], sides):
                     yield name + "-" + side, field, item.important
                 continue
         yield name, value, item.important

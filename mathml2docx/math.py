@@ -147,4 +147,35 @@ def latex_to_omml(source):
         from latex2mathml.converter import convert as latex_to_mathml
     except ImportError as exc:
         raise ImportError("Install mathml2docx[latex] to convert LaTeX") from exc
-    return mathml_to_omml(latex_to_mathml(source, display="block"))
+    converted = latex_to_mathml(source, display="block")
+    # Older latex2mathml versions used side scripts for block sums/products.
+    # Keep the public block-equation output consistent on legacy Python too.
+    root = etree.fromstring(
+        converted.encode("utf-8"),
+        etree.XMLParser(resolve_entities=False, no_network=True),
+    )
+    if r"\nolimits" not in source:
+        for node in root.iter():
+            name = etree.QName(node).localname
+            if name not in {"msub", "msup", "msubsup"} or not len(node):
+                continue
+            base = node[0]
+            if etree.QName(base).localname == "mo" and base.text in {
+                "∑",
+                "∏",
+                "∐",
+                "⋃",
+                "⋂",
+                "⋁",
+                "⋀",
+            }:
+                namespace = etree.QName(node).namespace
+                replacement = {
+                    "msub": "munder",
+                    "msup": "mover",
+                    "msubsup": "munderover",
+                }[name]
+                node.tag = (
+                    "{" + namespace + "}" + replacement if namespace else replacement
+                )
+    return mathml_to_omml(etree.tostring(root, encoding="unicode"))

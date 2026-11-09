@@ -1,6 +1,6 @@
 # mathml2docx
 The fork in [htmldocx](https://github.com/pqzx/html2docx) converts html (including mathml) to docx     
-Dependencies: Python 3.10+, python-docx, BeautifulSoup, lxml, tinycss2 and Pillow.
+Dependencies: Python 3.6+, python-docx, BeautifulSoup, lxml, tinycss2 and Pillow.
 
 The repository now targets **1.0.0** (not yet published to PyPI). MathML is converted
 directly to editable OMML without an Office XSL file. Install from this checkout
@@ -119,8 +119,12 @@ MathML/LaTeX, Word styles, markers, bookmarks, docxtpl and mixed reports.
 Each documentation page includes full source, a generated DOCX and a reference PDF.
 
 ```sh
-python -m pip install ".[latex,test]" -r requirements-examples.txt
-python -m examples.run_all
+uv sync --locked --extra latex --extra markdown --group examples
+uv run --no-sync python -m examples.run_all
 ```
 
 See [task recipes](docs/08-recipes.md) for the complete feature map and low-level API examples.
+
+Development uses modern Python and uv; installed libraries support Python 3.6+.
+See [development and release instructions](docs/09-development-release.md) for
+legacy compatibility tests, local preservation tags, and approval-gated PyPI publishing.

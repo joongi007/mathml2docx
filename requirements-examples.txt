@@ -1,2 +1,0 @@
-# Install with: python -m pip install '.[latex,test]' -r requirements-examples.txt
-Markdown>=3.5,<4

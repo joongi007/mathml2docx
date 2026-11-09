@@ -26,8 +26,9 @@ class ExampleTests(unittest.TestCase):
                 [sys.executable, "-m", "examples.run_all"],
                 cwd=ROOT,
                 env=env,
-                capture_output=True,
-                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
             )
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             for name in catalog:
