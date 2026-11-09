@@ -1,35 +1,29 @@
+import os
 import re
-import io, os
-import urllib.request
 from urllib.parse import urlparse
+
 
 def get_filename_from_url(url):
     return os.path.basename(urlparse(url).path)
 
+
 def is_url(url):
     """
-    Not to be used for actually validating a url, but in our use case we only 
+    Not to be used for actually validating a url, but in our use case we only
     care if it's a url or a file path, and they're pretty distinguishable
     """
     parts = urlparse(url)
     return all([parts.scheme, parts.netloc, parts.path])
 
-def fetch_image(url):
-    """
-    Attempts to fetch an image from a url. 
-    If successful returns a bytes object, else returns None
 
-    :return:
-    """
-    try:
-        with urllib.request.urlopen(url) as response:
-            # security flaw?
-            return io.BytesIO(response.read())
-    except urllib.error.URLError:
-        return None
+def fetch_image(url, loader=None):
+    """Load only through an explicitly supplied callback; never fetch implicitly."""
+    return loader(url) if loader else None
+
 
 def remove_last_occurence(ls, x):
     ls.pop(len(ls) - ls[::-1].index(x) - 1)
+
 
 def remove_whitespace(string, leading=False, trailing=False):
     """Remove white space from a string.
@@ -85,16 +79,17 @@ def remove_whitespace(string, leading=False, trailing=False):
     """
     # Remove any leading new line characters along with any surrounding white space
     if leading:
-        string = re.sub(r'^\s*\n+\s*', '', string)
+        string = re.sub(r"^\s*\n+\s*", "", string)
 
     # Remove any trailing new line characters along with any surrounding white space
     if trailing:
-        string = re.sub(r'\s*\n+\s*$', '', string)
+        string = re.sub(r"\s*\n+\s*$", "", string)
 
     # Replace new line characters and absorb any surrounding space.
-    string = re.sub(r'\s*\n\s*', ' ', string)
+    string = re.sub(r"\s*\n\s*", " ", string)
     # TODO need some way to get rid of extra spaces in e.g. text <span>   </span>  text
-    return re.sub(r'\s+', ' ', string)
+    return re.sub(r"\s+", " ", string)
+
 
 def delete_paragraph(paragraph):
     # https://github.com/python-openxml/python-docx/issues/33#issuecomment-77661907

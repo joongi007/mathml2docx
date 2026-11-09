@@ -1,202 +1,127 @@
-import argparse
-from io import BytesIO
-from typing import Union
-from docx.document import Document
-from docx.table import _Cell
+"""Public converter. Options reference the engine directly, without duplicate state."""
 
-from .h2d import HtmlToDocx, DEFAULT_TABLE_STYLE, DEFAULT_PARAGRAPH_STYLE
+from docx import Document
 
-class MathmlToDocx:
-    def __init__(self, 
-                 fix_html = True, 
-                 images = True, 
-                 tables = True, 
-                 mathml = True, 
-                 styles = True, 
-                 img_src_base_path = None,
-                 table_style = DEFAULT_TABLE_STYLE, 
-                 paragraph_style = DEFAULT_PARAGRAPH_STYLE):
-        self.__h2d = HtmlToDocx()
-        self.__options = MathmlTODocxOption(
-            self.__h2d, 
-            fix_html, 
-            images, 
-            tables, 
-            mathml, 
-            styles, 
-            img_src_base_path
-        )
-        self.__h2d.table_style = table_style
-        self.__h2d.paragraph_style = paragraph_style
+from .h2d import HtmlToDocx
+from .math import latex_to_omml, mathml_to_omml
 
-    def get_origin(self) -> HtmlToDocx:
-        return self.__h2d
-    
-    @property
-    def options(self) -> "MathmlTODocxOption":
-        return self.__options
 
-    @property
-    def table_style(self) -> Union[str, None]:
-        return self.__h2d.table_style
-
-    @table_style.setter
-    def table_style(self, table_style : Union[str, None]):
-        self.__h2d.table_style = table_style
+class MathmlToDocx(HtmlToDocx):
+    def __init__(
+        self,
+        fix_html=True,
+        images=True,
+        tables=True,
+        mathml=True,
+        styles=True,
+        img_src_base_path=None,
+        table_style=None,
+        paragraph_style=None,
+        *,
+        image_loader=None,
+        style_map=None,
+        stylesheet="",
+        stylesheet_loader=None,
+    ):
+        super().__init__()
+        for name, value in {
+            "fix_html": fix_html,
+            "images": images,
+            "tables": tables,
+            "mathml": mathml,
+            "styles": styles,
+            "img_src_base_path": img_src_base_path,
+            "image_loader": image_loader,
+        }.items():
+            setattr(self.options, name, value)
+        self.table_style = table_style
+        self.paragraph_style = paragraph_style
+        self.style_map = style_map or {}
+        self.stylesheet = stylesheet
+        self.stylesheet_loader = stylesheet_loader
 
     @property
-    def paragraph_style(self) -> Union[str, None]:
-        return self.__h2d.paragraph_style
+    def options(self):
+        # During base initialization the engine uses a dictionary. Keep the public
+        # object compatible with both legacy keys and typed property access.
+        return self._engine_options
 
-    @paragraph_style.setter
-    def paragraph_style(self, paragraph_style : Union[str, None]):
-        self.__h2d.paragraph_style = paragraph_style
+    @options.setter
+    def options(self, value):
+        self._engine_options = _OptionsDict(value)
 
-    def copy_settings_from(self, other : Union["MathmlToDocx", HtmlToDocx]):
-        if isinstance(other, MathmlToDocx):
-            self.__h2d.copy_settings_from(other.get_origin())
-        elif isinstance(other, HtmlToDocx):
-            self.__h2d.copy_settings_from(other)
-        else:
-            raise TypeError(f"'other' expect either Type {MathmlToDocx} or Type {HtmlToDocx}, but not Type {type(other)}.")
+    def get_origin(self):
+        return self
 
-    def add_image_to_cell(self, cell : Union[Document, _Cell], image : BytesIO):
-        if not isinstance(cell, _Cell) and not isinstance(cell, Document):
-            raise TypeError(f"'cell' expect either Type {_Cell} or Type {Document}, but not Type {type(cell)}.")
-        if not isinstance(image, BytesIO):
-            raise TypeError(f"'image' expect either Type {BytesIO}, but not Type {type(image)}.")
-        self.__h2d.add_image_to_cell(cell, image)
+    def copy_settings_from(self, other):
+        if not isinstance(other, HtmlToDocx):
+            raise TypeError("other must be an HtmlToDocx or MathmlToDocx")
+        super().copy_settings_from(other)
 
-    def add_html_to_document(self, html : str, document : Union[Document, _Cell]):
-        if not type(html) is str:
-            raise TypeError(f"'html' expect either Type {str}, but not Type {type(html)}.")
-        if not isinstance(document, Document) and not isinstance(document, _Cell):
-            raise TypeError(f"'document' expect either Type {Document} or {_Cell}, but not Type {type(document)}.")
-        self.__h2d.add_html_to_document(html, document)
+    def convert(self, html, output=None):
+        document = self.parse_html_string(html)
+        if output is not None:
+            document.save(output)
+        return document
 
-    def add_html_to_cell(self, html : str, cell : _Cell):
-        if not type(html) is str:
-            raise TypeError(f"'html' expect either Type {str}, but not Type {type(html)}.")
-        if not isinstance(cell, _Cell):
-            raise TypeError(f"'document' expect either Type {_Cell}, but not Type {type(cell)}.")
-        self.__h2d.add_html_to_cell(html, cell)
+    def parse_mathml(self, source):
+        document = Document()
+        document.add_paragraph()._p.append(mathml_to_omml(source))
+        return document
 
-    def parse_html_file(self, filename_html : str, filename_docx:Union[str, None]=None, encoding:str='utf-8'):
-        if not type(filename_html) is str:
-            raise TypeError(f"'filename_html' expect either Type {str}, but not Type {type(filename_html)}.")
-        if filename_docx and not type(filename_docx) is str:
-            raise TypeError(f"'filename_docx' expect either Type {str} or  Type {None}, but not Type {type(filename_docx)}.")
-        if not type(encoding) is str:
-            raise TypeError(f"'encoding' expect either Type {str}, but not Type {type(encoding)}.")
-        self.__h2d.parse_html_file(filename_html, filename_docx, encoding)
-    
-    def parse_html_string(self, html : str) -> Document:
-        if not type(html) is str:
-            raise TypeError(f"'html' expect either Type {str}, but not Type {type(html)}.")
-        return self.__h2d.parse_html_string(html)
-    
-    def add_styles_to_paragraph(self, style : str):
-        if not type(style) is str:
-            raise TypeError(f"'style' expect either Type {str}, but not Type {type(style)}.")
-        self.__h2d.add_styles_to_paragraph(style)
+    def parse_latex(self, source):
+        document = Document()
+        document.add_paragraph()._p.append(latex_to_omml(source))
+        return document
 
-    def add_styles_to_run(self, style : str):
-        if not type(style) is str:
-            raise TypeError(f"'style' expect either Type {str}, but not Type {type(style)}.")
-        self.__h2d.add_styles_to_run(style)
+    def parse_markdown(self, source):
+        """Convert Markdown with tables, fenced code and ~~strikethrough~~."""
+        from .markdown import markdown_to_html
 
-class MathmlTODocxOption:
-    def __init__(self, h2d, fix_html, images, tables, mathml, styles, img_src_base_path):
-        # init
-        self.__h2d = h2d
-        self.__fix_html = fix_html
-        self.__images = images
-        self.__tables = tables
-        self.__mathml = mathml
-        self.__styles = styles
-        self.__img_src_base_path = img_src_base_path
+        return self.parse_html_string(markdown_to_html(source))
 
-        # h2d options init
-        self.__h2d.options["fix-html"] = self.__fix_html
-        self.__h2d.options["images"] = self.__images
-        self.__h2d.options["tables"] = self.__tables
-        self.__h2d.options["mathml"] = self.__mathml
-        self.__h2d.options["styles"] = self.__styles
-        self.__h2d.options["img_src_base_path"] = self.__img_src_base_path
+    def replace_html(self, document, marker, html):
+        """Replace a unique marker, including markers split across styled runs."""
+        from .templates import replace_html
 
-    @property
-    def fix_html(self) -> bool:
-        self.__fix_html = self.__h2d.options["fix-html"]
-        return self.__fix_html
+        replace_html(self, document, marker, html)
 
-    @fix_html.setter
-    def fix_html(self, fix_html : bool):
-        self.__fix_html = fix_html
-        self.__h2d.options["fix-html"] = fix_html
+    def replace_bookmark(self, document, name, html):
+        """Replace a named bookmark range while preserving surrounding content."""
+        from .templates import replace_bookmark
 
-    @property
-    def images(self) -> bool:
-        self.__images = self.__h2d.options["images"]
-        return self.__images
+        replace_bookmark(self, document, name, html)
 
-    @images.setter
-    def images(self, images : bool):
-        self.__images = images
-        self.__h2d.options["images"] = images
 
-    @property
-    def tables(self) -> bool:
-        self.__tables =  self.__h2d.options["tables"]
-        return self.__tables
+class _OptionsDict(dict):
+    _keys = {
+        "fix_html": "fix-html",
+        "images": "images",
+        "tables": "tables",
+        "mathml": "mathml",
+        "styles": "styles",
+        "img_src_base_path": "img_src_base_path",
+        "image_loader": "image_loader",
+    }
 
-    @tables.setter
-    def tables(self, tables : bool):
-        self.__tables = tables
-        self.__h2d.options["tables"] = tables
+    def __getattr__(self, name):
+        key = self._keys.get(name)
+        if key is None:
+            raise AttributeError(name)
+        return self[key]
 
-    @property
-    def mathml(self) -> bool:
-        self.__mathml = self.__h2d.options["mathml"]
-        return self.__mathml
-
-    @mathml.setter
-    def mathml(self, mathml : bool):
-        self.__mathml = mathml
-        self.__h2d.options["mathml"] = mathml
-
-    @property
-    def styles(self) -> bool:
-        self.__styles = self.__h2d.options["styles"]
-        return self.__styles
-
-    @styles.setter
-    def styles(self, styles : bool):
-        self.__styles = styles
-        self.__h2d.options["styles"] = styles
-
-    @property
-    def img_src_base_path(self) -> Union[str, None]:
-        self.__img_src_base_path = self.__h2d.options["img_src_base_path"]
-        return self.__img_src_base_path
-    
-    @img_src_base_path.setter
-    def img_src_base_path(self, img_src_base_path : Union[str, None]):
-        self.__img_src_base_path = img_src_base_path
-        self.__h2d.options["img_src_base_path"] = img_src_base_path
-
-if __name__=='__main__':
-    arg_parser = argparse.ArgumentParser(description='Convert .html file into .docx file with formatting')
-    arg_parser.add_argument('filename_html', help='The .html file to be parsed')
-    arg_parser.add_argument(
-        'filename_docx', 
-        nargs='?', 
-        help='The name of the .docx file to be saved. Default new_docx_file_[filename_html]', 
-        default=None
-    )
-    arg_parser.add_argument('--bs', action='store_true', 
-        help='Attempt to fix html before parsing. Requires bs4. Default True')
-
-    args = vars(arg_parser.parse_args())
-    file_html = args.pop('filename_html')
-    html_parser = MathmlToDocx()
-    html_parser.parse_html_file(file_html, **args)
+    def __setattr__(self, name, value):
+        key = self._keys.get(name)
+        if key is None:
+            raise AttributeError(name)
+        if name in {
+            "fix_html",
+            "images",
+            "tables",
+            "mathml",
+            "styles",
+        } and not isinstance(value, bool):
+            raise TypeError(f"{name} must be bool")
+        if name == "image_loader" and value is not None and not callable(value):
+            raise TypeError("image_loader must be callable or None")
+        self[key] = value

@@ -5,3 +5,10 @@ __pycache__
 venv
 dist
 *.egg-info
+.venv/
+build/
+site/
+docs/downloads/
+docs/llms.txt
+docs/llms-full.txt
+examples/output/

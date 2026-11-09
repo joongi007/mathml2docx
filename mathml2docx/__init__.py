@@ -1,4 +1,12 @@
+# ruff: noqa: F401
 from .h2d import HtmlToDocx
+from .math import UnsupportedMathMLError, latex_to_omml, mathml_to_omml
+from .styles import ParagraphStyle, TableStyle
 from .wrapper import MathmlToDocx
 
-__version__='0.1.3'
+__version__ = "1.0.0"
+
+
+def convert(html, output=None, **options):
+    """Convert HTML to a Document, optionally saving it to an exact output path."""
+    return MathmlToDocx(**options).convert(html, output)

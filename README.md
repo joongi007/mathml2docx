@@ -1,6 +1,31 @@
 # mathml2docx
 The fork in [htmldocx](https://github.com/pqzx/html2docx) converts html (including mathml) to docx     
-Dependencies: `python-docx` & `bs4`
+Dependencies: Python 3.10+, python-docx, BeautifulSoup, lxml, tinycss2 and Pillow.
+
+The repository now targets **1.0.0** (not yet published to PyPI). MathML is converted
+directly to editable OMML without an Office XSL file. Install from this checkout
+with `pip install .`, or `pip install ".[latex]"` for LaTeX support.
+
+```python
+from mathml2docx import convert, MathmlToDocx, TableStyle
+
+convert("<p>Hello</p>", "output.docx", table_style=TableStyle.GRID)
+MathmlToDocx().parse_latex(r"\frac{1}{2}").save("equation.docx")
+```
+
+See [1.0 migration](docs/05-migration.md), [upstream issue audit](docs/07-upstream-audit.md),
+and [XSL provenance](docs/06-xsl-provenance.md). URL images no longer trigger implicit
+network requests; use an explicit loader if needed.
+
+### Documentation and agent skill
+
+Documentation source: [docs/index.md](docs/index.md).
+The GitHub Pages deployment target is [joongi007.github.io/mathml2docx](https://joongi007.github.io/mathml2docx/).
+See [publishing instructions](docs/04-publishing.md) to enable Pages and build locally.
+
+An installable [conversion skill](skills/mathml2docx/SKILL.md), a downloadable skill ZIP,
+and `llms.txt` / `llms-full.txt` are provided with the documentation build.
+See [AI integration](docs/03-agents.md). These static resources do not run an MCP server.
 
 ### To install
 
@@ -64,7 +89,7 @@ new_parser.table_style = 'Light Shading Accent 4'
 To add borders to tables, use the `TableGrid` style:
 
 ```
-new_parser.table_style = 'TableGrid'
+new_parser.table_style = 'Table Grid'
 ```
 
 Default table styles can be found
@@ -86,3 +111,16 @@ new_parser.paragraph_style = 'Quote'
 
 Default paragraph styles can be found
 here: https://python-docx.readthedocs.io/en/latest/user/styles-understanding.html#paragraph-styles-in-default-template
+
+### Runnable examples
+
+[22 runnable examples](docs/examples/00-index.md) cover CSS stylesheets, tables, lists, images,
+MathML/LaTeX, Word styles, markers, bookmarks, docxtpl and mixed reports.
+Each documentation page includes full source, a generated DOCX and a reference PDF.
+
+```sh
+python -m pip install ".[latex,test]" -r requirements-examples.txt
+python -m examples.run_all
+```
+
+See [task recipes](docs/08-recipes.md) for the complete feature map and low-level API examples.

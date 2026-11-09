@@ -1,22 +1,28 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mathml2docx"
-version = "0.1.3"
+version = "1.0.0"
 authors = [
   { name="joongi007" },
 ]
 description = "The fork in https://github.com/pqzx/html2docx converts html (including mathml) to docx"
 readme = "README.md"
-requires-python = ">=3.6"
-license = {file = "LICENSE"}
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["html", "mathml", "docx", "convert"]
-classifiers = [
-    "License :: OSI Approved :: MIT License"
-]
 dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+latex = ["latex2mathml>=3.77,<4"]
+markdown = ["Markdown>=3.5,<4"]
+test = ["pytest>=8,<10", "docxtpl>=0.20,<1", "Markdown>=3.5,<4"]
+
+[project.scripts]
+mathml2docx = "mathml2docx.__main__:main"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
@@ -26,8 +32,16 @@ where = ["."]
 include = ["mathml2docx*"]
 exclude = ["tests"]
 
-[tool.setuptools.package-data]
-random_package = ["*.XSL"]
-
 [project.urls]
+Documentation = "https://joongi007.github.io/mathml2docx/"
 Repository = "https://github.com/joongi007/mathml2docx"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+python_files = ["test.py", "test_*.py"]

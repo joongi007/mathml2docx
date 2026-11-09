@@ -1,0 +1,44 @@
+site_name: mathml2docx
+site_description: HTML과 MathML을 Word 문서로 변환하는 Python 라이브러리
+site_url: https://joongi007.github.io/mathml2docx/
+repo_url: https://github.com/joongi007/mathml2docx
+theme:
+  name: mkdocs
+  locale: ko
+nav:
+  - 소개: index.md
+  - 시작하기: 01-getting-started.md
+  - API와 옵션: 02-api.md
+  - 작업별 사용법: 08-recipes.md
+  - 실행 예제:
+      - 전체 보기: examples/00-index.md
+      - 빠른 시작: examples/01_quickstart.md
+      - 파일·인코딩·다국어: examples/02_files_unicode.md
+      - 기존 문서와 표 셀: examples/03_existing_document.md
+      - 글자 서식과 색상: examples/04_inline_formatting.md
+      - CSS 스타일시트: examples/05_stylesheets.md
+      - Word 스타일과 클래스 매핑: examples/06_word_styles.md
+      - 문단 배치와 페이지 나누기: examples/07_page_layout.md
+      - 표 병합과 중첩: examples/08_tables.md
+      - 목록 번호와 중첩: examples/09_lists.md
+      - 인라인 base64 이미지: examples/10_data_images.md
+      - 로컬 이미지: examples/11_local_images.md
+      - 자산 로더와 이미지 직접 삽입: examples/12_asset_loader.md
+      - MathML 수식: examples/13_mathml.md
+      - LaTeX 수식: examples/14_latex.md
+      - 인라인 마커와 블록 교체: examples/15_markers.md
+      - 북마크 교체: examples/16_bookmarks.md
+      - docxtpl 연동: examples/17_docxtpl.md
+      - 옵션과 설정 복사: examples/18_options.md
+      - 서식 헬퍼: examples/19_style_helpers.md
+      - 링크와 앵커: examples/20_links.md
+      - 복합 보고서: examples/21_report.md
+      - Markdown 연동: examples/22_markdown.md
+  - AI와 스킬: 03-agents.md
+  - 문서 운영: 04-publishing.md
+  - 1.0.0 마이그레이션: 05-migration.md
+  - XSL 출처: 06-xsl-provenance.md
+  - 원본 이슈 검토: 07-upstream-audit.md
+markdown_extensions:
+  - fenced_code
+  - tables
