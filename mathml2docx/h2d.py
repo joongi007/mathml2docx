@@ -226,7 +226,14 @@ class _Renderer:
             value = str(node) if self.pre else re.sub(r"[\t\r\n ]+", " ", str(node))
             if self.paragraph is None:
                 value = value.lstrip(" ")
-            elif not self.pre and self.paragraph.text.endswith(" "):
+            elif (
+                not self.pre
+                and len(self.paragraph._p)
+                and self.paragraph._p[-1].tag != qn("m:oMath")
+                and "".join(
+                    t.text or "" for t in self.paragraph._p[-1].iter(qn("w:t"))
+                ).endswith(" ")
+            ):
                 value = value.lstrip(" ")
             if value:
                 fresh = self.paragraph is None
@@ -533,7 +540,16 @@ class _Renderer:
                 }.items():
                     edge.set(qn("w:" + key), value)
                 borders.append(edge)
-            table._tbl.tblPr.append(borders)
+            table._tbl.tblPr.insert_element_before(
+                borders,
+                "w:shd",
+                "w:tblLayout",
+                "w:tblCellMar",
+                "w:tblLook",
+                "w:tblCaption",
+                "w:tblDescription",
+                "w:tblPrChange",
+            )
         # Cache cells before merging; repeated Table.cell() would reconstruct the entire grid.
         cells = table._cells
         for r, c, rs, cs, source in placements:
@@ -558,6 +574,7 @@ class _Renderer:
             )
             if shading:
                 fill = OxmlElement("w:shd")
+                fill.set(qn("w:val"), "clear")
                 fill.set(qn("w:fill"), cell_properties.get("_background", shading))
                 target._tc.get_or_add_tcPr().append(fill)
             cell_width = length(

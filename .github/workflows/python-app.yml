@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.12', '3.14']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@v6
         with:
@@ -48,6 +48,25 @@ jobs:
           raise SystemExit(bool(result.failed))
           PY
 
+  platforms:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: windows-latest, python-version: '3.8'}
+          - {os: windows-latest, python-version: '3.14'}
+          - {os: macos-latest, python-version: '3.14'}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: '0.13.7'
+      - run: uv sync --locked --no-default-groups --python '${{ matrix.python-version }}' --extra latex --extra markdown --extra test
+      - run: uv run --no-sync --no-default-groups --python '${{ matrix.python-version }}' python -m unittest discover -v
+
   quality:
     runs-on: ubuntu-latest
     steps:
@@ -59,10 +78,15 @@ jobs:
           version: '0.13.7'
       - run: uv sync --locked --all-extras --group docs --group examples
       - run: uv run --no-sync python -m pytest -q
-      - run: uv run --no-sync ruff check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py examples scripts skills/mathml2docx/scripts
-      - run: uv run --no-sync ruff format --check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py examples scripts skills/mathml2docx/scripts
+      - run: uv run --no-sync ruff check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py tests/test_math_validation.py examples scripts skills/mathml2docx/scripts
+      - run: uv run --no-sync ruff format --check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py tests/test_math_validation.py examples scripts skills/mathml2docx/scripts
       - run: uv run --no-sync python scripts/build_docs.py
+      - name: Validate mathematical and document structure against official schemas
+        run: |
+          uv run --no-sync python scripts/prepare_ecma_schema.py "$RUNNER_TEMP/ecma376"
+          uv run --no-sync python scripts/validate_math_schema.py --schemas "$RUNNER_TEMP/ecma376" --docx-dir docs/downloads/examples
       - run: uv build
+      - run: uv run --no-sync python scripts/check_dist.py
       - run: uv run --no-sync twine check dist/*
       - uses: actions/upload-artifact@v4
         with:

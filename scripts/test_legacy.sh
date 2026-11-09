@@ -13,7 +13,7 @@ docker run --rm \
     mkdir /tmp/project
     cp -R /source/mathml2docx /source/tests /source/examples /source/docs \
       /source/scripts /source/skills /source/.github /source/pyproject.toml \
-      /source/README.md /source/LICENSE /source/mkdocs.yml /source/uv.lock \
+      /source/README.md /source/LICENSE /source/THIRD_PARTY_NOTICES.md /source/mkdocs.yml /source/uv.lock \
       /source/.python-version /tmp/project/
     cd /tmp/project
     python -m pip install --disable-pip-version-check --upgrade "pip>=21.3,<22"
@@ -22,7 +22,7 @@ docker run --rm \
     python -c "import doctest; from mathml2docx import utils; result=doctest.testmod(utils); assert result.failed == 0 and result.attempted == 11"
     if python -c "import sys; raise SystemExit(sys.version_info[:2] != (3, 6))"; then
       python -m pip install --disable-pip-version-check "latex2mathml==2.16.5"
-      python -m unittest tests.test_v1.MathTests -v
+      python -m unittest discover -v
     fi
     python -m pip wheel --no-deps . --wheel-dir /tmp/distributions
     python -m venv /tmp/wheel-env

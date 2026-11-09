@@ -16,7 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ExampleTests(unittest.TestCase):
     def test_all_examples(self):
-        catalog = json.loads((ROOT / "examples/catalog.json").read_text())
+        catalog = json.loads(
+            (ROOT / "examples/catalog.json").read_text(encoding="utf-8")
+        )
         self.assertEqual(
             set(catalog), {p.stem for p in (ROOT / "examples").glob("[0-9][0-9]_*.py")}
         )

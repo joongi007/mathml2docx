@@ -1,6 +1,6 @@
 # 실행 예제 모음
 
-Python 실행 예제 22개를 문서 빌드에서 실제 실행해 DOCX로 만듭니다.
+Python 실행 예제 24개를 문서 빌드에서 실제 실행해 DOCX로 만듭니다.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -35,3 +35,5 @@ uv run --no-sync python -m examples.run_all
 - [링크와 앵커](20_links.md): 외부 링크, 문서 내부 링크, id·name 앵커와 href 없는 링크를 다룹니다.
 - [복합 보고서](21_report.md): 스타일시트·이미지·병합 표·중첩 목록·수식·페이지 나누기를 한 문서에 조합합니다.
 - [Markdown 연동](22_markdown.md): 제목·표·목록·코드와 ~~취소선~~을 선택 Markdown 프런트엔드로 변환합니다.
+- [복잡한 수식 갤러리](23_complex_equations.md): 직접 작성한 MathML 20개와 LaTeX 24개로 중첩 분수·행렬·미분·적분·악센트·수학 글꼴을 비교합니다.
+- [수식이 많은 혼합 보고서](24_dense_report.md): 수식 120개와 병합·중첩 표, 목록, 이미지, 링크, 다국어 문장과 페이지 나누기를 조합합니다.

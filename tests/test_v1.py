@@ -27,6 +27,20 @@ class MathTests(unittest.TestCase):
         self.assertEqual(len(root.xpath(structure, namespaces=NS)), 1)
         return root
 
+    def test_native_conversion_does_not_use_xslt_or_external_stylesheets(self):
+        with patch(
+            "mathml2docx.math.etree.XSLT",
+            side_effect=AssertionError("XSLT is not allowed"),
+        ), patch(
+            "mathml2docx.math.etree.parse",
+            side_effect=AssertionError("Stylesheet file parsing is not allowed"),
+        ):
+            root = mathml_to_omml(
+                "<math><mfrac><msup><mi>x</mi><mn>2</mn></msup><msqrt><mi>y</mi></msqrt></mfrac></math>"
+            )
+        self.assertEqual(len(root.xpath("./m:f/m:num/m:sSup", namespaces=NS)), 1)
+        self.assertEqual(len(root.xpath("./m:f/m:den/m:rad", namespaces=NS)), 1)
+
     def test_fraction(self):
         root = self.check("<mfrac><mn>1</mn><mn>2</mn></mfrac>", "./m:f/m:den/m:r/m:t")
         self.assertEqual(root.xpath("string(m:f/m:den/m:r/m:t)", namespaces=NS), "2")

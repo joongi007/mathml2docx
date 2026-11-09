@@ -34,11 +34,16 @@ nav:
       - 링크와 앵커: examples/20_links.md
       - 복합 보고서: examples/21_report.md
       - Markdown 연동: examples/22_markdown.md
+      - 복잡한 수식 갤러리: examples/23_complex_equations.md
+      - 수식이 많은 혼합 보고서: examples/24_dense_report.md
   - AI와 스킬: 03-agents.md
   - 문서 운영: 04-publishing.md
   - 개발·호환성·PyPI: 09-development-release.md
   - 1.0.0 마이그레이션: 05-migration.md
   - XSL 출처: 06-xsl-provenance.md
+  - 라이선스와 대체 범위: 10-licensing.md
+  - 수식 검증과 한계: 11-validation.md
+  - 다른 도구와 비교: 12-choosing.md
   - 원본 이슈 검토: 07-upstream-audit.md
 markdown_extensions:
   - fenced_code

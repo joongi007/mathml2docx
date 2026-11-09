@@ -20,6 +20,11 @@ def main():
             if path.is_file() and "__pycache__" not in path.parts:
                 archive.write(path, path.relative_to(skill.parent))
 
+        archive.write(ROOT / "LICENSE", "mathml2docx/LICENSE")
+        archive.write(
+            ROOT / "THIRD_PARTY_NOTICES.md", "mathml2docx/THIRD_PARTY_NOTICES.md"
+        )
+
     catalog = json.loads((ROOT / "examples/catalog.json").read_text(encoding="utf-8"))
     output = assets / "examples"
     env = dict(os.environ, MATHML2DOCX_EXAMPLE_OUTPUT=str(output))
@@ -35,7 +40,7 @@ def main():
     overview = [
         "# 실행 예제 모음",
         "",
-        "Python 실행 예제 22개를 문서 빌드에서 실제 실행해 DOCX로 만듭니다.",
+        f"Python 실행 예제 {len(catalog)}개를 문서 빌드에서 실제 실행해 DOCX로 만듭니다.",
         "",
         "```sh",
         "uv sync --locked --extra latex --extra markdown --group docs --group examples",
@@ -80,6 +85,17 @@ def main():
                     "",
                 ]
             )
+        if stem == "23_complex_equations":
+            content.extend(
+                [
+                    "## 화면 비교 시 확인할 점",
+                    "",
+                    "LibreOffice 7.3 참조 PDF에서 M17 phantom 예약 폭, M19 bevelled 분수, M20 문자열 따옴표는 기대와 다르게 표시됩니다. XML에는 해당 구조·속성·문자가 남아 있지만 화면 동등성 검증을 완료한 항목은 아닙니다. Microsoft Word 직접 확인도 남아 있습니다.",
+                    "",
+                    "[전체 검증 범위와 한계](../11-validation.md)",
+                    "",
+                ]
+            )
         (gallery / (stem + ".md")).write_text("\n".join(content), encoding="utf-8")
         overview.extend(["- [" + title + "](" + stem + ".md): " + description])
     (gallery / "00-index.md").write_text("\n".join(overview) + "\n", encoding="utf-8")
@@ -91,6 +107,8 @@ def main():
                 and "__pycache__" not in path.parts
             ):
                 archive.write(path, path.relative_to(ROOT))
+        archive.write(ROOT / "LICENSE", "LICENSE")
+        archive.write(ROOT / "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_NOTICES.md")
 
     pages = [ROOT / "docs" / "index.md"] + sorted(
         (ROOT / "docs").glob("[0-9][0-9]-*.md")

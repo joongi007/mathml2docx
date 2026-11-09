@@ -114,6 +114,7 @@ def run_style(run, properties):
     )
     if background:
         shading = OxmlElement("w:shd")
+        shading.set(qn("w:val"), "clear")
         shading.set(qn("w:fill"), background)
         run._r.get_or_add_rPr().append(shading)
     if "font-weight" in properties:

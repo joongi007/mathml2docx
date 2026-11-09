@@ -11,7 +11,7 @@ description = "Convert HTML, MathML and optional LaTeX/Markdown to Word document
 readme = "README.md"
 requires-python = ">=3.6"
 license = "MIT"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 keywords = ["html", "mathml", "docx", "convert"]
 classifiers = [
     "Programming Language :: Python :: 3",

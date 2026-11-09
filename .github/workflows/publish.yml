@@ -49,6 +49,7 @@ jobs:
           subprocess.run(['git', 'merge-base', '--is-ancestor', 'HEAD', 'origin/master'], check=True)
           PY
       - run: uv build
+      - run: uv run --no-project --python 3.14 python scripts/check_dist.py
       - uses: actions/upload-artifact@v4
         with:
           name: pypi-distributions

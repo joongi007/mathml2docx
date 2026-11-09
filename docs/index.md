@@ -17,7 +17,12 @@ LaTeX는 선택 의존성을 설치해 사용할 수 있습니다.
 - [기존 XSL 출처 조사](06-xsl-provenance.md)
 - [원본 이슈 49건 검토](07-upstream-audit.md)
 
-- [실행 예제 22개와 DOCX·PDF](examples/00-index.md)
+- [실행 예제 24개와 DOCX·PDF](examples/00-index.md)
 - [작업별 사용법과 전체 기능 표](08-recipes.md)
 
 - [uv 개발 환경·Python 호환성·PyPI 배포](09-development-release.md)
+
+- [라이선스와 XSL 대체 범위](10-licensing.md)
+
+- [수식 검증과 남은 한계](11-validation.md)
+- [다른 도구와 비교해 선택하기](12-choosing.md)

@@ -9,7 +9,7 @@ class OutputTest(unittest.TestCase):
     @staticmethod
     def get_html_from_file(filename: str):
         file_path = Path(test_dir) / Path(filename)
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             html = f.read()
         return html
 

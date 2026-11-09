@@ -73,9 +73,9 @@
 ## 추가 검증과 실행 예제
 
 - `tests/test_extended.py`: CSS 선택자·우선순위·상속, 상대 글자 크기, RGBA 합성, 인라인 마커·북마크, 이미지 보존, DOCTYPE 및 중첩 p 처리.
-- `tests/test_examples.py`: 예제 22개를 별도 프로세스로 실행하고 DOCX를 다시 열어 실제 표·수식·링크·마커·템플릿 결과를 검증.
-- [실행 예제 22개](examples/00-index.md): 전체 코드·입력 HTML·생성 DOCX·LibreOffice PDF.
-- LibreOffice 7.3.7.2로 예제 22개와 원본 이슈 입력 문서를 렌더링했습니다. 보고서·목록·수식 등 주요 화면을 별도로 확인했습니다.
+- `tests/test_examples.py`: 예제 24개를 별도 프로세스로 실행하고 DOCX를 다시 열어 실제 표·수식·링크·마커·템플릿 결과를 검증.
+- [실행 예제 24개](examples/00-index.md): 전체 코드·입력 HTML·생성 DOCX·LibreOffice PDF.
+- LibreOffice 7.3.7.2로 예제 24개와 원본 이슈 입력 문서를 렌더링했습니다. 보고서·목록·수식 등 주요 화면을 별도로 확인했습니다.
 - Qt HTML의 글꼴 크기만으로 제목 의미를 자동 추정하지는 않습니다. CSS 서식 보존과 명시적인 제목으로 처리하며, Markdown은 선택 프런트엔드로 지원합니다.
 
 추가 CSS 지원 후 같은 300행×3열 입력의 재측정값은 0.089초였습니다(1회 측정).
