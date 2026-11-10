@@ -1,18 +1,18 @@
-# 링크와 앵커
+# Links and anchors
 
-외부 링크, 문서 내부 링크, id·name 앵커와 href 없는 링크를 다룹니다.
+Use external/internal links, id/name anchors, and links without href.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.20_links
 ```
 
-[생성 DOCX](../downloads/examples/20_links.docx)
+[Generated DOCX](../downloads/examples/20_links.docx)
 
-[PDF 참조 결과](../assets/previews/20_links.pdf)
+[Reference PDF](../assets/previews/20_links.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """20 links example."""

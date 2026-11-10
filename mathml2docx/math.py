@@ -1,6 +1,9 @@
 """Independent Presentation MathML to OMML conversion; no Office stylesheets."""
 
+import re
+import sys
 import unicodedata
+from collections import defaultdict, deque
 
 from docx.oxml import OxmlElement
 from lxml import etree
@@ -202,6 +205,15 @@ def convert(node, inherited=None):
                 and last.get("fence") == "true"
                 and last.get("form") == "postfix"
             )
+            if (
+                len(children) == 2
+                and math_name(first) == "mo"
+                and begin == "{"
+                and first.get("stretchy") != "false"
+                and math_name(last) == "mtable"
+            ):
+                # A cases table has a growing left brace and no right fence.
+                return [fenced(begin, "", parts(last))]
             if math_name(first) == math_name(last) == "mo" and (explicit or paired):
                 return [
                     fenced(
@@ -425,44 +437,128 @@ def convert(node, inherited=None):
     raise UnsupportedMathMLError("Unsupported MathML element: " + tag)
 
 
+LATEX_OPERATORS = {
+    "sum": "∑",
+    "prod": "∏",
+    "coprod": "∐",
+    "bigcup": "⋃",
+    "bigcap": "⋂",
+    "bigvee": "⋁",
+    "bigwedge": "⋀",
+    "lim": "lim",
+    "liminf": "liminf",
+    "limsup": "limsup",
+    "int": "∫",
+    "iint": "∬",
+    "iiint": "∭",
+    "oint": "∮",
+}
+INTEGRALS = {"∫", "∬", "∭", "∮"}
+OPERATOR_SYMBOLS = frozenset(LATEX_OPERATORS.values())
+LATEX_COMMAND = re.compile(r"\\([A-Za-z]+|.)")
+LATEX_LIMITS = re.compile(r"\s*\\(nolimits|limits)(?![A-Za-z])")
+
+
+def _latex_operator_policies(source):
+    """Handle limits per operator, even on backends lacking these directives.
+
+    Only operator layout directives are removed before the backend parses LaTeX.
+    Literal text groups and escaped commands are preserved. The backend still
+    parses every mathematical argument, script and expression.
+    """
+    policies = defaultdict(deque)
+    output = []
+    cursor = copied = 0
+    while cursor < len(source):
+        if source[cursor] != "\\":
+            symbol = source[cursor]
+            if symbol in OPERATOR_SYMBOLS:
+                policies[symbol].append("scripts" if symbol in INTEGRALS else "limits")
+            cursor += 1
+            continue
+        token = LATEX_COMMAND.match(source, cursor)
+        if token is None:
+            cursor += 1
+            continue
+        command = token.group(1)
+        end = token.end()
+        if command in {"text", "mbox", "operatorname"}:
+            brace = end
+            while brace < len(source) and source[brace].isspace():
+                brace += 1
+            if brace < len(source) and source[brace] == "{":
+                depth = 1
+                cursor = brace + 1
+                while cursor < len(source) and depth:
+                    if source[cursor] == "\\":
+                        cursor += 2
+                        continue
+                    if source[cursor] == "{":
+                        depth += 1
+                    elif source[cursor] == "}":
+                        depth -= 1
+                    cursor += 1
+                continue
+        if command in LATEX_OPERATORS:
+            symbol = LATEX_OPERATORS[command]
+            policy = "scripts" if symbol in INTEGRALS else "limits"
+            directive = LATEX_LIMITS.match(source, end)
+            while directive:
+                policy = "scripts" if directive.group(1) == "nolimits" else "limits"
+                output.append(source[copied:end])
+                copied = directive.end()
+                end = copied
+                directive = LATEX_LIMITS.match(source, end)
+            policies[symbol].append(policy)
+        cursor = end
+    output.append(source[copied:])
+    return "".join(output), policies
+
+
 def latex_to_omml(source):
     """Convert LaTeX math via the optional MIT-licensed latex2mathml package."""
+    # Ruff's oldest target is 3.7; the core package also supports early 3.6.
+    if sys.version_info < (3, 6, 2):  # noqa: UP036
+        raise ImportError(
+            "LaTeX conversion requires Python >=3.6.2; HTML and MathML support Python >=3.6.0"
+        )
     try:
         from latex2mathml.converter import convert as latex_to_mathml
     except ImportError as exc:
         raise ImportError("Install mathml2docx[latex] to convert LaTeX") from exc
-    converted = latex_to_mathml(source, display="block")
-    # Older latex2mathml versions used side scripts for block sums/products.
-    # Keep the public block-equation output consistent on legacy Python too.
+    prepared, policies = _latex_operator_policies(source)
+    converted = latex_to_mathml(prepared, display="block")
     root = etree.fromstring(
         converted.encode("utf-8"),
         etree.XMLParser(resolve_entities=False, no_network=True),
     )
-    if r"\nolimits" not in source:
-        for node in root.iter():
-            name = etree.QName(node).localname
-            if name not in {"msub", "msup", "msubsup"} or not len(node):
-                continue
-            base = node[0]
-            if etree.QName(base).localname == "mo" and base.text in {
-                "∑",
-                "∏",
-                "∐",
-                "⋃",
-                "⋂",
-                "⋁",
-                "⋀",
-                "lim",
-                "liminf",
-                "limsup",
-            }:
-                namespace = etree.QName(node).namespace
-                replacement = {
-                    "msub": "munder",
-                    "msup": "mover",
-                    "msubsup": "munderover",
-                }[name]
-                node.tag = (
-                    "{" + namespace + "}" + replacement if namespace else replacement
-                )
+    layouts = {
+        "msub": ("msub", "munder"),
+        "munder": ("msub", "munder"),
+        "msup": ("msup", "mover"),
+        "mover": ("msup", "mover"),
+        "msubsup": ("msubsup", "munderover"),
+        "munderover": ("msubsup", "munderover"),
+    }
+    for base in root.iter():
+        symbol = base.text
+        if (
+            etree.QName(base).localname not in {"mo", "mi"}
+            or symbol not in OPERATOR_SYMBOLS
+        ):
+            continue
+        policy = (
+            policies[symbol].popleft()
+            if policies[symbol]
+            else "scripts"
+            if symbol in INTEGRALS
+            else "limits"
+        )
+        node = base.getparent()
+        name = etree.QName(node).localname
+        if name not in layouts or node[0] is not base:
+            continue
+        replacement = layouts[name][policy == "limits"]
+        namespace = etree.QName(node).namespace
+        node.tag = "{" + namespace + "}" + replacement if namespace else replacement
     return mathml_to_omml(etree.tostring(root, encoding="unicode"))

@@ -1,18 +1,18 @@
-# 자산 로더와 이미지 직접 삽입
+# Asset loaders and direct images
 
-논리 자산 ID를 bytes로 해석하고 BytesIO 이미지를 셀에 직접 추가합니다.
+Resolve logical asset IDs to bytes and insert BytesIO images into cells.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.12_asset_loader
 ```
 
-[생성 DOCX](../downloads/examples/12_asset_loader.docx)
+[Generated DOCX](../downloads/examples/12_asset_loader.docx)
 
-[PDF 참조 결과](../assets/previews/12_asset_loader.pdf)
+[Reference PDF](../assets/previews/12_asset_loader.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """12 asset loader example."""

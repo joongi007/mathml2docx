@@ -1,18 +1,18 @@
-# 복잡한 수식 갤러리
+# Complex equation gallery
 
-직접 작성한 MathML 20개와 LaTeX 24개로 중첩 분수·행렬·미분·적분·악센트·수학 글꼴을 비교합니다.
+Compare 20 authored MathML and 24 LaTeX examples covering nested fractions, matrices, calculus, accents, and math alphabets.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.23_complex_equations
 ```
 
-[생성 DOCX](../downloads/examples/23_complex_equations.docx)
+[Generated DOCX](../downloads/examples/23_complex_equations.docx)
 
-[PDF 참조 결과](../assets/previews/23_complex_equations.pdf)
+[Reference PDF](../assets/previews/23_complex_equations.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """Complex equations for inspection in Word and independent renderers."""
@@ -42,8 +42,8 @@ for index, source in enumerate(LATEX, 1):
 save(document, "23_complex_equations.docx")
 ```
 
-## 화면 비교 시 확인할 점
+## Visual comparison notes
 
-LibreOffice 7.3 참조 PDF에서 M17 phantom 예약 폭, M19 bevelled 분수, M20 문자열 따옴표는 기대와 다르게 표시됩니다. XML에는 해당 구조·속성·문자가 남아 있지만 화면 동등성 검증을 완료한 항목은 아닙니다. Microsoft Word 직접 확인도 남아 있습니다.
+In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Direct Microsoft Word checks also remain outstanding.
 
-[전체 검증 범위와 한계](../11-validation.md)
+[Validation scope and limitations](../11-validation.md)

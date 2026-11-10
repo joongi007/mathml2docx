@@ -44,7 +44,6 @@ if bundling or redistributing those dependencies.
 | --- | --- | --- |
 | latex2mathml | Optional LaTeX frontend | [MIT](https://github.com/roniemartinez/latex2mathml/blob/master/LICENSE) |
 | Python-Markdown | Optional Markdown frontend | [BSD-3-Clause](https://github.com/Python-Markdown/markdown/blob/master/LICENSE.md) |
-| setuptools | Legacy LaTeX backend compatibility on Python 3.6.0/3.6.1 | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE) |
 | docxtpl | Optional tests/examples and user-selected integration | [Project](https://github.com/elapouya/python-docx-template), LGPL-2.1-only in tested 0.20.2 metadata |
 | MkDocs | Documentation generation | [BSD-2-Clause](https://github.com/mkdocs/mkdocs/blob/master/LICENSE) |
 | pytest | Test execution | [MIT](https://github.com/pytest-dev/pytest/blob/main/LICENSE) |

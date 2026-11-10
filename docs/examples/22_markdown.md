@@ -1,18 +1,18 @@
-# Markdown 연동
+# Markdown integration
 
-제목·표·목록·코드와 ~~취소선~~을 선택 Markdown 프런트엔드로 변환합니다.
+Convert headings, tables, lists, code, and strikethrough with the optional frontend.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.22_markdown
 ```
 
-[생성 DOCX](../downloads/examples/22_markdown.docx)
+[Generated DOCX](../downloads/examples/22_markdown.docx)
 
-[PDF 참조 결과](../assets/previews/22_markdown.pdf)
+[Reference PDF](../assets/previews/22_markdown.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """22 markdown example."""

@@ -1,18 +1,18 @@
-# 인라인 마커와 블록 교체
+# Inline markers and block replacement
 
-서식 run에 걸친 마커를 바꾸고 표 셀에 여러 블록을 삽입합니다.
+Replace markers spanning formatted runs and insert multiple blocks into cells.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.15_markers
 ```
 
-[생성 DOCX](../downloads/examples/15_markers.docx)
+[Generated DOCX](../downloads/examples/15_markers.docx)
 
-[PDF 참조 결과](../assets/previews/15_markers.pdf)
+[Reference PDF](../assets/previews/15_markers.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """15 markers example."""

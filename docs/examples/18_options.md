@@ -1,18 +1,18 @@
-# 옵션과 설정 복사
+# Options and settings copies
 
-이미지·표·수식·서식을 끄고 설정을 독립적으로 복사합니다.
+Disable images, tables, math, or styles and independently copy settings.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.18_options
 ```
 
-[생성 DOCX](../downloads/examples/18_options.docx)
+[Generated DOCX](../downloads/examples/18_options.docx)
 
-[PDF 참조 결과](../assets/previews/18_options.pdf)
+[Reference PDF](../assets/previews/18_options.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """18 options example."""

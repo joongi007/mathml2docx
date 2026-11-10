@@ -1,18 +1,18 @@
-# Word 스타일과 클래스 매핑
+# Word styles and class mapping
 
-공개 스타일 Enum과 사용자 정의 character style을 HTML class에 연결합니다.
+Map HTML classes to public style constants and custom character styles.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.06_word_styles
 ```
 
-[생성 DOCX](../downloads/examples/06_word_styles.docx)
+[Generated DOCX](../downloads/examples/06_word_styles.docx)
 
-[PDF 참조 결과](../assets/previews/06_word_styles.pdf)
+[Reference PDF](../assets/previews/06_word_styles.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """06 word styles example."""

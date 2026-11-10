@@ -27,33 +27,44 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           version: '0.13.7'
-      - name: Verify release version and source
-        if: github.event_name == 'release'
+      - name: Verify release metadata and source
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
+          RELEASE_EVENT: ${{ github.event_name }}
         run: |
-          uv run --no-project --python 3.14 python - <<'PY'
-          import ast, os, subprocess, tomllib
-          from pathlib import Path
-          project = tomllib.loads(Path('pyproject.toml').read_text())['project']
-          module = ast.parse(Path('mathml2docx/__init__.py').read_text())
-          versions = [ast.literal_eval(node.value) for node in module.body
-                      if isinstance(node, ast.Assign)
-                      and any(isinstance(name, ast.Name) and name.id == '__version__'
-                              for name in node.targets)]
-          if versions != [project['version']]:
-              raise SystemExit('Package __version__ and pyproject version must match')
-          expected = 'v' + project['version']
-          if os.environ['RELEASE_TAG'] != expected:
-              raise SystemExit('Release tag must match package version: ' + expected)
-          subprocess.run(['git', 'merge-base', '--is-ancestor', 'HEAD', 'origin/master'], check=True)
-          PY
+          if [ "$RELEASE_EVENT" = release ]; then
+            uv run --no-project --python 3.14 --with 'packaging>=24,<27' python scripts/check_release.py --tag "$RELEASE_TAG" --prerelease "$RELEASE_PRERELEASE"
+          else
+            uv run --no-project --python 3.14 --with 'packaging>=24,<27' python scripts/check_release.py
+          fi
       - run: uv build
       - run: uv run --no-project --python 3.14 python scripts/check_dist.py
+      - run: uv run --no-project --python 3.14 --with 'twine>=6,<7' twine check dist/*
+      - run: uv run --no-project --python 3.14 python scripts/check_wheel_install.py
       - uses: actions/upload-artifact@v4
         with:
           name: pypi-distributions
           path: dist/
+
+  test-publish:
+    # Only an explicitly published candidate release uploads to TestPyPI.
+    if: github.event_name == 'release' && github.event.release.prerelease
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/mathml2docx
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pypi-distributions
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
 
   publish:
     # Manual workflow_dispatch runs validate/build only. Upload requires an

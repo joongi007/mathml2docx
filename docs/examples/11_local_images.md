@@ -1,18 +1,18 @@
-# 로컬 이미지
+# Local images
 
-명시한 기준 경로 아래의 이미지를 읽습니다. 기준 밖 경로는 허용하지 않습니다.
+Read files below an explicit base directory; paths outside it are refused.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.11_local_images
 ```
 
-[생성 DOCX](../downloads/examples/11_local_images.docx)
+[Generated DOCX](../downloads/examples/11_local_images.docx)
 
-[PDF 참조 결과](../assets/previews/11_local_images.pdf)
+[Reference PDF](../assets/previews/11_local_images.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """11 local images example."""

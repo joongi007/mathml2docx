@@ -1,18 +1,18 @@
-# CSS 스타일시트
+# CSS stylesheets
 
-style 태그, 외부 CSS 로더, 선택자·상속·important 우선순위를 함께 사용합니다.
+Combine style tags, explicit external CSS loading, selectors, inheritance, and important precedence.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.05_stylesheets
 ```
 
-[생성 DOCX](../downloads/examples/05_stylesheets.docx)
+[Generated DOCX](../downloads/examples/05_stylesheets.docx)
 
-[PDF 참조 결과](../assets/previews/05_stylesheets.pdf)
+[Reference PDF](../assets/previews/05_stylesheets.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """05 stylesheets example."""

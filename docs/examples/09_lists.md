@@ -1,18 +1,18 @@
-# 목록 번호와 중첩
+# List numbering and nesting
 
-시작 번호, li의 value, 독립 목록 재시작, 중첩 번호·글머리를 보여 줍니다.
+Use start values, li values, independent restarts, and nested numbered/bulleted lists.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.09_lists
 ```
 
-[생성 DOCX](../downloads/examples/09_lists.docx)
+[Generated DOCX](../downloads/examples/09_lists.docx)
 
-[PDF 참조 결과](../assets/previews/09_lists.pdf)
+[Reference PDF](../assets/previews/09_lists.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """09 lists example."""

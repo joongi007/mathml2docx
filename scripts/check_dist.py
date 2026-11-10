@@ -17,6 +17,8 @@ def main():
             names = archive.namelist()
             if any(name.lower().endswith((".xsl", ".xslt")) for name in names):
                 raise RuntimeError("Unexpected stylesheet in " + str(wheel))
+            if any(name.lower().endswith(".docx") for name in names):
+                raise RuntimeError("Generated DOCX must not be bundled: " + str(wheel))
             metadata_name = next(
                 name for name in names if name.endswith(".dist-info/METADATA")
             )
@@ -37,10 +39,26 @@ def main():
             names = archive.getnames()
             if any(name.lower().endswith((".xsl", ".xslt")) for name in names):
                 raise RuntimeError("Unexpected stylesheet in " + str(source))
+            if any(name.lower().endswith(".docx") for name in names):
+                raise RuntimeError("Generated DOCX must not be bundled: " + str(source))
+            for required in [
+                "examples/assets/math-corpus/catalog.json",
+                "examples/assets/mixed_math.html",
+                "tests/fixtures/math_expectations.json",
+                "tests/fixtures/mixed_math_expectation.json",
+                "tests/docx_oracle.py",
+                "tests/test_docx_oracles.py",
+            ]:
+                if not any(name.endswith("/" + required) for name in names):
+                    raise RuntimeError(
+                        "DOCX oracle source missing from sdist: " + required
+                    )
             for notice in notices:
                 if not any(name.endswith("/" + notice) for name in names):
                     raise RuntimeError("License file missing from sdist: " + notice)
-    print("Distribution checks passed: Python >=3.6, MIT/notices, no XSL files")
+    print(
+        "Distribution checks passed: Python >=3.6, MIT/notices, oracle sources, no XSL/generated DOCX files"
+    )
 
 
 if __name__ == "__main__":

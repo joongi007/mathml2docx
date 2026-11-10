@@ -1,18 +1,18 @@
-# 문단 배치와 페이지 나누기
+# Paragraph layout and page breaks
 
-정렬·여백·들여쓰기·줄 간격과 페이지 나누기를 지정합니다.
+Set alignment, spacing, indentation, line height, and page breaks.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.07_page_layout
 ```
 
-[생성 DOCX](../downloads/examples/07_page_layout.docx)
+[Generated DOCX](../downloads/examples/07_page_layout.docx)
 
-[PDF 참조 결과](../assets/previews/07_page_layout.pdf)
+[Reference PDF](../assets/previews/07_page_layout.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """07 page layout example."""

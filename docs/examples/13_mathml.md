@@ -1,18 +1,18 @@
-# MathML 수식
+# MathML equations
 
-분수·위아래 첨자·n제곱근·울타리·행렬 및 문장 안의 편집 가능한 수식을 생성합니다.
+Create editable fractions, scripts, indexed roots, delimiters, matrices, and inline equations.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.13_mathml
 ```
 
-[생성 DOCX](../downloads/examples/13_mathml.docx)
+[Generated DOCX](../downloads/examples/13_mathml.docx)
 
-[PDF 참조 결과](../assets/previews/13_mathml.pdf)
+[Reference PDF](../assets/previews/13_mathml.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """13 mathml example."""

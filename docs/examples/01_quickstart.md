@@ -1,18 +1,18 @@
-# 빠른 시작
+# Quick start
 
-convert() 한 번으로 HTML을 저장하고 Document를 반환받습니다.
+Save HTML with one convert() call and receive a Document.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.01_quickstart
 ```
 
-[생성 DOCX](../downloads/examples/01_quickstart.docx)
+[Generated DOCX](../downloads/examples/01_quickstart.docx)
 
-[PDF 참조 결과](../assets/previews/01_quickstart.pdf)
+[Reference PDF](../assets/previews/01_quickstart.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """01 quickstart example."""

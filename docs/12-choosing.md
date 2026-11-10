@@ -1,21 +1,22 @@
-# 다른 도구와 비교해 선택하기
+# Choosing a tool
 
-편집 가능한 Word 수식을 만든다는 것만으로 이 프로젝트가 유일한 선택은 아닙니다.
-아래는 2026-11-10에 공식 문서를 확인한 기능 구분이며, 성능·충실도를 같은 입력으로
-비교한 벤치마크나 우열 판정은 아닙니다.
+Editable Word equations alone do not make this project a unique option. The
+following feature descriptions were checked against official documentation on
+2026-11-10. They are not a same-input benchmark or a ranking of fidelity or performance.
 
-| 도구 | 공식적으로 안내하는 기능 | 선택할 때 볼 점 |
+| Tool | Documented functionality | Considerations |
 | --- | --- | --- |
-| [Pandoc](https://pandoc.org/MANUAL.html#math) | 여러 문서 형식과 DOCX의 OMML 수식 출력 | Markdown·LaTeX 등 문서 전체 변환 파이프라인에 검토할 수 있습니다. |
-| [html4docx](https://github.com/dfop02/html4docx) | HTML→DOCX, CSS·이미지·표·목록 개선 | 같은 upstream에서 이어진 Python HTML 변환 대안으로, 실제 HTML·API 호환성을 비교하세요. |
-| [Microsoft 365](https://learn.microsoft.com/en-us/office/math/mathml) | MathML 가져오기·내보내기와 OMML 저장 | Word 안에서 직접 작업할 때 제품의 수식 기능도 검토할 수 있습니다. |
-| mathml2docx | Python API, HTML 안의 지원 MathML, 선택 LaTeX, 기존 문서·셀·마커·북마크 삽입 | 서버나 로컬 코드에서 기존 python-docx 흐름과 결합할 때 사용할 수 있습니다. |
+| [Pandoc](https://pandoc.org/MANUAL.html#math) | Multiple document formats and DOCX equations in OMML | Consider it for whole-document Markdown/LaTeX conversion pipelines. |
+| [html4docx](https://github.com/dfop02/html4docx) | HTML-to-DOCX with CSS, image, table, and list improvements | A Python alternative descended from the same upstream; compare actual inputs and API compatibility. |
+| [Microsoft 365](https://learn.microsoft.com/en-us/office/math/mathml) | MathML import/export and OMML storage | Consider Word's built-in equation features when working directly in Word. |
+| mathml2docx | Python API, supported MathML inside HTML, optional LaTeX, existing document/cell/marker/bookmark insertion | Useful for integration into an existing python-docx workflow on a server or locally. |
 
-이 프로젝트의 목표는 Python에서 HTML·수식을 기존 Word 문서에 넣는 작업을 짧은 코드로
-구현하고, 지원 범위와 검증 사례를 공개하는 것입니다. 외부 업로드 없이 변환할 수 있지만,
-명시적으로 제공한 이미지·CSS 로더가 외부에 접근하는지는 사용하는 애플리케이션에 달려 있습니다.
+The goal is to make HTML/equation insertion into existing Word documents concise
+in Python, while publishing support boundaries and reproducible checks. Conversion
+can run without an external upload. Whether explicitly supplied image/CSS loaders
+access the network is controlled by the calling application.
 
-실제 의미가 있는지는 사용자가 겪는 문서 작업을 얼마나 줄이는지로 판단해야 합니다.
-이 저장소의 구현과 테스트만으로 사용자 수요나 다른 도구보다 높은 수식 충실도가
-입증되지는 않습니다. 배포 후에는 실제 보고서·교육 자료·문제지의 사례와 피드백을 모으고,
-[검증 코퍼스](11-validation.md)를 확장하는 것이 제품 가치를 확인하는 방법입니다.
+The project's practical value depends on how much work it saves for its users.
+Implementation and tests alone do not establish demand or superior fidelity over
+other tools. Collect real reports, teaching materials, and question papers after
+release, then extend the [validation corpus](11-validation.md) from that feedback.

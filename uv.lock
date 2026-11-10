@@ -872,18 +872,6 @@ wheels = [
 
 [[package]]
 name = "latex2mathml"
-version = "2.16.5"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.6.2'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/82/54/f38aa269a24b643ec37ed0d00ba41854e767c86e7edb794c287aac1138d3/latex2mathml-2.16.5.tar.gz", hash = "sha256:f394846ab5510cd719152a83bfc7d45a82c95515c5afabffbda2b2130f91c23d", size = 66108, upload-time = "2021-03-20T13:07:20.159Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/9f/fdaa1e8344ff501f7cfdce1f17d5fb085eee22c1bf56f79868927afe0591/latex2mathml-2.16.5-py3-none-any.whl", hash = "sha256:3f888c358f275998407d59aba176913927145146401dc40cc1a821959b6597fb", size = 65376, upload-time = "2021-03-20T13:07:18.781Z" },
-]
-
-[[package]]
-name = "latex2mathml"
 version = "3.64.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
@@ -1729,13 +1717,11 @@ dependencies = [
 
 [package.optional-dependencies]
 latex = [
-    { name = "latex2mathml", version = "2.16.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.6.2'" },
     { name = "latex2mathml", version = "3.64.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.6.2' and python_full_version < '3.7'" },
     { name = "latex2mathml", version = "3.75.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.7' and python_full_version < '3.8.1'" },
     { name = "latex2mathml", version = "3.77.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.8.1' and python_full_version < '3.9'" },
     { name = "latex2mathml", version = "3.78.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.9.*'" },
     { name = "latex2mathml", version = "3.81.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "setuptools", marker = "python_full_version < '3.6.2'" },
 ]
 markdown = [
     { name = "markdown", version = "3.3.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.7'" },
@@ -1764,6 +1750,7 @@ test = [
 [package.dev-dependencies]
 dev = [
     { name = "build", marker = "python_full_version >= '3.10'" },
+    { name = "packaging", version = "26.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pytest", version = "9.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "ruff", marker = "python_full_version >= '3.10'" },
     { name = "twine", marker = "python_full_version >= '3.10'" },
@@ -1787,14 +1774,13 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.12,<5" },
     { name = "cssselect2", specifier = ">=0.4,<1" },
     { name = "docxtpl", marker = "extra == 'test'", specifier = ">=0.16,<1" },
-    { name = "latex2mathml", marker = "extra == 'latex'", specifier = ">=2.0,<4" },
+    { name = "latex2mathml", marker = "python_full_version >= '3.6.2' and extra == 'latex'", specifier = ">=3.64,<4" },
     { name = "lxml", specifier = ">=4.9,<7" },
     { name = "markdown", marker = "extra == 'markdown'", specifier = ">=3.3,<4" },
     { name = "markdown", marker = "extra == 'test'", specifier = ">=3.3,<4" },
     { name = "pillow", specifier = ">=8.4,<13" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=6.2,<10" },
     { name = "python-docx", specifier = ">=0.8.11,<2" },
-    { name = "setuptools", marker = "python_full_version < '3.6.2' and extra == 'latex'", specifier = ">=40.8,<60" },
     { name = "tinycss2", specifier = ">=1.1,<2" },
 ]
 provides-extras = ["latex", "markdown", "test"]
@@ -1802,6 +1788,7 @@ provides-extras = ["latex", "markdown", "test"]
 [package.metadata.requires-dev]
 dev = [
     { name = "build", marker = "python_full_version >= '3.10'", specifier = ">=1,<2" },
+    { name = "packaging", marker = "python_full_version >= '3.10'", specifier = ">=24,<27" },
     { name = "pytest", marker = "python_full_version >= '3.10'", specifier = ">=8,<10" },
     { name = "ruff", marker = "python_full_version >= '3.10'", specifier = ">=0.9,<1" },
     { name = "twine", marker = "python_full_version >= '3.10'", specifier = ">=6,<7" },
@@ -3023,15 +3010,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1c/03/e834bcd866f2f8a49a85eaff47340affa3bfa391ee9912a952a1faa68c7b/secretstorage-3.5.0.tar.gz", hash = "sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be", size = 19884, upload-time = "2025-11-23T19:02:53.191Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/46/f5af3402b579fd5e11573ce652019a67074317e18c1935cc0b4ba9b35552/secretstorage-3.5.0-py3-none-any.whl", hash = "sha256:0ce65888c0725fcb2c5bc0fdb8e5438eece02c523557ea40ce0703c266248137", size = 15554, upload-time = "2025-11-23T19:02:51.545Z" },
-]
-
-[[package]]
-name = "setuptools"
-version = "59.6.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6a/fa/5ec0fa9095c9b72cb1c31a8175c4c6745bf5927d1045d7a70df35d54944f/setuptools-59.6.0.tar.gz", hash = "sha256:22c7348c6d2976a52632c67f7ab0cdf40147db7789f9aed18734643fe9cf3373", size = 2281973, upload-time = "2021-12-12T20:46:30.376Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b0/3a/88b210db68e56854d0bcf4b38e165e03be377e13907746f825790f3df5bf/setuptools-59.6.0-py3-none-any.whl", hash = "sha256:4ce92f1e1f8f01233ee9952c04f6b81d1e02939d6e1b488428154974a4d0783e", size = 952597, upload-time = "2021-12-12T20:46:28.631Z" },
 ]
 
 [[package]]

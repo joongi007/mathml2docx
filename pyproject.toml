@@ -36,9 +36,9 @@ dependencies = [
 
 [project.optional-dependencies]
 latex = [
-    "latex2mathml>=2.0,<4",
-    # The backend selected on 3.6.0/3.6.1 imports pkg_resources.
-    "setuptools>=40.8,<60; python_full_version < '3.6.2'",
+    # Earlier backends silently misparse text, accents and spacing commands.
+    # The core HTML/MathML converter still supports Python >=3.6.0.
+    "latex2mathml>=3.64,<4; python_full_version >= '3.6.2'",
 ]
 markdown = ["Markdown>=3.3,<4"]
 test = ["pytest>=6.2,<10", "docxtpl>=0.16,<1", "Markdown>=3.3,<4"]
@@ -51,7 +51,7 @@ Documentation = "https://joongi007.github.io/mathml2docx/"
 Repository = "https://github.com/joongi007/mathml2docx"
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "ruff>=0.9,<1", "build>=1,<2", "twine>=6,<7"]
+dev = ["pytest>=8,<10", "ruff>=0.9,<1", "build>=1,<2", "twine>=6,<7", "packaging>=24,<27"]
 docs = ["mkdocs==1.6.1"]
 examples = ["docxtpl>=0.20,<1", "Markdown>=3.5,<4"]
 
@@ -64,8 +64,8 @@ docs = { requires-python = ">=3.10" }
 examples = { requires-python = ">=3.10" }
 
 [tool.flit.sdist]
-include = ["docs/", "examples/", "scripts/", "skills/", "tests/", ".github/", "mkdocs.yml", "uv.lock", ".python-version"]
-exclude = ["docs/downloads/", "docs/llms.txt", "docs/llms-full.txt", "examples/output/", "**/__pycache__/", "**/*.pyc"]
+include = ["CHANGELOG.md", "docs/", "examples/", "scripts/", "skills/", "tests/", ".github/", "mkdocs.yml", "uv.lock", ".python-version"]
+exclude = ["docs/downloads/", "docs/llms.txt", "docs/llms-full.txt", "examples/output/", "**/*.docx", "**/__pycache__/", "**/*.pyc"]
 
 [tool.ruff]
 # Ruff's oldest target is 3.7. Python 3.6 is additionally tested on real CPython.

@@ -1,18 +1,18 @@
-# docxtpl 연동
+# docxtpl integration
 
-Jinja 템플릿을 렌더링한 뒤 HTML 문단을 추가합니다.
+Render a Jinja template and then add HTML paragraphs.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.17_docxtpl
 ```
 
-[생성 DOCX](../downloads/examples/17_docxtpl.docx)
+[Generated DOCX](../downloads/examples/17_docxtpl.docx)
 
-[PDF 참조 결과](../assets/previews/17_docxtpl.pdf)
+[Reference PDF](../assets/previews/17_docxtpl.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """17 docxtpl example."""

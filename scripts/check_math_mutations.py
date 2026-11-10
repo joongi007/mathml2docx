@@ -63,6 +63,10 @@ def main():
             str(ROOT / "examples/math_corpus.py"),
             str(directory / "examples/math_corpus.py"),
         )
+        shutil.copytree(
+            str(ROOT / "examples/assets/math-corpus"),
+            str(directory / "examples/assets/math-corpus"),
+        )
         # The shading regression is part of MathematicalMeaningTests, too.
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
         command = [

@@ -38,20 +38,20 @@ def main():
     gallery = ROOT / "docs/examples"
     gallery.mkdir(exist_ok=True)
     overview = [
-        "# 실행 예제 모음",
+        "# Runnable examples",
         "",
-        f"Python 실행 예제 {len(catalog)}개를 문서 빌드에서 실제 실행해 DOCX로 만듭니다.",
+        f"The documentation build executes {len(catalog)} Python examples to generate DOCX downloads.",
         "",
         "```sh",
         "uv sync --locked --extra latex --extra markdown --group docs --group examples",
         "uv run --no-sync python -m examples.run_all",
         "```",
         "",
-        "저장소를 내려받고 위 설치 명령을 실행한 환경에서 사용합니다. 모든 결과는 `examples/output/`에 저장됩니다. 개별 실행은 `python -m examples.01_quickstart`처럼 합니다.",
+        "Run from a repository checkout after installing the dependencies above. Local outputs go to `examples/output/`. Run an individual example with, for instance, `python -m examples.01_quickstart`.",
         "",
-        "[전체 예제 코드·자산 ZIP](../downloads/mathml2docx-examples.zip)",
+        "[All example source and assets (ZIP)](../downloads/mathml2docx-examples.zip)",
         "",
-        "아래 PDF는 LibreOffice 7.3.7로 렌더링한 참조 결과입니다. Word 버전·글꼴에 따라 화면은 달라질 수 있습니다.",
+        "The reference PDFs were rendered with LibreOffice 7.3.7. They are historical previews, not automatically refreshed by this build; Word versions and fonts may produce different results.",
         "",
     ]
     for stem, (title, description) in catalog.items():
@@ -61,23 +61,25 @@ def main():
             "",
             description,
             "",
-            "## 실행",
+            "## Run",
             "",
             "```sh",
             "python -m examples." + stem,
             "```",
             "",
-            "[생성 DOCX](../downloads/examples/" + stem + ".docx)",
+            "[Generated DOCX](../downloads/examples/" + stem + ".docx)",
             "",
         ]
         pdf = ROOT / "docs/assets/previews" / (stem + ".pdf")
         if pdf.is_file():
-            content.extend(["[PDF 참조 결과](../assets/previews/" + stem + ".pdf)", ""])
-        content.extend(["## 전체 코드", "", "```python", source.rstrip(), "```", ""])
+            content.extend(["[Reference PDF](../assets/previews/" + stem + ".pdf)", ""])
+        content.extend(
+            ["## Complete source", "", "```python", source.rstrip(), "```", ""]
+        )
         if stem == "21_report":
             content.extend(
                 [
-                    "## 입력 HTML",
+                    "## Input HTML",
                     "",
                     "```html",
                     (ROOT / "examples/assets/report.html").read_text(encoding="utf-8"),
@@ -88,11 +90,11 @@ def main():
         if stem == "23_complex_equations":
             content.extend(
                 [
-                    "## 화면 비교 시 확인할 점",
+                    "## Visual comparison notes",
                     "",
-                    "LibreOffice 7.3 참조 PDF에서 M17 phantom 예약 폭, M19 bevelled 분수, M20 문자열 따옴표는 기대와 다르게 표시됩니다. XML에는 해당 구조·속성·문자가 남아 있지만 화면 동등성 검증을 완료한 항목은 아닙니다. Microsoft Word 직접 확인도 남아 있습니다.",
+                    "In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Direct Microsoft Word checks also remain outstanding.",
                     "",
-                    "[전체 검증 범위와 한계](../11-validation.md)",
+                    "[Validation scope and limitations](../11-validation.md)",
                     "",
                 ]
             )

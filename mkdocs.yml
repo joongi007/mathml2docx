@@ -1,50 +1,50 @@
 site_name: mathml2docx
-site_description: HTML과 MathML을 Word 문서로 변환하는 Python 라이브러리
+site_description: Convert HTML and MathML to editable Word documents with Python
 site_url: https://joongi007.github.io/mathml2docx/
 repo_url: https://github.com/joongi007/mathml2docx
 theme:
   name: mkdocs
-  locale: ko
+  locale: en
 nav:
-  - 소개: index.md
-  - 시작하기: 01-getting-started.md
-  - API와 옵션: 02-api.md
-  - 작업별 사용법: 08-recipes.md
-  - 실행 예제:
-      - 전체 보기: examples/00-index.md
-      - 빠른 시작: examples/01_quickstart.md
-      - 파일·인코딩·다국어: examples/02_files_unicode.md
-      - 기존 문서와 표 셀: examples/03_existing_document.md
-      - 글자 서식과 색상: examples/04_inline_formatting.md
-      - CSS 스타일시트: examples/05_stylesheets.md
-      - Word 스타일과 클래스 매핑: examples/06_word_styles.md
-      - 문단 배치와 페이지 나누기: examples/07_page_layout.md
-      - 표 병합과 중첩: examples/08_tables.md
-      - 목록 번호와 중첩: examples/09_lists.md
-      - 인라인 base64 이미지: examples/10_data_images.md
-      - 로컬 이미지: examples/11_local_images.md
-      - 자산 로더와 이미지 직접 삽입: examples/12_asset_loader.md
-      - MathML 수식: examples/13_mathml.md
-      - LaTeX 수식: examples/14_latex.md
-      - 인라인 마커와 블록 교체: examples/15_markers.md
-      - 북마크 교체: examples/16_bookmarks.md
-      - docxtpl 연동: examples/17_docxtpl.md
-      - 옵션과 설정 복사: examples/18_options.md
-      - 서식 헬퍼: examples/19_style_helpers.md
-      - 링크와 앵커: examples/20_links.md
-      - 복합 보고서: examples/21_report.md
-      - Markdown 연동: examples/22_markdown.md
-      - 복잡한 수식 갤러리: examples/23_complex_equations.md
-      - 수식이 많은 혼합 보고서: examples/24_dense_report.md
-  - AI와 스킬: 03-agents.md
-  - 문서 운영: 04-publishing.md
-  - 개발·호환성·PyPI: 09-development-release.md
-  - 1.0.0 마이그레이션: 05-migration.md
-  - XSL 출처: 06-xsl-provenance.md
-  - 라이선스와 대체 범위: 10-licensing.md
-  - 수식 검증과 한계: 11-validation.md
-  - 다른 도구와 비교: 12-choosing.md
-  - 원본 이슈 검토: 07-upstream-audit.md
+- Introduction: index.md
+- Getting started: 01-getting-started.md
+- API and options: 02-api.md
+- Recipes: 08-recipes.md
+- Examples:
+  - Overview: examples/00-index.md
+  - Quick start: examples/01_quickstart.md
+  - Files, encoding, and Unicode: examples/02_files_unicode.md
+  - Existing documents and cells: examples/03_existing_document.md
+  - Inline formatting and colors: examples/04_inline_formatting.md
+  - CSS stylesheets: examples/05_stylesheets.md
+  - Word styles and class mapping: examples/06_word_styles.md
+  - Paragraph layout and page breaks: examples/07_page_layout.md
+  - Merged and nested tables: examples/08_tables.md
+  - List numbering and nesting: examples/09_lists.md
+  - Inline base64 images: examples/10_data_images.md
+  - Local images: examples/11_local_images.md
+  - Asset loaders and direct images: examples/12_asset_loader.md
+  - MathML equations: examples/13_mathml.md
+  - LaTeX equations: examples/14_latex.md
+  - Inline markers and block replacement: examples/15_markers.md
+  - Bookmark replacement: examples/16_bookmarks.md
+  - docxtpl integration: examples/17_docxtpl.md
+  - Options and settings copies: examples/18_options.md
+  - Style helpers: examples/19_style_helpers.md
+  - Links and anchors: examples/20_links.md
+  - Combined report: examples/21_report.md
+  - Markdown integration: examples/22_markdown.md
+  - Complex equation gallery: examples/23_complex_equations.md
+  - Equation-heavy mixed report: examples/24_dense_report.md
+- Agents and skills: 03-agents.md
+- Documentation deployment: 04-publishing.md
+- Development and publishing: 09-development-release.md
+- Migration to 1.0.0: 05-migration.md
+- XSL provenance: 06-xsl-provenance.md
+- Licensing scope: 10-licensing.md
+- Validation and limitations: 11-validation.md
+- Choosing a tool: 12-choosing.md
+- Upstream issue review: 07-upstream-audit.md
 markdown_extensions:
-  - fenced_code
-  - tables
+- fenced_code
+- tables

@@ -1,18 +1,18 @@
-# 복합 보고서
+# Combined report
 
-스타일시트·이미지·병합 표·중첩 목록·수식·페이지 나누기를 한 문서에 조합합니다.
+Combine stylesheets, images, merged tables, nested lists, equations, and page breaks.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.21_report
 ```
 
-[생성 DOCX](../downloads/examples/21_report.docx)
+[Generated DOCX](../downloads/examples/21_report.docx)
 
-[PDF 참조 결과](../assets/previews/21_report.pdf)
+[Reference PDF](../assets/previews/21_report.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """21 report example."""
@@ -28,7 +28,7 @@ document = parser.parse_html_string(
 save(document, "21_report.docx")
 ```
 
-## 입력 HTML
+## Input HTML
 
 ```html
 <!doctype html>

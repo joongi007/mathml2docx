@@ -1,18 +1,18 @@
-# 글자 서식과 색상
+# Inline formatting and colors
 
-굵기·기울임·밑줄·취소선·위아래 첨자·코드·반투명 색상 합성을 보여 줍니다.
+Apply emphasis, underline, strike, scripts, code, and alpha-composited colors.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.04_inline_formatting
 ```
 
-[생성 DOCX](../downloads/examples/04_inline_formatting.docx)
+[Generated DOCX](../downloads/examples/04_inline_formatting.docx)
 
-[PDF 참조 결과](../assets/previews/04_inline_formatting.pdf)
+[Reference PDF](../assets/previews/04_inline_formatting.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """04 inline formatting example."""

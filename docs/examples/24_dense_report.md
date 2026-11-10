@@ -1,18 +1,18 @@
-# 수식이 많은 혼합 보고서
+# Equation-heavy mixed report
 
-수식 120개와 병합·중첩 표, 목록, 이미지, 링크, 다국어 문장과 페이지 나누기를 조합합니다.
+Combine 120 equation placements with merged/nested tables, lists, images, links, multilingual text, and page breaks.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.24_dense_report
 ```
 
-[생성 DOCX](../downloads/examples/24_dense_report.docx)
+[Generated DOCX](../downloads/examples/24_dense_report.docx)
 
-[PDF 참조 결과](../assets/previews/24_dense_report.pdf)
+[Reference PDF](../assets/previews/24_dense_report.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """A paginated report combining 120 equations and repeated HTML structures."""

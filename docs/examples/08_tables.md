@@ -1,18 +1,18 @@
-# 표 병합과 중첩
+# Merged and nested tables
 
-thead·tbody, rowspan·colspan, 셀 배경, 표 폭·테두리와 중첩 표를 조합합니다.
+Combine table sections, row/column spans, cell backgrounds, width, borders, and nesting.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.08_tables
 ```
 
-[생성 DOCX](../downloads/examples/08_tables.docx)
+[Generated DOCX](../downloads/examples/08_tables.docx)
 
-[PDF 참조 결과](../assets/previews/08_tables.pdf)
+[Reference PDF](../assets/previews/08_tables.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """08 tables example."""

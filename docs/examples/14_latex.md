@@ -1,18 +1,18 @@
-# LaTeX 수식
+# LaTeX equations
 
-선택 의존성으로 합계·분수·제곱근·행렬을 Word 수식으로 변환합니다.
+Use the optional frontend for sums, fractions, roots, and matrices.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.14_latex
 ```
 
-[생성 DOCX](../downloads/examples/14_latex.docx)
+[Generated DOCX](../downloads/examples/14_latex.docx)
 
-[PDF 참조 결과](../assets/previews/14_latex.pdf)
+[Reference PDF](../assets/previews/14_latex.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """14 latex example."""

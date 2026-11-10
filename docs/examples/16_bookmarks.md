@@ -1,18 +1,18 @@
-# 북마크 교체
+# Bookmark replacement
 
-Word 북마크의 범위를 HTML로 교체하고 앞뒤 내용과 북마크를 보존합니다.
+Replace Word bookmark ranges while preserving surrounding content and bookmarks.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.16_bookmarks
 ```
 
-[생성 DOCX](../downloads/examples/16_bookmarks.docx)
+[Generated DOCX](../downloads/examples/16_bookmarks.docx)
 
-[PDF 참조 결과](../assets/previews/16_bookmarks.pdf)
+[Reference PDF](../assets/previews/16_bookmarks.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """16 bookmarks example."""

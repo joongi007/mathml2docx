@@ -1,18 +1,18 @@
-# 파일·인코딩·다국어
+# Files, encoding, and Unicode
 
-UTF-8 입력, 한글·일본어·악센트 문자와 정확한 출력 확장자를 다룹니다.
+Use UTF-8 input, Korean/Japanese/accented text, and exact output extensions.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.02_files_unicode
 ```
 
-[생성 DOCX](../downloads/examples/02_files_unicode.docx)
+[Generated DOCX](../downloads/examples/02_files_unicode.docx)
 
-[PDF 참조 결과](../assets/previews/02_files_unicode.pdf)
+[Reference PDF](../assets/previews/02_files_unicode.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """02 files unicode example."""

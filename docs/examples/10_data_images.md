@@ -1,18 +1,18 @@
-# 인라인 base64 이미지
+# Inline base64 images
 
-data URL 이미지를 글자 사이에 삽입하고 표시 폭을 지정합니다.
+Place data URL images inside a paragraph and set their display width.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.10_data_images
 ```
 
-[생성 DOCX](../downloads/examples/10_data_images.docx)
+[Generated DOCX](../downloads/examples/10_data_images.docx)
 
-[PDF 참조 결과](../assets/previews/10_data_images.pdf)
+[Reference PDF](../assets/previews/10_data_images.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """10 data images example."""

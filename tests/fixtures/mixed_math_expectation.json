@@ -1,0 +1,264 @@
+[
+  {
+    "paragraph": {
+      "style": "Heading1",
+      "content": [
+        {
+          "text": "Equation report"
+        }
+      ]
+    }
+  },
+  {
+    "paragraph": {
+      "style": "Normal",
+      "content": [
+        {
+          "text": "Before ",
+          "bold": true
+        },
+        {
+          "math": [
+            {
+              "fraction": [
+                [
+                  {
+                    "sup": [
+                      [
+                        "x"
+                      ],
+                      [
+                        "2"
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "sqrt": [
+                      "y"
+                    ]
+                  }
+                ]
+              ],
+              "type": "bar"
+            }
+          ]
+        },
+        {
+          "text": " after",
+          "italic": true
+        }
+      ]
+    }
+  },
+  {
+    "paragraph": {
+      "style": "Normal",
+      "content": [
+        {
+          "text": "Red",
+          "color": "FF0000"
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "underlined",
+          "underline": "single"
+        },
+        {
+          "text": "."
+        }
+      ],
+      "alignment": "right"
+    }
+  },
+  {
+    "table": [
+      [
+        {
+          "span": 1,
+          "merge": "restart",
+          "fill": null,
+          "blocks": [
+            {
+              "paragraph": {
+                "style": "Normal",
+                "content": [
+                  {
+                    "text": "Group"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "span": 1,
+          "merge": null,
+          "fill": null,
+          "blocks": [
+            {
+              "paragraph": {
+                "style": "Normal",
+                "content": [
+                  {
+                    "text": "Value "
+                  },
+                  {
+                    "math": [
+                      {
+                        "sub": [
+                          [
+                            "a"
+                          ],
+                          [
+                            "i"
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "span": 1,
+          "merge": "continue",
+          "fill": null,
+          "blocks": []
+        },
+        {
+          "span": 1,
+          "merge": null,
+          "fill": null,
+          "blocks": [
+            {
+              "table": [
+                [
+                  {
+                    "span": 1,
+                    "merge": null,
+                    "fill": null,
+                    "blocks": [
+                      {
+                        "paragraph": {
+                          "style": "Normal",
+                          "content": [
+                            {
+                              "text": "Nested "
+                            },
+                            {
+                              "math": [
+                                {
+                                  "root": [
+                                    [
+                                      "3"
+                                    ],
+                                    [
+                                      "z"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    ]
+  },
+  {
+    "paragraph": {
+      "style": "Normal",
+      "content": [
+        {
+          "text": "First"
+        }
+      ],
+      "list": {
+        "level": 0,
+        "start": 3,
+        "format": "decimal",
+        "suffix": "space"
+      }
+    }
+  },
+  {
+    "paragraph": {
+      "style": "Normal",
+      "content": [
+        {
+          "text": "Second "
+        },
+        {
+          "math": [
+            "q"
+          ]
+        }
+      ],
+      "list": {
+        "level": 0,
+        "start": 3,
+        "format": "decimal",
+        "suffix": "space"
+      }
+    }
+  },
+  {
+    "paragraph": {
+      "style": "Normal",
+      "content": [
+        {
+          "link": "https://example.com/reference",
+          "content": [
+            {
+              "text": "Reference"
+            }
+          ]
+        },
+        {
+          "text": " "
+        },
+        {
+          "image": {
+            "sha256": "a77ce7f452b01c7d04e3da095cef01e7428a86cde0b964208df9f62cb48cb4b5",
+            "width_emu": 228600,
+            "height_emu": 114300
+          }
+        },
+        {
+          "text": " caption"
+        }
+      ]
+    }
+  },
+  {
+    "paragraph": {
+      "style": "Normal",
+      "content": [
+        {
+          "text": "Line"
+        },
+        {
+          "break": "textWrapping"
+        },
+        {
+          "text": "after break"
+        }
+      ]
+    }
+  }
+]

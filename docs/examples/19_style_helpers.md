@@ -1,18 +1,18 @@
-# 서식 헬퍼
+# Style helpers
 
-대상 run과 paragraph에 CSS 문자열을 명시적으로 적용합니다.
+Explicitly apply CSS text to a target run or paragraph.
 
-## 실행
+## Run
 
 ```sh
 python -m examples.19_style_helpers
 ```
 
-[생성 DOCX](../downloads/examples/19_style_helpers.docx)
+[Generated DOCX](../downloads/examples/19_style_helpers.docx)
 
-[PDF 참조 결과](../assets/previews/19_style_helpers.pdf)
+[Reference PDF](../assets/previews/19_style_helpers.pdf)
 
-## 전체 코드
+## Complete source
 
 ```python
 """19 style helpers example."""

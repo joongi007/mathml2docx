@@ -1,0 +1,266 @@
+[
+  {
+    "id": "M01",
+    "format": "mathml",
+    "title": "Quadratic roots",
+    "file": "M01.html"
+  },
+  {
+    "id": "M02",
+    "format": "mathml",
+    "title": "Continued fraction",
+    "file": "M02.html"
+  },
+  {
+    "id": "M03",
+    "format": "mathml",
+    "title": "Binomial coefficient",
+    "file": "M03.html"
+  },
+  {
+    "id": "M04",
+    "format": "mathml",
+    "title": "Nested roots",
+    "file": "M04.html"
+  },
+  {
+    "id": "M05",
+    "format": "mathml",
+    "title": "Indexed tensor",
+    "file": "M05.html"
+  },
+  {
+    "id": "M06",
+    "format": "mathml",
+    "title": "Series with limits",
+    "file": "M06.html"
+  },
+  {
+    "id": "M07",
+    "format": "mathml",
+    "title": "Improper integral",
+    "file": "M07.html"
+  },
+  {
+    "id": "M08",
+    "format": "mathml",
+    "title": "Partial derivatives",
+    "file": "M08.html"
+  },
+  {
+    "id": "M09",
+    "format": "mathml",
+    "title": "Matrix with expressions",
+    "file": "M09.html"
+  },
+  {
+    "id": "M10",
+    "format": "mathml",
+    "title": "Piecewise values",
+    "file": "M10.html"
+  },
+  {
+    "id": "M11",
+    "format": "mathml",
+    "title": "Vector and hat accents",
+    "file": "M11.html"
+  },
+  {
+    "id": "M12",
+    "format": "mathml",
+    "title": "Overline and underline",
+    "file": "M12.html"
+  },
+  {
+    "id": "M13",
+    "format": "mathml",
+    "title": "Limits of a ratio",
+    "file": "M13.html"
+  },
+  {
+    "id": "M14",
+    "format": "mathml",
+    "title": "Probability",
+    "file": "M14.html"
+  },
+  {
+    "id": "M15",
+    "format": "mathml",
+    "title": "Mathematical alphabets",
+    "file": "M15.html"
+  },
+  {
+    "id": "M16",
+    "format": "mathml",
+    "title": "Semantic annotation",
+    "file": "M16.html"
+  },
+  {
+    "id": "M17",
+    "format": "mathml",
+    "title": "Phantom alignment space",
+    "file": "M17.html"
+  },
+  {
+    "id": "M18",
+    "format": "mathml",
+    "title": "Custom separators",
+    "file": "M18.html"
+  },
+  {
+    "id": "M19",
+    "format": "mathml",
+    "title": "Bevelled fraction",
+    "file": "M19.html"
+  },
+  {
+    "id": "M20",
+    "format": "mathml",
+    "title": "Text and quoted string",
+    "file": "M20.html"
+  },
+  {
+    "id": "L01",
+    "format": "latex",
+    "title": "LaTeX 01",
+    "file": "L01.tex"
+  },
+  {
+    "id": "L02",
+    "format": "latex",
+    "title": "LaTeX 02",
+    "file": "L02.tex"
+  },
+  {
+    "id": "L03",
+    "format": "latex",
+    "title": "LaTeX 03",
+    "file": "L03.tex"
+  },
+  {
+    "id": "L04",
+    "format": "latex",
+    "title": "LaTeX 04",
+    "file": "L04.tex"
+  },
+  {
+    "id": "L05",
+    "format": "latex",
+    "title": "LaTeX 05",
+    "file": "L05.tex"
+  },
+  {
+    "id": "L06",
+    "format": "latex",
+    "title": "LaTeX 06",
+    "file": "L06.tex"
+  },
+  {
+    "id": "L07",
+    "format": "latex",
+    "title": "LaTeX 07",
+    "file": "L07.tex"
+  },
+  {
+    "id": "L08",
+    "format": "latex",
+    "title": "LaTeX 08",
+    "file": "L08.tex"
+  },
+  {
+    "id": "L09",
+    "format": "latex",
+    "title": "LaTeX 09",
+    "file": "L09.tex"
+  },
+  {
+    "id": "L10",
+    "format": "latex",
+    "title": "LaTeX 10",
+    "file": "L10.tex"
+  },
+  {
+    "id": "L11",
+    "format": "latex",
+    "title": "LaTeX 11",
+    "file": "L11.tex"
+  },
+  {
+    "id": "L12",
+    "format": "latex",
+    "title": "LaTeX 12",
+    "file": "L12.tex"
+  },
+  {
+    "id": "L13",
+    "format": "latex",
+    "title": "LaTeX 13",
+    "file": "L13.tex"
+  },
+  {
+    "id": "L14",
+    "format": "latex",
+    "title": "LaTeX 14",
+    "file": "L14.tex"
+  },
+  {
+    "id": "L15",
+    "format": "latex",
+    "title": "LaTeX 15",
+    "file": "L15.tex"
+  },
+  {
+    "id": "L16",
+    "format": "latex",
+    "title": "LaTeX 16",
+    "file": "L16.tex"
+  },
+  {
+    "id": "L17",
+    "format": "latex",
+    "title": "LaTeX 17",
+    "file": "L17.tex"
+  },
+  {
+    "id": "L18",
+    "format": "latex",
+    "title": "LaTeX 18",
+    "file": "L18.tex"
+  },
+  {
+    "id": "L19",
+    "format": "latex",
+    "title": "LaTeX 19",
+    "file": "L19.tex"
+  },
+  {
+    "id": "L20",
+    "format": "latex",
+    "title": "LaTeX 20",
+    "file": "L20.tex"
+  },
+  {
+    "id": "L21",
+    "format": "latex",
+    "title": "LaTeX 21",
+    "file": "L21.tex"
+  },
+  {
+    "id": "L22",
+    "format": "latex",
+    "title": "LaTeX 22",
+    "file": "L22.tex"
+  },
+  {
+    "id": "L23",
+    "format": "latex",
+    "title": "LaTeX 23",
+    "file": "L23.tex"
+  },
+  {
+    "id": "L24",
+    "format": "latex",
+    "title": "LaTeX 24",
+    "file": "L24.tex"
+  }
+]
