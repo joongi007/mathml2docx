@@ -2,9 +2,9 @@ name: Python package
 
 on:
   push:
-    branches: [master, compat/python36-uv]
+    branches: [develop, compat/python36-uv]
   pull_request:
-    branches: [master]
+    branches: [master, develop]
   workflow_call:
 
 permissions:
@@ -91,4 +91,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: package-distributions
+          overwrite: true
           path: dist/

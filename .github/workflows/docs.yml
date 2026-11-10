@@ -2,9 +2,9 @@ name: Documentation
 
 on:
   push:
-    branches: [master, compat/python36-uv]
+    branches: [master, develop, compat/python36-uv]
   pull_request:
-    branches: [master]
+    branches: [master, develop]
   workflow_dispatch:
 
 permissions:

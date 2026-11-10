@@ -172,12 +172,14 @@ uv run --no-sync twine check dist/*
 bash scripts/test_legacy.sh
 ```
 
-CI는 Python 3.6~3.14의 각 minor 버전과 Windows·macOS의 변환을 검사합니다.
-PyPI 업로드는 정식 GitHub Release 게시와 검증을 거치며, 최초 Trusted Publisher 및
-`pypi` 환경 승인자 설정이 필요합니다. 일반 푸시로는 패키지를 업로드하지 않습니다.
-후보 GitHub Release는 별도의 `testpypi` 환경을 거쳐 TestPyPI에 게시합니다.
-수동 워크플로 실행은 검사·빌드만 수행합니다.
-[개발·호환성·PyPI 안내](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/09-development-release.md)를 참고하세요.
+기본 개발은 `develop`에서 시작합니다(`feature/*` → develop → master).
+기존 `master`가 main·릴리스 역할입니다. CI는 Python 3.6~3.14와 Windows·macOS를 검사합니다.
+master 푸시는 고유 개발 버전을 TestPyPI에 올린 뒤 실제 파일을 깨끗한 Python 3.8·3.14에
+설치해 검사합니다. 정식 `vX.Y.Z` 태그는 같은 커밋의 TestPyPI 성공·버전·소스·최종 검사를
+통과해야 PyPI 배포를 진행합니다. 두 Trusted Publisher와 GitHub 환경을 먼저 설정해야 합니다.
+GitHub Release 설명을 게시해도 다시 업로드하지 않습니다. 핫픽스는 master에서 분기해
+master와 develop에 모두 반영합니다.
+[브랜치·자동 설치·배포 안내](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/09-development-release.md)를 참고하세요.
 
 ## 라이선스·출처
 

@@ -171,12 +171,15 @@ uv run --no-sync twine check dist/*
 bash scripts/test_legacy.sh
 ```
 
-CI covers each Python minor from 3.6 through 3.14, plus Windows and macOS conversion
-checks. PyPI publishing requires an explicitly published stable GitHub Release and
-passing checks. Configure a Trusted Publisher and reviewers for the `pypi`
-environment before publishing. Ordinary pushes do not upload to PyPI.
-Candidate GitHub Releases publish to TestPyPI through a separately configured
-`testpypi` environment. Manual workflow runs only validate and build.
+Development starts on `develop` (usually `feature/*` → develop → master).
+`master` is the existing main/release branch. CI covers Python 3.6–3.14 and
+Windows/macOS. Master pushes publish unique TestPyPI development versions and
+install the actual remote wheel in clean Python 3.8/3.14 environments.
+A final `vX.Y.Z` tag publishes to PyPI only after the exact commit passes TestPyPI,
+version/source gates, and final tests. Configure the two Trusted Publishers and
+GitHub environments first. GitHub Release notes do not trigger another upload.
+Hotfix branches start from master and merge back into both master and develop.
+See [branching and publishing](https://github.com/joongi007/mathml2docx/blob/master/docs/09-development-release.md).
 
 ## License and provenance
 
