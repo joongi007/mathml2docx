@@ -29,7 +29,8 @@
   language switching, localized search, and machine-readable documentation in both languages.
 - Exclude XSL and generated DOCX files from new package distributions; retain inherited MIT notices.
 - Manage dependencies with uv and verify legacy/modern Python plus Windows/macOS in CI.
-- Prepare candidate TestPyPI and stable PyPI publishing through explicit GitHub Releases and OIDC.
+- Use develop for daily work, master pushes for unique TestPyPI candidates and remote
+  installation checks, and verified final tags for PyPI publishing through OIDC.
 
 Historical XSL redistribution rights and direct Microsoft Word checks remain separate work.
 See the migration, licensing, validation, and publishing documentation before release.

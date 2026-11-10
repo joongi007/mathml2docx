@@ -1,0 +1,90 @@
+name: TestPyPI candidate
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testpypi-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    if: github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/python-app.yml
+
+  build:
+    needs: checks
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.candidate.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: '0.13.7'
+      - name: Assign a unique development version in this checkout only
+        id: candidate
+        env:
+          CANDIDATE_RUN_ID: ${{ github.run_id }}
+          CANDIDATE_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          uv run --no-project --python 3.14 --with 'packaging>=24,<27' python -m scripts.prepare_testpypi --run-id "$CANDIDATE_RUN_ID" --attempt "$CANDIDATE_ATTEMPT" --output "$GITHUB_OUTPUT"
+          uv lock
+      - run: uv build
+      - run: uv run --no-project --python 3.14 python scripts/check_dist.py
+      - run: uv run --no-project --python 3.14 --with 'twine>=6,<7' twine check dist/*
+      - run: uv run --no-project --python 3.14 python scripts/check_wheel_install.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: testpypi-distributions
+          overwrite: true
+          path: dist/
+      - name: Report candidate version
+        env:
+          CANDIDATE_VERSION: ${{ steps.candidate.outputs.version }}
+        run: echo "TestPyPI candidate version is $CANDIDATE_VERSION" >> "$GITHUB_STEP_SUMMARY"
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/mathml2docx
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: testpypi-distributions
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  install:
+    needs: [build, upload]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.14']
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: '0.13.7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: testpypi-distributions
+          path: dist/
+      - name: Install the exact published wheel and test public APIs
+        run: uv run --no-project --python 3.14 python scripts/check_testpypi_install.py --wheel dist/*.whl --python '${{ matrix.python-version }}'

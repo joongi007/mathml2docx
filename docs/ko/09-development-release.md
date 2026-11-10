@@ -13,8 +13,8 @@
 보존 태그에는 과거 XSL이 남아 있을 수 있습니다. 보존이 재배포 권한을 해결하지는 않습니다.
 [XSL 출처 조사](06-xsl-provenance.md)를 참고하세요.
 
-GitHub Release 게시는 병합·푸시와 별개의 작업입니다. 일반 푸시나 태그 생성으로는
-패키지를 업로드하지 않습니다.
+GitHub Release 설명 게시는 패키지 업로드와 별개입니다. develop 푸시는 업로드하지 않고,
+master 푸시는 TestPyPI 후보를, 검증한 정식 버전 태그는 PyPI 배포를 시작합니다.
 
 ## 개발 환경
 
@@ -78,83 +78,138 @@ CI는 3.6~3.14의 각 minor 버전을 검사합니다. 3.6·3.7은 Docker, 최�
 uv의 구형 인터프리터 지원이 Python 3.6 바이너리 자동 다운로드를 뜻하지는 않으므로
 명시한 컨테이너 이미지를 사용합니다.
 
-## CI와 CD 규칙
+## 브랜치 작업 흐름
+
+현재 `master`가 main·릴리스 역할을 합니다. 이름을 `main`으로 바꾸지는 않았습니다.
+일상적인 개발은 `develop`에서 시작합니다.
+
+```sh
+git switch develop
+git pull --ff-only
+git switch -c feature/table-layout
+# 커밋·검증 후 develop 대상 PR을 만듭니다.
+```
+
+안정화 기간이 필요하면 develop에서 `release/1.0.0`을 만드세요. 준비되면 master에
+병합해 TestPyPI를 검증하고, 최종 수정은 develop에도 반영합니다. 작은 릴리스는
+release 브랜치 없이 develop에서 master로 병합해도 됩니다.
+develop·feature의 PR이나 푸시로는 패키지를 업로드하지 않습니다.
 
 | 이벤트 | 검사·빌드 | 업로드 |
 | --- | --- | --- |
-| master 대상 PR | 런타임·품질·문서 검사 | 없음 |
-| master 푸시·병합 | 런타임·품질·문서 검사, Pages 배포 시도 | 패키지 업로드 없음 |
-| 태그만 푸시 | 릴리스 게시 이벤트 없음 | 없음 |
-| 후보 GitHub Release 게시: `v1.0.0rc1`, prerelease 표시 | 전체 검사·버전/소스 조건·배포물 검사·깨끗한 wheel 설치 | `testpypi` 환경을 거쳐 TestPyPI |
-| 정식 GitHub Release 게시: `v1.0.0` | 같은 검사 | `pypi` 환경을 거쳐 PyPI |
+| develop 푸시, develop/master 대상 PR | Python 3.6~3.14·품질·문서·배포물 검사 | 없음 |
+| master 푸시·병합 | 같은 전체 검사, 고유 후보 버전 빌드, 깨끗한 wheel 설치 | TestPyPI 업로드 후 해당 인덱스의 실제 파일 설치 검사 |
+| 검증한 master 커밋의 정식 태그 `v1.0.0` 푸시 | 버전·소스·같은 커밋의 TestPyPI 성공, 전체 검사, 정식 배포물·설치 검사 | `pypi` 환경을 거쳐 PyPI |
+| 기존 태그의 GitHub Release 설명 게시 | 추가 패키지 업로드 없음 | 없음 |
+| master에서 `TestPyPI candidate` 수동 실행 | 동일한 후보 파이프라인 | TestPyPI 업로드·설치 검사 |
 | `Publish to PyPI` 수동 실행 | 검사·빌드 | 없음 |
 
-`check_release.py`는 태그·pyproject 버전·모듈 `__version__`·GitHub prerelease 표시의
-일치를 요구합니다. 릴리스 소스는 `origin/master`에 포함되어야 합니다.
-GitHub 체크박스만 바꿔 RC를 정식 버전으로 게시하거나 정식 버전을 RC로 사용할 수 없습니다.
+master의 패키지 검사는 `TestPyPI candidate`에서 재사용 Python 워크플로를 호출합니다.
+같은 푸시에 독립적인 Python 워크플로를 한 번 더 실행하지 않습니다.
+별도의 Documentation 워크플로는 한·영 문서를 빌드하고 master만 배포합니다.
 
-업로드 전에 wheel·sdist 내용과 메타데이터, Twine 검사, 깨끗한 환경의 실제 wheel 설치와
-API smoke test를 수행합니다. 업로드 job에는 검증한 배포물과 OIDC 권한만 전달하고
-소스 체크아웃은 전달하지 않습니다. TestPyPI와 PyPI는 별도 인덱스이며 자동 승격하지 않습니다.
+## TestPyPI 설치 자동 검증
+
+master에는 `1.0.0`처럼 배포할 정식 버전을 기록합니다. CI의 임시 체크아웃에서만 두 버전을
+`1.0.0.dev<run_id><세 자리 attempt>`로 바꾸고 lockfile을 갱신합니다.
+버전 변경을 저장소에 커밋하지 않습니다. 실행·전체 재실행마다 고유 후보 버전이 생기므로
+같은 버전 재업로드 충돌을 피합니다. 정확한 버전은 워크플로 요약에 표시합니다.
+
+업로드 후 Python 3.8·3.14 job이 TestPyPI의 해당 버전 JSON을 조회합니다.
+파일 이름·SHA-256이 빌드한 wheel과 같아야 하며, 공식 TestPyPI 다운로드 URL의 파일을
+새 venv에 설치합니다. 의존성은 PyPI에서만 설치하고 `--extra-index-url`로 두 인덱스를
+섞지 않습니다. 저장소 밖에서 CSS·MathML·LaTeX·Markdown·마커 교체·저장·재열기를
+검사합니다. 앞선 Docker job은 Python 3.6·3.7 소스·wheel 설치도 검사합니다.
+
+로컬 wheel 검사만 통과해서는 후보 워크플로가 성공하지 않습니다. 업로드와 두 원격 설치
+검사까지 성공해야 합니다. 인덱스 반영 지연에는 짧게 재시도합니다.
+일부 파일 업로드 후 실패했다면 같은 버전을 반복 업로드하기보다 **Re-run all jobs**로
+새 후보 버전을 만드세요.
 
 ## Trusted Publisher 최초 설정
 
-저장소 파일은 PyPI 계정이나 GitHub 승인 규칙을 설정하지 않습니다.
-두 인덱스를 쓸 계획이라면 각각의 기존 프로젝트에 설정하세요.
-
-1. PyPI의 `mathml2docx`에서 **Manage → Publishing → Add a new publisher**를 엽니다.
-2. GitHub publisher에 다음 값을 등록합니다.
+저장소 파일은 계정 소유권·GitHub 보호 규칙·Trusted Publisher를 설정하지 않습니다.
+각 인덱스의 기존 프로젝트에 다음을 등록하세요.
 
 | 인덱스 | Owner | Repository | Workflow filename | Environment |
 | --- | --- | --- | --- | --- |
+| TestPyPI | `joongi007` | `mathml2docx` | `testpypi.yml` | `testpypi` |
 | PyPI | `joongi007` | `mathml2docx` | `publish.yml` | `pypi` |
-| TestPyPI | `joongi007` | `mathml2docx` | `publish.yml` | `testpypi` |
 
-3. 별도 계정·프로젝트인 TestPyPI에도 등록합니다. 같은 이름의 프로젝트가 있다는 사실만으로
-   업로드 권한이 확인되지는 않으므로 소유권을 확인하세요.
-4. GitHub **Settings → Environments**에서 `pypi`와 `testpypi`를 설정합니다.
-5. **Required reviewers**와 배포 가능한 태그를 설정합니다. 개인 프로젝트에서 직접
-   릴리스를 만들고 승인한다면 **Prevent self-review**를 켜지 마세요.
-6. 실제 게시 전에 보호 규칙을 확인하세요. YAML에 환경 이름을 쓰는 것만으로 승인 규칙이
-   생기지는 않습니다.
+1. 각 프로젝트의 **Manage → Publishing → Add a new publisher**에서 위 값을 등록합니다.
+   TestPyPI의 계정·프로젝트 권한은 별도입니다.
+2. GitHub **Settings → Environments → testpypi / pypi**를 설정합니다.
+3. master 후보 배포를 중단 없이 자동화하려면 `testpypi`의 필수 승인자를 두지 않고 master를
+   허용합니다. `pypi`에는 필수 승인자와 정식 태그 배포 제한을 설정하세요. YAML의 환경
+   이름만으로 승인 규칙이 생기지는 않습니다. 개인 프로젝트에서 본인이 승인해야 한다면
+   self-review를 막지 마세요.
+4. 필요에 맞게 master·develop의 PR 검토·필수 CI 검사를 설정합니다.
+   `v*` 태그 생성·삭제 권한은 저장소 ruleset으로 제한할 수 있습니다.
 
-Trusted Publishing은 `id-token: write`를 사용하므로 장기 PyPI API 키나 비밀번호를
-GitHub Secrets에 넣을 필요가 없습니다.
-공식 안내: [Publisher 등록](https://docs.pypi.org/trusted-publishers/adding-a-publisher/),
-[OIDC 배포와 TestPyPI](https://docs.pypi.org/trusted-publishers/using-a-publisher/).
+Trusted Publishing은 OIDC `id-token: write`를 사용하므로 장기 API 키를 Secrets에 넣을
+필요가 없습니다. [Publisher 등록](https://docs.pypi.org/trusted-publishers/adding-a-publisher/)과
+[배포 안내](https://docs.pypi.org/trusted-publishers/using-a-publisher/)를 참고하세요.
+이 설정이 성공하기 전에는 실제 업로드·설치 검증이 완료됐다고 볼 수 없습니다.
 
-## 후보·정식 릴리스 준비
+## 정식 릴리스 태그 만들기
 
-1. Word 직접 검사를 마치고 [마이그레이션](05-migration.md), [검증 한계](11-validation.md),
-   라이선스와 변경 기록을 검토합니다.
-2. 후보 버전은 두 패키지 버전을 `1.0.0rc1`로 맞추고 `uv.lock`을 갱신한 뒤 검증한 커밋을
-   master에 병합합니다. `v1.0.0rc1` GitHub Release를 **Set as a pre-release**로 게시합니다.
-3. 검사를 통과하고 환경 승인을 받으면 TestPyPI에 업로드합니다. 해당 후보 버전을
-   TestPyPI에서 설치하고 동작을 확인합니다.
-4. 정식 버전은 두 버전을 `1.0.0`으로 맞추고 lock·변경 기록을 갱신해 검증 후 병합합니다.
-   `v1.0.0`을 정식 GitHub Release로 게시하고 PyPI 환경을 승인합니다.
-5. 잘못 게시한 버전은 새 버전으로 고칩니다. 같은 버전을 덮어쓰는 방식으로 계획하지 마세요.
+1. Word 직접 검사와 [마이그레이션](05-migration.md)·[검증 한계](11-validation.md)·
+   라이선스·변경 기록 검토를 마칩니다.
+2. 두 버전을 배포할 정식 버전으로 맞추고 `uv.lock`을 갱신합니다. 검증 후 master에 병합합니다.
+3. 해당 master 커밋의 **TestPyPI candidate**에서 업로드·두 설치 job까지 모두 성공할 때까지
+   기다립니다. 다른 커밋·PR·develop의 성공이나 로컬 wheel 검사만으로 대체하지 않습니다.
+4. 검증한 커밋에 태그를 만들고 푸시합니다.
 
-릴리스 전에 수동 워크플로로 검사·빌드를 수행할 수 있습니다. 수동 실행은 업로드나
-계정 설정의 정상 여부를 검증하지 않습니다.
-Pages는 별도입니다. 문서 게시에는 **Settings → Pages → Source: GitHub Actions**가
-필요하며, PyPI 업로드 자체에 Pages가 필요한 것은 아닙니다.
+```sh
+git switch master
+git pull --ff-only
+# 먼저 이 HEAD의 전체 TestPyPI candidate 실행이 성공했는지 확인하세요.
+git tag -a v1.0.0 -m 'Release 1.0.0'
+git push origin v1.0.0
+```
+
+`Publish to PyPI`는 태그·pyproject·`__version__`의 일치, 태그 커밋의 origin/master 포함,
+정확히 같은 SHA의 이 저장소 `testpypi.yml` 실행 성공을 요구합니다.
+전체 검사와 정식 wheel 설치를 다시 확인한 뒤 환경 승인을 거쳐 업로드합니다.
+이후 GitHub Release 설명을 게시해도 다시 업로드하지 않습니다.
+
+워크플로는 검증하지 않은 태그의 배포를 막습니다. 로컬 Git 태그 생성 자체를 막는 것은
+아닙니다. 태그 푸시 권한은 저장소 규칙으로 관리합니다. TestPyPI 성공 전에 태그를 만들면
+배포 검사가 실패하므로 검증 완료 후 재실행하세요. 이미 게시한 버전의 수정에는 새 버전을
+사용합니다. TestPyPI 후보와 정식 PyPI 배포물은 같은 소스 커밋에서 서로 다른 버전
+메타데이터로 빌드하며, 동일 바이너리를 그대로 승격하는 방식은 아닙니다.
+
+## 핫픽스
+
+master는 릴리스 계열로 유지하고 미완료 기능은 develop·release 브랜치에 둡니다.
+핫픽스는 현재 master 릴리스 계열에서 분기합니다.
+
+```sh
+git switch master
+git pull --ff-only
+git switch -c hotfix/1.0.1
+# 수정·회귀 사례를 추가하고 두 버전과 uv.lock을 1.0.1로 갱신합니다.
+# master 대상 PR을 만들고 검사를 거쳐 병합합니다.
+```
+
+병합한 master 커밋의 TestPyPI 업로드·설치 검사 후 해당 커밋에 `v1.0.1`을 만듭니다.
+master를 develop에 다시 병합하거나 back-merge PR을 만들어 수정이 다음 릴리스에도
+남도록 하세요. develop이 이미 `1.1.0`을 목표로 한다면 버전·lock 충돌을 해결하면서
+개발 중인 버전을 유지합니다. 이 흐름으로 미출시 기능과 핫픽스를 분리할 수 있습니다.
 
 ## 배포 전 남은 확인
 
-코드에는 테스트·독립 DOCX 정답·스키마 검사·버전/이벤트 조건·배포물 검사·설치한 wheel
-검사가 준비되어 있습니다. 첫 실제 업로드 전에는 다음을 확인하세요.
+로컬 테스트·독립 DOCX 정답·스키마·한영 문서·배포물 검사·워크플로 조건은 지원 범위를
+검사합니다. 첫 정식 업로드 전에는 다음이 남습니다.
 
 - Word 표시·편집·재저장. M17·M19·M20의 알려진 차이 포함
-- 사용할 인덱스의 소유권과 Trusted Publisher
-- GitHub 환경 승인자·배포 제한
-- 의도적으로 게시한 후보 버전의 TestPyPI 설치
-- 최종 버전·변경 기록과 과거 XSL 포함 사본의 처리 방침
-- 문서·다운로드를 호스팅하려면 Pages 활성화
+- 각 인덱스 소유권·Trusted Publisher·GitHub 환경 설정
+- 실제 TestPyPI 업로드 및 해당 파일 설치 검사 성공
+- 최종 버전·변경 기록과 과거 XSL 포함 사본의 처리
+- 문서 호스팅을 위한 **Settings → Pages → Source: GitHub Actions** 활성화
 
-2026-11-11 공개 조회에서는 PyPI 0.1.3, TestPyPI 0.1.10이 표시됐으며 1.0.0은 없었습니다.
-이는 계정 권한을 확인한 결과가 아닙니다. 이번 유지보수 작업은 Release 게시·패키지 업로드·
-계정 설정 변경·과거 사본 삭제를 수행하지 않습니다.
+Pages와 패키지 배포는 별개입니다. 워크플로 정의만으로 계정 설정이나 실제 원격 설치가
+검증되지는 않습니다. 정식 릴리스 태그는 자동으로 생성하지 않습니다.
 
 ## 검증 기록
 
