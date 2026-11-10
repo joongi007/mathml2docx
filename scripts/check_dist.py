@@ -48,6 +48,13 @@ def main():
                 "tests/fixtures/mixed_math_expectation.json",
                 "tests/docx_oracle.py",
                 "tests/test_docx_oracles.py",
+                "README.ko.md",
+                "mkdocs.ko.yml",
+                "docs/ko/index.md",
+                "docs_theme/main.html",
+                "docs_theme/ko.json",
+                "scripts/docs_hooks.py",
+                "examples/catalog.ko.json",
             ]:
                 if not any(name.endswith("/" + required) for name in names):
                     raise RuntimeError(

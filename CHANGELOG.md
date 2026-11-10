@@ -25,6 +25,8 @@
 
 - Add text equation inputs and independent JSON answers for inspecting saved DOCX structures.
 - Add 24 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
+- Provide English-default and Korean READMEs and documentation, with equivalent-page
+  language switching, localized search, and machine-readable documentation in both languages.
 - Exclude XSL and generated DOCX files from new package distributions; retain inherited MIT notices.
 - Manage dependencies with uv and verify legacy/modern Python plus Windows/macOS in CI.
 - Prepare candidate TestPyPI and stable PyPI publishing through explicit GitHub Releases and OIDC.

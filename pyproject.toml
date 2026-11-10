@@ -64,8 +64,8 @@ docs = { requires-python = ">=3.10" }
 examples = { requires-python = ">=3.10" }
 
 [tool.flit.sdist]
-include = ["CHANGELOG.md", "docs/", "examples/", "scripts/", "skills/", "tests/", ".github/", "mkdocs.yml", "uv.lock", ".python-version"]
-exclude = ["docs/downloads/", "docs/llms.txt", "docs/llms-full.txt", "examples/output/", "**/*.docx", "**/__pycache__/", "**/*.pyc"]
+include = ["CHANGELOG.md", "README.ko.md", "docs/", "docs_theme/", "examples/", "scripts/", "skills/", "tests/", ".github/", "mkdocs.yml", "mkdocs.ko.yml", "uv.lock", ".python-version"]
+exclude = ["docs/downloads/", "docs/llms.txt", "docs/llms-full.txt", "docs/ko/assets/", "docs/ko/downloads/", "docs/ko/llms.txt", "docs/ko/llms-full.txt", "examples/output/", "**/*.docx", "**/__pycache__/", "**/*.pyc"]
 
 [tool.ruff]
 # Ruff's oldest target is 3.7. Python 3.6 is additionally tested on real CPython.

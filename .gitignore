@@ -11,4 +11,8 @@ site/
 docs/downloads/
 docs/llms.txt
 docs/llms-full.txt
+docs/ko/assets/
+docs/ko/downloads/
+docs/ko/llms.txt
+docs/ko/llms-full.txt
 examples/output/

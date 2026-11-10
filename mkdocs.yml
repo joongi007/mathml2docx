@@ -2,14 +2,28 @@ site_name: mathml2docx
 site_description: Convert HTML and MathML to editable Word documents with Python
 site_url: https://joongi007.github.io/mathml2docx/
 repo_url: https://github.com/joongi007/mathml2docx
+edit_uri: edit/master/docs/
 theme:
   name: mkdocs
   locale: en
+  custom_dir: docs_theme
+hooks:
+- scripts/docs_hooks.py
+exclude_docs: /ko/
+extra:
+  language: en
+  language_label: Language
+plugins:
+- search:
+    lang:
+    - en
 nav:
 - Introduction: index.md
-- Getting started: 01-getting-started.md
-- API and options: 02-api.md
-- Recipes: 08-recipes.md
+- User guide:
+  - Getting started: 01-getting-started.md
+  - API and options: 02-api.md
+  - Recipes: 08-recipes.md
+  - Migration to 1.0.0: 05-migration.md
 - Examples:
   - Overview: examples/00-index.md
   - Quick start: examples/01_quickstart.md
@@ -36,15 +50,15 @@ nav:
   - Markdown integration: examples/22_markdown.md
   - Complex equation gallery: examples/23_complex_equations.md
   - Equation-heavy mixed report: examples/24_dense_report.md
-- Agents and skills: 03-agents.md
-- Documentation deployment: 04-publishing.md
-- Development and publishing: 09-development-release.md
-- Migration to 1.0.0: 05-migration.md
-- XSL provenance: 06-xsl-provenance.md
-- Licensing scope: 10-licensing.md
 - Validation and limitations: 11-validation.md
-- Choosing a tool: 12-choosing.md
-- Upstream issue review: 07-upstream-audit.md
+- Project:
+  - Agents and skills: 03-agents.md
+  - Documentation deployment: 04-publishing.md
+  - Development and publishing: 09-development-release.md
+  - XSL provenance: 06-xsl-provenance.md
+  - Licensing scope: 10-licensing.md
+  - Choosing a tool: 12-choosing.md
+  - Upstream issue review: 07-upstream-audit.md
 markdown_extensions:
 - fenced_code
 - tables

@@ -1,0 +1,21 @@
+{
+  "Page not found": "페이지를 찾을 수 없습니다",
+  "Table of Contents": "목차",
+  "Search": "검색",
+  "Close": "닫기",
+  "From here you can search these documents. Enter your search terms below.": "한국어 문서를 검색합니다. 아래에 검색어를 입력하세요.",
+  "Search...": "검색어 입력…",
+  "Type search term here": "검색어를 입력하세요",
+  "No results found": "검색 결과가 없습니다",
+  "Keyboard Shortcuts": "키보드 단축키",
+  "Keys": "키",
+  "Action": "동작",
+  "Open this help": "단축키 도움말 열기",
+  "Next page": "다음 페이지",
+  "Previous page": "이전 페이지",
+  "Previous": "이전",
+  "Next": "다음",
+  "Edit on %(repo_name)s": "%(repo_name)s에서 수정",
+  "Edit": "수정",
+  "Documentation built with %(mkdocs_link)s.": "%(mkdocs_link)s로 만든 문서입니다."
+}

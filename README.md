@@ -1,5 +1,7 @@
 # mathml2docx
 
+[English](https://github.com/joongi007/mathml2docx/blob/master/README.md) · [한국어](https://github.com/joongi007/mathml2docx/blob/master/README.ko.md)
+
 Convert HTML and MathML into **editable Word documents (`.docx`)** from Python.
 Optional frontends also accept LaTeX and Markdown.
 
@@ -144,6 +146,8 @@ Existing output files are refused unless `--force` is supplied.
 - [Documentation deployment](https://github.com/joongi007/mathml2docx/blob/master/docs/04-publishing.md) · [Development and publishing](https://github.com/joongi007/mathml2docx/blob/master/docs/09-development-release.md)
 
 The documentation site is configured for <https://joongi007.github.io/mathml2docx/>.
+English is the default; [한국어 documentation](https://joongi007.github.io/mathml2docx/ko/)
+covers the same guides and examples. The language selector keeps the current page.
 It becomes available after GitHub Pages is enabled and deployment succeeds.
 Generated DOCX files are not committed; run examples locally or use downloads
 from a deployed documentation build.

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  {% for language in languages %}
+  <link rel="alternate" hreflang="{{ language.code }}" href="{{ language.absolute_url }}">
+  {% if language.code == 'en' %}
+  <link rel="alternate" hreflang="x-default" href="{{ language.absolute_url }}">
+  {% endif %}
+  {% endfor %}
+{% endblock %}
+
+{% block repo %}
+  {% for language in languages %}
+  <li class="nav-item">
+    <a class="nav-link{% if language.current %} active{% endif %}"
+       href="{{ language.href }}" lang="{{ language.code }}" hreflang="{{ language.code }}"
+       aria-label="{{ config.extra.language_label }}: {{ language.label }}"
+       {% if language.current %}aria-current="page"{% endif %}>{{ language.label }}</a>
+  </li>
+  {% endfor %}
+  {{ super() }}
+{% endblock %}
