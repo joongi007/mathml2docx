@@ -24,6 +24,18 @@ def bookmark(p, name, first, selected, last):
 
 
 class StylesheetTests(unittest.TestCase):
+    def test_explicit_font_family_covers_east_asian_and_complex_scripts(self):
+        source = """<section style="font-family:'Malgun Gothic'">
+        <p>한글 설명과 English <strong>굵은 한글</strong></p>
+        <table><tr><td>표 안의 한글</td></tr></table>
+        <p><a href="https://example.com">한글 링크</a></p></section>"""
+        document = convert(source)
+        for run in document._element.xpath("//w:r[w:t]"):
+            fonts = run.find(qn("w:rPr")).find(qn("w:rFonts"))
+            for script in ("ascii", "hAnsi", "eastAsia", "cs"):
+                with self.subTest(text=run.text, script=script):
+                    self.assertEqual(fonts.get(qn("w:" + script)), "Malgun Gothic")
+
     def test_specificity_important_inheritance(self):
         doc = convert("""<style>p {color:blue} .notice {color:green !important}
         #message {color:black} p > strong {text-decoration:underline}</style>

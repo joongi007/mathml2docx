@@ -70,6 +70,7 @@ Word에서 직접 확인해야 하는 항목도 검증 문서에 기록했습니
 | 기존 문서나 표 셀에 HTML 추가 | [기존 문서](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/03_existing_document.md) |
 | Word 스타일 적용·HTML 클래스 매핑 | [Word 스타일](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/06_word_styles.md) |
 | 템플릿의 내용 교체 | [마커](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/15_markers.md) · [북마크](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/16_bookmarks.md) |
+| 고급 수식·서식·템플릿을 함께 검토 | [연구 보고서](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/25_research_report.md) · [워크북](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/26_template_workbook.md) · [고급 LaTeX](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/27_advanced_latex.md) |
 | 수식·표·이미지를 함께 사용 | [복잡한 수식](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/23_complex_equations.md) · [혼합 보고서](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/24_dense_report.md) |
 
 ## LaTeX와 Markdown
@@ -100,7 +101,7 @@ mathml2docx notes.md notes.docx --format markdown
 ## 사용법 문서
 
 - [시작하기](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/01-getting-started.md) · [API 참고](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/02-api.md) · [작업별 사용법](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/08-recipes.md)
-- [실행 예제 24개](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/00-index.md): 전체 코드와 로컬 DOCX 생성 명령
+- [실행 예제 27개](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/00-index.md): 전체 코드와 로컬 DOCX 생성 명령
 - 웹 문서: [English](https://joongi007.github.io/mathml2docx/) · [한국어](https://joongi007.github.io/mathml2docx/ko/). Pages 활성화와 배포 성공 후 공개되며, 배포된 문서에서 예제 파일도 내려받을 수 있습니다.
 
 ## 개발 참여

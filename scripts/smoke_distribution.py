@@ -21,6 +21,23 @@ def main():
         "<style>p {color:navy}</style><p>Wheel</p><math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>"
     )
     assert str(doc.paragraphs[0].runs[0].font.color.rgb) == "000080"
+    korean = parser.parse_html_string(
+        '<p style="font-family:Malgun Gothic">한글 and English</p>'
+    )
+    assert korean._element.xpath("//w:rFonts/@w:eastAsia") == ["Malgun Gothic"]
+    matrices = parser.parse_latex(
+        r"\begin{pmatrix}a\end{pmatrix}\begin{pmatrix}b\end{pmatrix}"
+    )
+    assert len(matrices._element.xpath("//m:oMath/m:d")) == 2
+    power = parser.parse_latex(r"(a+b)^2")
+    assert power._element.xpath("//m:sSup/m:e/m:d/m:e/m:r/m:t/text()") == [
+        "a",
+        "+",
+        "b",
+    ]
+    cases = parser.parse_latex(r"f(x)=\begin{cases}x&x>0\\0&x\leq0\end{cases}")
+    assert cases._element.xpath("//m:d/m:dPr/m:begChr/@m:val") == ["{"]
+    assert cases._element.xpath("//m:d/m:dPr/m:endChr/@m:val") == [""]
     with BytesIO() as output:
         doc.save(output)
         output.seek(0)

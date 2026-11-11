@@ -157,6 +157,37 @@ def math_name(node):
     return qualified.localname
 
 
+def matching_fences(children):
+    """Match sibling fence operators in one pass, including adjacent matrices."""
+    pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "|": "|", "‖": "‖"}
+    stack = []
+    matches = {}
+    for index, child in enumerate(children):
+        if math_name(child) != "mo":
+            continue
+        token = (child.text or "").strip()
+        form = child.get("form")
+        explicit = child.get("fence") == "true"
+        if form == "postfix" or token in {")", "]", "}", "⟩"}:
+            # A lone conditional bar in (A|B) is not an unmatched absolute-value
+            # fence. Do not let it consume the enclosing delimiter's close.
+            while stack and stack[-1][1] in {"|", "‖"} and token != stack[-1][1]:
+                stack.pop()
+        if stack and (
+            (token == stack[-1][1] and form != "prefix")
+            or (stack[-1][1] is None and explicit and form == "postfix")
+        ):
+            start, _ = stack.pop()
+            matches[start] = index
+        elif (explicit and form == "prefix") or (token in pairs and form != "postfix"):
+            stack.append(
+                (index, None if explicit and form == "prefix" else pairs.get(token))
+            )
+        elif form == "postfix" or token in pairs.values():
+            stack.clear()
+    return matches
+
+
 def convert(node, inherited=None):
     tag = math_name(node)
     inherited = dict(inherited or {})
@@ -186,67 +217,67 @@ def convert(node, inherited=None):
     ):
         raise UnsupportedMathMLError("mpadded dimensions cannot be preserved")
     if tag in {"math", "mrow", "mstyle", "mpadded"}:
-        # Explicit fence operators (including latex2mathml's \left/\right)
-        # need a delimiter object, rather than isolated operator runs.
-        if tag == "mrow" and len(children) >= 2:
-            first, last = children[0], children[-1]
-            begin, end = (first.text or "").strip(), (last.text or "").strip()
-            paired = (begin, end) in {
-                ("(", ")"),
-                ("[", "]"),
-                ("{", "}"),
-                ("⟨", "⟩"),
-                ("|", "|"),
-                ("‖", "‖"),
-            }
-            explicit = (
-                first.get("fence") == "true"
-                and first.get("form") == "prefix"
-                and last.get("fence") == "true"
-                and last.get("form") == "postfix"
-            )
-            if (
-                len(children) == 2
-                and math_name(first) == "mo"
-                and begin == "{"
-                and first.get("stretchy") != "false"
-                and math_name(last) == "mtable"
-            ):
-                # A cases table has a growing left brace and no right fence.
-                return [fenced(begin, "", parts(last))]
-            if math_name(first) == math_name(last) == "mo" and (explicit or paired):
-                return [
-                    fenced(
-                        begin,
-                        end,
-                        [part for child in children[1:-1] for part in parts(child)],
+        if (
+            tag == "mrow"
+            and len(children) == 2
+            and math_name(children[0]) == "mo"
+            and (children[0].text or "").strip() == "{"
+            and children[0].get("stretchy") != "false"
+            and math_name(children[1]) == "mtable"
+        ):
+            return [fenced("{", "", parts(children[1]))]
+
+        def row_parts(items):
+            ends = matching_fences(items)
+            result = []
+            index = 0
+            while index < len(items):
+                child = items[index]
+                end = ends.get(index)
+                if end is not None and (
+                    child.get("stretchy") != "false"
+                    or (tag == "mrow" and index == 0 and end == len(items) - 1)
+                ):
+                    result.append(
+                        fenced(
+                            (child.text or "").strip(),
+                            (items[end].text or "").strip(),
+                            row_parts(items[index + 1 : end]),
+                        )
                     )
-                ]
-        result = []
-        index = 0
-        while index < len(children):
-            child = children[index]
-            # Encode a limit function and its next explicit argument together.
-            # Otherwise some readers absorb lim into the following fraction's
-            # numerator when translating the independent OMML objects.
-            if (
-                etree.QName(child).localname in {"munder", "mover", "munderover"}
-                and len(child)
-                and "".join(child[0].itertext()).strip() in {"lim", "liminf", "limsup"}
-                and index + 1 < len(children)
-            ):
-                result.append(
-                    element(
-                        "func",
-                        element("fName", *parts(child)),
-                        element("e", *parts(children[index + 1])),
+                    index = end + 1
+                elif (
+                    math_name(child) == "mo"
+                    and (child.text or "").strip() == "{"
+                    and child.get("stretchy") != "false"
+                    and index + 1 < len(items)
+                    and math_name(items[index + 1]) == "mtable"
+                ):
+                    # Older latex2mathml emits f(x)={ followed by a table in
+                    # the same row instead of giving the cases its own mrow.
+                    result.append(fenced("{", "", parts(items[index + 1])))
+                    index += 2
+                elif (
+                    math_name(child) in {"munder", "mover", "munderover"}
+                    and len(child)
+                    and "".join(child[0].itertext()).strip()
+                    in {"lim", "liminf", "limsup"}
+                    and index + 1 < len(items)
+                ):
+                    result.append(
+                        element(
+                            "func",
+                            element("fName", *parts(child)),
+                            element("e", *parts(items[index + 1])),
+                        )
                     )
-                )
-                index += 2
-            else:
-                result.extend(parts(child))
-                index += 1
-        return result
+                    index += 2
+                else:
+                    result.extend(parts(child))
+                    index += 1
+            return result
+
+        return row_parts(children)
     if tag == "semantics":
         if not children:
             return []
@@ -515,6 +546,51 @@ def _latex_operator_policies(source):
     return "".join(output), policies
 
 
+def _group_latex_fence_scripts(root):
+    """Keep (a+b)^2 editable as a grouped base, rather than a scripted ')' run.
+
+    Some latex2mathml releases attach a script to the closing operator alone.
+    This normalization is LaTeX-specific: explicit MathML retains its own bases.
+    """
+    pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "|": "|", "‖": "‖"}
+    for parent in reversed(list(root.iter())):
+        if etree.QName(parent).localname not in {"math", "mrow", "mtd", "mstyle"}:
+            continue
+        stack = []
+        for child in list(parent):
+            name = etree.QName(child).localname
+            scripted = name in {"msub", "msup", "msubsup"} and len(child)
+            operator = child[0] if scripted else child
+            if etree.QName(operator).localname != "mo":
+                continue
+            token = (operator.text or "").strip()
+            form = operator.get("form")
+            explicit = operator.get("fence") == "true"
+            if form == "postfix" or token in {")", "]", "}", "⟩"}:
+                while stack and stack[-1][1] in {"|", "‖"} and token != stack[-1][1]:
+                    stack.pop()
+            if stack and (
+                (token == stack[-1][1] and form != "prefix")
+                or (stack[-1][1] is None and explicit and form == "postfix")
+            ):
+                opening, _ = stack.pop()
+                if scripted:
+                    base = etree.Element("{" + etree.QName(parent).namespace + "}mrow")
+                    start, end = parent.index(opening), parent.index(child)
+                    for item in list(parent)[start:end]:
+                        base.append(item)
+                    base.append(operator)
+                    child.insert(0, base)
+            elif (explicit and form == "prefix") or (
+                token in pairs and form != "postfix"
+            ):
+                stack.append(
+                    (child, None if explicit and form == "prefix" else pairs.get(token))
+                )
+            elif token in pairs.values():
+                stack.clear()
+
+
 def latex_to_omml(source):
     """Convert LaTeX math via the optional MIT-licensed latex2mathml package."""
     # Ruff's oldest target is 3.7; the core package also supports early 3.6.
@@ -532,6 +608,7 @@ def latex_to_omml(source):
         converted.encode("utf-8"),
         etree.XMLParser(resolve_entities=False, no_network=True),
     )
+    _group_latex_fence_scripts(root)
     layouts = {
         "msub": ("msub", "munder"),
         "munder": ("msub", "munder"),

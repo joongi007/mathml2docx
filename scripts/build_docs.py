@@ -25,7 +25,7 @@ COPY = {
         "local": "Run from a repository checkout after installing the dependencies above. Local outputs go to `examples/output/`. Run an individual example with, for instance, `python -m examples.01_quickstart`.",
         "previews": "The reference PDFs were rendered with LibreOffice 7.3.7. They are historical previews, not automatically refreshed by this build; Word versions and fonts may produce different results.",
         "notes": "Visual comparison notes",
-        "limits": "In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Direct Microsoft Word checks also remain outstanding.",
+        "limits": "In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Automated Word 16 open/export/save checks passed; interactive editing and focused visual review remain outstanding.",
         "validation": "Validation scope and limitations",
     },
     "ko": {
@@ -40,7 +40,7 @@ COPY = {
         "local": "위 의존성을 설치한 뒤 저장소 루트에서 실행하세요. 로컬 결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행할 수 있습니다. 실행 코드는 두 언어 문서가 공유합니다.",
         "previews": "참조 PDF는 LibreOffice 7.3.7에서 렌더링한 과거 미리보기이며, 이번 빌드에서 자동으로 갱신하지 않습니다. Word 버전과 글꼴에 따라 결과가 달라질 수 있습니다.",
         "notes": "화면 비교 시 참고할 점",
-        "limits": "LibreOffice 7.3 참조 PDF에서 M17의 phantom 예약 폭, M19의 bevelled 분수, M20의 문자열 따옴표는 의도한 표시와 다릅니다. 구조·속성·문자는 XML에 보존되지만 화면 동등성은 확인하지 못했습니다. Microsoft Word에서 직접 확인하는 작업도 남아 있습니다.",
+        "limits": "LibreOffice 7.3 참조 PDF에서 M17의 phantom 예약 폭, M19의 bevelled 분수, M20의 문자열 따옴표는 의도한 표시와 다릅니다. 구조·속성·문자는 XML에 보존되지만 화면 동등성은 확인하지 못했습니다. Word 16 자동 열기·출력·재저장은 검사했으며, 대화형 편집과 해당 표시의 집중 검토는 남아 있습니다.",
         "validation": "검증 범위와 한계",
     },
 }
@@ -107,6 +107,39 @@ def example_pages(language, docs, catalog):
                     text["limits"],
                     "",
                     f"[{text['validation']}](../11-validation.md)",
+                    "",
+                ]
+            )
+        if stem in {"25_research_report", "26_template_workbook", "27_advanced_latex"}:
+            inputs = json.loads(
+                (ROOT / "examples/assets/advanced-math/catalog.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            kind = "latex" if stem == "27_advanced_latex" else "mathml"
+            content.extend(
+                [
+                    "## "
+                    + (
+                        "Equation input files" if language == "en" else "수식 입력 파일"
+                    ),
+                    "",
+                ]
+            )
+            for entry in inputs:
+                if entry["format"] == kind:
+                    url = (
+                        "https://github.com/joongi007/mathml2docx/blob/master/examples/assets/advanced-math/"
+                        + entry["file"]
+                    )
+                    content.append(f"- [{entry['id']}: {entry['title']}]({url})")
+            label = (
+                "Independent answers (JSON)" if language == "en" else "독립 정답 (JSON)"
+            )
+            content.extend(
+                [
+                    "",
+                    f"[{label}](https://github.com/joongi007/mathml2docx/blob/master/tests/fixtures/advanced_math_expectations.json)",
                     "",
                 ]
             )

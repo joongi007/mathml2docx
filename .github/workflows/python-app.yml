@@ -78,8 +78,9 @@ jobs:
           version: '0.13.7'
       - run: uv sync --locked --all-extras --group docs --group examples
       - run: uv run --no-sync python -m pytest -q
-      - run: uv run --no-sync ruff check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py tests/test_math_validation.py tests/test_docx_oracles.py tests/test_release_metadata.py tests/docx_oracle.py examples scripts
-      - run: uv run --no-sync ruff format --check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py tests/test_math_validation.py tests/test_docx_oracles.py tests/test_release_metadata.py tests/docx_oracle.py examples scripts
+      - run: uv run --no-sync python scripts/check_math_mutations.py
+      - run: uv run --no-sync ruff check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py tests/test_math_validation.py tests/test_advanced_documents.py tests/test_docx_oracles.py tests/test_release_metadata.py tests/docx_oracle.py examples scripts
+      - run: uv run --no-sync ruff format --check mathml2docx tests/test_v1.py tests/test_regressions.py tests/test_existing_fixes.py tests/test_extended.py tests/test_examples.py tests/test_math_validation.py tests/test_advanced_documents.py tests/test_docx_oracles.py tests/test_release_metadata.py tests/docx_oracle.py examples scripts
       - run: uv run --no-sync python scripts/build_docs.py
       - name: Validate mathematical and document structure against official schemas
         run: |

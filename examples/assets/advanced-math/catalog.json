@@ -1,0 +1,110 @@
+[
+  {
+    "id": "A01",
+    "title": "Normalized Gaussian mixture with nested exponent and radical",
+    "format": "mathml",
+    "file": "A01.html"
+  },
+  {
+    "id": "A02",
+    "title": "Full 3 by 3 Hessian with mixed partial derivatives",
+    "format": "mathml",
+    "file": "A02.html"
+  },
+  {
+    "id": "A03",
+    "title": "Nested block matrix and Schur complement",
+    "format": "mathml",
+    "file": "A03.html"
+  },
+  {
+    "id": "A04",
+    "title": "Three-branch robust loss with radicals and a rational transition",
+    "format": "mathml",
+    "file": "A04.html"
+  },
+  {
+    "id": "A05",
+    "title": "Fourier-Galerkin integral with an embedded infinite sum",
+    "format": "mathml",
+    "file": "A05.html"
+  },
+  {
+    "id": "A06",
+    "title": "Six-level continued fraction with indexed radicals",
+    "format": "mathml",
+    "file": "A06.html"
+  },
+  {
+    "id": "A07",
+    "title": "Euler-Lagrange derivative with a normalized gradient",
+    "format": "mathml",
+    "file": "A07.html"
+  },
+  {
+    "id": "A08",
+    "title": "Tensor contraction with two sums and indexed rational factors",
+    "format": "mathml",
+    "file": "A08.html"
+  },
+  {
+    "id": "B01",
+    "title": "Nested rational expression with a cubic radical",
+    "format": "latex",
+    "file": "B01.tex"
+  },
+  {
+    "id": "B02",
+    "title": "Matrix equation with rational and radical coefficients",
+    "format": "latex",
+    "file": "B02.tex"
+  },
+  {
+    "id": "B03",
+    "title": "Piecewise rational function with an exponential tail",
+    "format": "latex",
+    "file": "B03.tex"
+  },
+  {
+    "id": "B04",
+    "title": "Block normal equations for constrained least squares",
+    "format": "latex",
+    "file": "B04.tex"
+  },
+  {
+    "id": "A09",
+    "title": "Determinant of a regularized rational 3 by 3 matrix",
+    "format": "mathml",
+    "file": "A09.html"
+  },
+  {
+    "id": "A10",
+    "title": "Generalized quadratic quotient with matrix and transpose",
+    "format": "mathml",
+    "file": "A10.html"
+  },
+  {
+    "id": "B05",
+    "title": "Double sum with a normalized pairwise distance",
+    "format": "latex",
+    "file": "B05.tex"
+  },
+  {
+    "id": "B06",
+    "title": "Integral with nested rational and cubic radicals",
+    "format": "latex",
+    "file": "B06.tex"
+  },
+  {
+    "id": "B07",
+    "title": "Mixed partial derivative with a grouped derivative argument",
+    "format": "latex",
+    "file": "B07.tex"
+  },
+  {
+    "id": "B08",
+    "title": "Factored rational polynomial with a matrix determinant",
+    "format": "latex",
+    "file": "B08.tex"
+  }
+]

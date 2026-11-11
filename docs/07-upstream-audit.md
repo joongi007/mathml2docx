@@ -89,7 +89,7 @@ of every merge pattern.
 
 - `tests/test_extended.py`: selectors/cascade/inheritance, relative font sizes,
   alpha compositing, markers/bookmarks, image preservation, DOCTYPE, and nested p.
-- `tests/test_examples.py`: execute all 24 examples separately and reopen their
+- `tests/test_examples.py`: execute all 27 examples separately and reopen their
   output to inspect tables, math, links, markers, and templates.
 - `tests/test_docx_oracles.py`: compare saved equation/gallery/report content with
   independently authored text answers; see [validation](11-validation.md).

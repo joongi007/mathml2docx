@@ -1,6 +1,6 @@
 # 작업별 사용법
 
-[실행 예제 24개](examples/00-index.md)는 전체 코드와 생성 DOCX, LibreOffice에서 만든 PDF를 제공합니다.
+[실행 예제 27개](examples/00-index.md)는 전체 코드와 생성 DOCX, LibreOffice에서 만든 PDF를 제공합니다.
 이 페이지는 자주 조합하는 사용법과 저수준 API를 모았습니다.
 
 ## 파일 여러 개를 한꺼번에 변환
@@ -143,3 +143,17 @@ MathmlToDocx().parse_markdown("# 제목\n\n~~삭제~~와 `코드`").save("articl
 ```
 
 표·fenced code·취소선을 포함합니다. 코드 안의 `~~`는 취소선으로 해석하지 않습니다.
+
+## 한글과 글꼴
+
+문서 뷰어에 있는 CJK 글꼴을 지정하세요. 예제 24~27번은 맑은 고딕을 사용합니다.
+HTML 조각에는 `p` 등 실제 요소를 선택하거나 컨테이너의 인라인 스타일을 사용하세요.
+`body` 선택자를 사용하려면 입력에 `<body>` 요소가 있어야 합니다.
+
+```python
+from mathml2docx import convert
+
+convert('<div style="font-family:Malgun Gothic"><p>한글과 English</p></div>', 'korean.docx')
+```
+
+CSS 글꼴은 라틴·동아시아·복합 문자 슬롯에 기록하며, 글꼴 파일은 내장하지 않습니다.

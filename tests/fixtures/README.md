@@ -70,3 +70,16 @@ uv run --no-sync python -m examples.24_dense_report
 Outputs go to `examples/output/`. That directory and `*.docx` are excluded from
 Git and source distributions. Distribution checks enforce this policy. Passing
 structural checks does not replace direct Word display/edit/save inspection.
+
+## Advanced inputs and Word persistence
+
+`advanced_math_expectations.json` contains independent answers for the 18 inputs
+in `examples/assets/advanced-math/`. Tests also generate examples 25–27 and check
+the equations in report, existing-document/cell, and LaTeX contexts.
+
+`check_word.py` optionally reads and resaves with installed Windows Word. Its
+Word-only comparison allows the observed U+2212-to-hyphen-minus spelling change
+in mathematical text and resolves Word style IDs by style names. The converter
+answer checks remain strict. `oMathPara` layout wrappers, proofing marks, and
+derived `lastRenderedPageBreak` markers do not add content. Explicit breaks,
+mathematical roles, ordinary text, and selected formatting remain checked.

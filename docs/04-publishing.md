@@ -16,7 +16,7 @@ has its own navigation and search index. Both provide example source and DOCX
 downloads, sharing the same executable sources and binary originals.
 
 Both builds use MkDocs `--strict`, so documentation warnings fail the build.
-Post-build checks verify the paired pages (currently 37 per language), actual HTML
+Post-build checks verify the paired pages (currently 40 per language), actual HTML
 language, equivalent-page links, search indexes, and downloads. Adding translated
 pages automatically extends the checked page set.
 

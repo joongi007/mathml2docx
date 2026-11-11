@@ -50,6 +50,9 @@ nav:
   - Markdown integration: examples/22_markdown.md
   - Complex equation gallery: examples/23_complex_equations.md
   - Equation-heavy mixed report: examples/24_dense_report.md
+  - Advanced research report: examples/25_research_report.md
+  - Advanced template workbook: examples/26_template_workbook.md
+  - Advanced LaTeX report: examples/27_advanced_latex.md
 - Validation and limitations: 11-validation.md
 - Project:
   - Documentation deployment: 04-publishing.md

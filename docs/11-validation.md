@@ -1,6 +1,6 @@
 # Validation and remaining limitations
 
-Checks were performed on 2026-11-10 and extended on 2026-11-11. This page records
+Checks were performed on 2026-11-10 and extended on 2026-11-11 and 2026-11-12. This page records
 evidence within the supported subset; it does not certify every MathML, LaTeX,
 HTML, or Word-version combination.
 
@@ -79,15 +79,16 @@ and text input files are included in the repository and example ZIP.
   with tables, lists, images, multilingual text, and page breaks. Placements repeat
   the authored cases rather than adding 120 new mathematical examples.
 
-The official schema check covers 284 corpus entries (20 + 24 + 240), the bodies
-of 24 examples, and their 170 embedded equations. An invalid fraction is a negative
+The official schema check covers 302 corpus entries (20 + 24 + 240 + 18), the bodies
+of 27 examples, and their 198 embedded equations. An invalid fraction is a negative
 control. Only unused `mc:Ignorable` metadata is removed from body validation;
 unknown extensions are not silently filtered. This is not certification of every
 part in a complete DOCX package.
 
-Seven targeted converter mutations are detected: numerator/denominator exchange,
+Nine targeted converter mutations are detected: numerator/denominator exchange,
 radical degree/body exchange, subscript/superscript exchange, restoring a binomial
-bar, and losing a mathvariant, delimiter, or accent. Saved-file corruption checks
+bar, losing a mathvariant, delimiter, or accent, collapsing adjacent delimiter
+groups, and detaching a LaTeX grouped power. Saved-file corruption checks
 also detect altered image bytes, links, formatting, lists, merges, and a 2×2 matrix
 changed into a 1×4 matrix with the same flattened cell order.
 
@@ -124,11 +125,69 @@ modified or bundled. Download URLs/hashes are in the preparation script; individ
 schema hashes are printed by the validator. CI repeats the schema checks after
 example generation.
 
+## Advanced inputs and real Word checks (2026-11-12)
+
+[Research report](examples/25_research_report.md), [template workbook](examples/26_template_workbook.md),
+and [advanced LaTeX report](examples/27_advanced_latex.md) add 18 distinct authored
+inputs: 10 MathML and 8 LaTeX. They cover a 3×3 Hessian, matrices inside matrix
+cells, Schur complements, a six-level continued fraction, piecewise expressions,
+double sums, normalized derivatives, and grouped powers. Input files are under
+`examples/assets/advanced-math/`; independent answers are in
+`tests/fixtures/advanced_math_expectations.json`. The workbook reuses the ten
+MathML cases in a different layout; these are not counted as ten new formulas.
+
+These checks found and fixed three issues: adjacent matrix delimiters were grouped
+around the whole expression, powers following a closing parenthesis did not retain
+the complete grouped base, and a prefixed cases table from latex2mathml 3.64 lacked
+its own left delimiter. The expanded suite also passes on actual Python 3.6.
+
+Locally installed Windows Microsoft Word **16.0** opened all **27** generated
+examples read-only, exported PDFs, and saved separate DOCX copies. Their **198**
+equations retained their mathematical roles. Word rewrites Unicode minus U+2212
+to ASCII hyphen-minus when saving; only this math-text spelling is normalized in
+the Word persistence comparison. Converter-to-answer tests retain strict Unicode
+comparison. Other roles, matrix dimensions, delimiters, and script bases remain exact.
+
+For examples 24–27, the saved copies also match selected text/order, emphasis,
+colors, list starts, merged/nested tables, image hashes/dimensions, and link targets.
+Word style IDs are compared through their declared style names. Display-equation
+wrappers, proofing marks and derived `lastRenderedPageBreak` markers carry no
+content in this comparison; explicit HTML line/page breaks remain checked.
+The comparison is a saved-structure check, not an interactive editing or visual
+certification. Selected PDF pages were inspected; exported text boxes in examples
+24–27 remained within page bounds. Not every glyph or page has been reviewed.
+
+Reproduce on Windows or WSL with desktop Word installed (source files stay read-only;
+use a fresh output directory because existing review files are refused):
+
+```sh
+python scripts/check_word.py --input examples/output --output examples/output/word-review
+python scripts/check_word.py --input examples/output --output examples/output/word-mixed-review --examples 24_dense_report 25_research_report 26_template_workbook 27_advanced_latex --check-blocks
+```
+
+Word is optional validation tooling, not a runtime dependency or a CI prerequisite.
+Strict `--check-blocks` may flag equivalent serialization in other documents, such
+as Word dropping an explicit underline `none`; those differences require review.
+
+## Korean and other East Asian text
+
+Examples 24–27 explicitly request **Malgun Gothic** (맑은 고딕). CSS `font-family`
+now sets East Asian and complex-script font slots as well as Latin slots.
+No font is forced when the input omits a font family; template defaults still apply.
+Font files are not embedded or bundled. Other systems/readers need an installed
+font containing the required glyphs, or an available CJK font selected in the example.
+
+The reported square-glyph symptom was not reproduced with the original example 24
+in local Word 16; its stored Korean text was intact. The explicit font mapping is
+now tested in saved DOCX files and the revised Word-rendered output displays Korean.
+The reporting application's font fallback still needs confirmation if squares persist.
+
 ## Outstanding coverage
 
-Direct Microsoft Word desktop/web/macOS opening, editing, resaving, and
-accessibility checks have not been performed. LibreOffice is not a substitute for
-those checks. Fonts/readers may change line height, wrapping, and pagination.
+The Word 16 automation above covers opening, PDF export, and resaving on one
+Windows installation. Interactive editing, accessibility, Word web/macOS, and
+other Word versions remain unverified. LibreOffice is not a substitute for these
+checks. Fonts/readers may change line height, wrapping, and pagination.
 
 In LibreOffice 7.3, the valid `skw` fraction property rendered as a regular fraction.
 Phantom reserved width and ASCII quotes in `ms` also differed from the intended

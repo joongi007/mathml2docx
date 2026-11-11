@@ -14,6 +14,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MUTATIONS = [
     (
+        "detach grouped LaTeX scripts",
+        "    _group_latex_fence_scripts(root)",
+        "    pass  # deliberate mutation",
+    ),
+    (
+        "collapse adjacent fence groups",
+        "end = ends.get(index)",
+        "end = len(items) - 1 if index in ends else None",
+    ),
+    (
         "swap numerator/denominator",
         'group(0, "num"),\n                group(1, "den")',
         'group(1, "num"),\n                group(0, "den")',
@@ -67,6 +77,21 @@ def main():
             str(ROOT / "examples/assets/math-corpus"),
             str(directory / "examples/assets/math-corpus"),
         )
+        for name in ["test_advanced_documents.py", "docx_oracle.py"]:
+            shutil.copy(str(ROOT / "tests" / name), str(directory / "tests" / name))
+        shutil.copy(
+            str(ROOT / "examples/advanced_math.py"),
+            str(directory / "examples/advanced_math.py"),
+        )
+        shutil.copytree(
+            str(ROOT / "examples/assets/advanced-math"),
+            str(directory / "examples/assets/advanced-math"),
+        )
+        (directory / "tests/fixtures").mkdir()
+        shutil.copy(
+            str(ROOT / "tests/fixtures/advanced_math_expectations.json"),
+            str(directory / "tests/fixtures/advanced_math_expectations.json"),
+        )
         # The shading regression is part of MathematicalMeaningTests, too.
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
         command = [
@@ -75,6 +100,7 @@ def main():
             "unittest",
             "tests.test_math_validation.CompositionCorpusTests.test_generated_roles_with_and_without_namespace",
             "tests.test_math_validation.MathematicalMeaningTests",
+            "tests.test_advanced_documents.AdvancedDocumentTests.test_advanced_saved_equations_match_independently_authored_answers",
         ]
         baseline = subprocess.run(
             command,

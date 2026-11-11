@@ -134,7 +134,13 @@ def run_style(run, properties):
     if size is not None:
         run.font.size = size
     if "font-family" in properties:
-        run.font.name = properties["font-family"].split(",")[0].strip("\"' ")
+        family = properties["font-family"].split(",")[0].strip("\"' ")
+        run.font.name = family
+        # python-docx's name setter covers ASCII/high ANSI only. CSS font-family
+        # also applies to East Asian and complex-script text in the same run.
+        fonts = run._r.get_or_add_rPr().get_or_add_rFonts()
+        fonts.set(qn("w:eastAsia"), family)
+        fonts.set(qn("w:cs"), family)
     if properties.get("vertical-align") in {"super", "sub"}:
         run.font.superscript = properties["vertical-align"] == "super"
         run.font.subscript = properties["vertical-align"] == "sub"

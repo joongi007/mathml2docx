@@ -6,7 +6,7 @@ Optional frontends accept LaTeX and Markdown.
 
 - [Getting started](01-getting-started.md): installation, files, and existing documents
 - [API and options](02-api.md): methods, styles, image loading, and conversion limits
-- [Recipes](08-recipes.md) and [24 runnable examples](examples/00-index.md)
+- [Recipes](08-recipes.md) and [27 runnable examples](examples/00-index.md)
 - [Input files and independent DOCX checks](11-validation.md)
 - [Development, compatibility, and PyPI publishing](09-development-release.md)
 - [Documentation deployment](04-publishing.md)

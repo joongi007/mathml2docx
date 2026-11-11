@@ -16,6 +16,8 @@ from lxml import etree
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from examples.advanced_math import CATALOG as ADVANCED  # noqa: E402
+from examples.advanced_math import source as advanced_source  # noqa: E402
 from examples.math_corpus import LATEX, SHOWCASE, generated_cases  # noqa: E402
 from mathml2docx import mathml_to_omml  # noqa: E402
 from mathml2docx.math import latex_to_omml  # noqa: E402
@@ -58,6 +60,10 @@ def main():
         count += 1
     for source in LATEX:
         math_schema.assertValid(latex_to_omml(source))
+        count += 1
+    for entry in ADVANCED:
+        convert = mathml_to_omml if entry["format"] == "mathml" else latex_to_omml
+        math_schema.assertValid(convert(advanced_source(entry)))
         count += 1
     # Negative control: a schema validator must reject denominator before numerator.
     invalid = etree.fromstring(

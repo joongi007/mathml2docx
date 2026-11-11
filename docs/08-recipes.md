@@ -1,6 +1,6 @@
 # Recipes
 
-[The 24 runnable examples](examples/00-index.md) include full source, generated DOCX
+[The 27 runnable examples](examples/00-index.md) include full source, generated DOCX
 downloads in a deployed site, and LibreOffice reference PDFs. This page covers
 common combinations and lower-level APIs.
 
@@ -148,3 +148,18 @@ MathmlToDocx().parse_markdown("# Title\n\n~~Removed~~ and `code`").save("article
 ```
 
 Tables, fenced code, and strikethrough are supported. `~~` inside code is literal.
+
+## Korean and CJK fonts
+
+Select a CJK font available in the reader. Examples 24–27 request Malgun Gothic.
+For HTML fragments, target actual elements such as `p`, or use an inline container
+style. A `body` selector requires a `<body>` element in the input.
+
+```python
+from mathml2docx import convert
+
+convert('<div style="font-family:Malgun Gothic"><p>한글 and English</p></div>', 'korean.docx')
+```
+
+CSS font families populate Latin, East Asian, and complex-script font slots.
+Font files are not embedded.

@@ -70,6 +70,7 @@ for details, including the remaining direct Word checks.
 | Add HTML to an existing document or table cell | [Existing documents](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/03_existing_document.md) |
 | Apply Word styles and map HTML classes | [Word styles](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/06_word_styles.md) |
 | Replace content in a template | [Markers](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/15_markers.md) · [Bookmarks](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/16_bookmarks.md) |
+| Review advanced scientific formulas and templates | [Research report](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/25_research_report.md) · [Workbook](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/26_template_workbook.md) · [Advanced LaTeX](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/27_advanced_latex.md) |
 | Combine equations, tables, and images | [Complex equations](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/23_complex_equations.md) · [Mixed report](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/24_dense_report.md) |
 
 ## LaTeX and Markdown
@@ -102,7 +103,7 @@ explicit loaders.
 ## Documentation
 
 - [Getting started](https://github.com/joongi007/mathml2docx/blob/master/docs/01-getting-started.md) · [API reference](https://github.com/joongi007/mathml2docx/blob/master/docs/02-api.md) · [Recipes](https://github.com/joongi007/mathml2docx/blob/master/docs/08-recipes.md)
-- [All 24 runnable examples](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/00-index.md), with complete source and commands to generate DOCX locally.
+- [All 27 runnable examples](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/00-index.md), with complete source and commands to generate DOCX locally.
 - Web documentation: [English](https://joongi007.github.io/mathml2docx/) · [한국어](https://joongi007.github.io/mathml2docx/ko/). The site becomes available after Pages activation and a successful deployment; deployed builds include example downloads.
 
 ## Contributing

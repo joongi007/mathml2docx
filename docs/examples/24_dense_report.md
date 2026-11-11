@@ -25,7 +25,7 @@ from .math_corpus import SHOWCASE
 from .support import save
 
 blocks = [
-    "<style>h1 {color:navy} td {background-color:#eef2ff} .label {font-weight:bold;color:#244488}</style><h1>Mixed mathematical report</h1>"
+    "<style>body {font-family:'Malgun Gothic';font-size:11pt} h1 {color:navy;font-size:20pt} h2 {font-size:14pt} td {background-color:#eef2ff} .label {font-weight:bold;color:#244488}</style><h1>Mixed mathematical report</h1>"
 ]
 for section in range(5):
     blocks.append(
@@ -42,7 +42,8 @@ for section in range(5):
     if section < 4:
         blocks.append('<p style="page-break-after:always">End of section.</p>')
 document = convert(
-    "".join(blocks), img_src_base_path=str(Path(__file__).resolve().parent / "assets")
+    "<html><body>" + "".join(blocks) + "</body></html>",
+    img_src_base_path=str(Path(__file__).resolve().parent / "assets"),
 )
 save(document, "24_dense_report.docx")
 ```

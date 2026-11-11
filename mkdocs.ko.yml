@@ -52,6 +52,9 @@ nav:
   - Markdown 연동: examples/22_markdown.md
   - 복잡한 수식 갤러리: examples/23_complex_equations.md
   - 수식이 많은 혼합 보고서: examples/24_dense_report.md
+  - 고급 수식 연구 보고서: examples/25_research_report.md
+  - 고급 수식 템플릿 워크북: examples/26_template_workbook.md
+  - 고급 LaTeX 보고서: examples/27_advanced_latex.md
 - 수식 검증과 한계: 11-validation.md
 - 프로젝트:
   - 문서 운영: 04-publishing.md

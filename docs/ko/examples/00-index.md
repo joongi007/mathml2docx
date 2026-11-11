@@ -1,6 +1,6 @@
 # 실행 예제
 
-문서 빌드에서 Python 예제 24개를 실행해 내려받을 DOCX를 생성합니다.
+문서 빌드에서 Python 예제 27개를 실행해 내려받을 DOCX를 생성합니다.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -37,3 +37,6 @@ uv run --no-sync python -m examples.run_all
 - [Markdown 연동](22_markdown.md): 제목·표·목록·코드와 ~~취소선~~을 선택 Markdown 프런트엔드로 변환합니다.
 - [복잡한 수식 갤러리](23_complex_equations.md): 직접 작성한 MathML 20개와 LaTeX 24개로 중첩 분수·행렬·미분·적분·악센트·수학 글꼴을 비교합니다.
 - [수식이 많은 혼합 보고서](24_dense_report.md): 수식 120개와 병합·중첩 표, 목록, 이미지, 링크, 다국어 문장과 페이지 나누기를 조합합니다.
+- [고급 수식 연구 보고서](25_research_report.md): 서로 다른 고급 MathML 수식 10개를 한영 본문·병합/중첩 표·목록·이미지·링크·페이지 나누기와 결합합니다.
+- [고급 수식 템플릿 워크북](26_template_workbook.md): 고급 수식을 기존 문서와 표 셀에 넣고 마커 교체·중첩 표·머리글·바닥글·가로 페이지를 함께 사용합니다.
+- [고급 LaTeX 보고서](27_advanced_latex.md): 서로 다른 LaTeX 수식 8개로 연속 행렬·괄호 지수·조각함수·중첩 근호·합·편미분을 서식이 있는 보고서에서 검사합니다.

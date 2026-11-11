@@ -239,6 +239,16 @@ class DocxOracle:
         for node in container:
             if node.tag == "{" + NS["m"] + "}oMath":
                 result.append({"math": math_sequence(node)})
+            elif node.tag == "{" + NS["m"] + "}oMathPara":
+                # Word may wrap a display equation during a save. The wrapper
+                # adds layout properties; each contained equation stays distinct.
+                for child in node:
+                    if child.tag == "{" + NS["m"] + "}oMath":
+                        result.append({"math": math_sequence(child)})
+                    elif child.tag != "{" + NS["m"] + "}oMathParaPr":
+                        raise AssertionError(
+                            "Unrecognized display math content: " + child.tag
+                        )
             elif node.tag == "{" + NS["w"] + "}hyperlink":
                 rid = node.get("{" + NS["r"] + "}id")
                 target = (
@@ -300,12 +310,16 @@ class DocxOracle:
                                     }
                                 }
                             )
-                    elif content.tag != "{" + NS["w"] + "}rPr":
+                    elif content.tag not in {
+                        "{" + NS["w"] + "}rPr",
+                        "{" + NS["w"] + "}lastRenderedPageBreak",
+                    }:
                         raise AssertionError("Unrecognized run content: " + content.tag)
             elif node.tag not in {
                 "{" + NS["w"] + "}pPr",
                 "{" + NS["w"] + "}bookmarkStart",
                 "{" + NS["w"] + "}bookmarkEnd",
+                "{" + NS["w"] + "}proofErr",
             }:
                 raise AssertionError("Unrecognized inline content: " + node.tag)
         return result

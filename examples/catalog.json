@@ -94,5 +94,17 @@
   "24_dense_report": [
     "Equation-heavy mixed report",
     "Combine 120 equation placements with merged/nested tables, lists, images, links, multilingual text, and page breaks."
+  ],
+  "25_research_report": [
+    "Advanced research report",
+    "Ten distinct advanced MathML formulas with Korean/English prose, merged and nested tables, lists, images, links, and page breaks."
+  ],
+  "26_template_workbook": [
+    "Advanced template workbook",
+    "Put the same advanced formulas into existing documents and table cells; combine marker replacement, nested tables, headers, footers, and a landscape page."
+  ],
+  "27_advanced_latex": [
+    "Advanced LaTeX report",
+    "Eight distinct advanced LaTeX inputs exercise adjacent matrices, grouped powers, piecewise expressions, nested radicals, sums, and derivatives inside a formatted report."
   ]
 }

@@ -43,6 +43,9 @@ def main():
                 raise RuntimeError("Generated DOCX must not be bundled: " + str(source))
             for required in [
                 "examples/assets/math-corpus/catalog.json",
+                "examples/assets/advanced-math/catalog.json",
+                "tests/fixtures/advanced_math_expectations.json",
+                "tests/test_advanced_documents.py",
                 "examples/assets/mixed_math.html",
                 "tests/fixtures/math_expectations.json",
                 "tests/fixtures/mixed_math_expectation.json",

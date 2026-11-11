@@ -9,6 +9,9 @@
 - Add optional LaTeX/Markdown frontends, a CLI, public Word style constants, class mappings,
   and marker/bookmark replacement in existing documents.
 - Preserve the Python 3.6 core runtime. LaTeX requires Python 3.6.2+ and latex2mathml 3.64+.
+- Preserve adjacent matrix fence groups, complete parenthesized script bases, and
+  prefixed cases on older LaTeX backends. Apply explicit CSS fonts to East Asian
+  and complex-script slots as well as Latin text.
 - Correct fraction types, mathematical alphabets, accents, delimiters, cases tables,
   limit grouping, per-operator layout directives, inline spacing, and OOXML property order.
 
@@ -24,9 +27,11 @@
 ### Validation and packaging
 
 - Add text equation inputs and independent JSON answers for inspecting saved DOCX structures.
-- Add 24 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
+- Add 27 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
 - Provide English-default and Korean READMEs and documentation, with equivalent-page
   language switching and localized search.
+- Add 18 advanced authored inputs with independent answers and optional Windows
+  Word open/PDF-export/resave checks (198 equations across 27 examples).
 - Exclude XSL and generated DOCX files from new package distributions; retain inherited MIT notices.
 - Manage dependencies with uv and verify legacy/modern Python plus Windows/macOS in CI.
 - Use develop for daily work, master pushes for unique TestPyPI candidates and remote

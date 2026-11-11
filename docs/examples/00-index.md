@@ -1,6 +1,6 @@
 # Runnable examples
 
-The documentation build executes 24 Python examples to generate DOCX downloads.
+The documentation build executes 27 Python examples to generate DOCX downloads.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -37,3 +37,6 @@ The reference PDFs were rendered with LibreOffice 7.3.7. They are historical pre
 - [Markdown integration](22_markdown.md): Convert headings, tables, lists, code, and strikethrough with the optional frontend.
 - [Complex equation gallery](23_complex_equations.md): Compare 20 authored MathML and 24 LaTeX examples covering nested fractions, matrices, calculus, accents, and math alphabets.
 - [Equation-heavy mixed report](24_dense_report.md): Combine 120 equation placements with merged/nested tables, lists, images, links, multilingual text, and page breaks.
+- [Advanced research report](25_research_report.md): Ten distinct advanced MathML formulas with Korean/English prose, merged and nested tables, lists, images, links, and page breaks.
+- [Advanced template workbook](26_template_workbook.md): Put the same advanced formulas into existing documents and table cells; combine marker replacement, nested tables, headers, footers, and a landscape page.
+- [Advanced LaTeX report](27_advanced_latex.md): Eight distinct advanced LaTeX inputs exercise adjacent matrices, grouped powers, piecewise expressions, nested radicals, sums, and derivatives inside a formatted report.
