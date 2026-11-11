@@ -6,7 +6,6 @@ LaTeX와 Markdown은 선택 의존성을 설치해 사용할 수 있습니다.
 
 - [시작하기](01-getting-started.md): 설치, 문자열·파일 변환, 기존 문서에 추가
 - [API와 옵션](02-api.md): 공개 메서드, 스타일, 이미지와 변환 제약
-- [AI와 스킬](03-agents.md): 설치 가능한 스킬과 기계가 읽는 문서
 - [문서 운영](04-publishing.md): 로컬 빌드와 GitHub Pages 배포
 
 이 프로젝트는 [html2docx](https://github.com/pqzx/html2docx)에서 파생되었습니다.

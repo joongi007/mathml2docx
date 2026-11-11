@@ -1,4 +1,4 @@
-"""Build English/Korean documentation and package agent-facing downloads."""
+"""Build English/Korean documentation and runnable example downloads."""
 
 import json
 import os
@@ -27,8 +27,6 @@ COPY = {
         "notes": "Visual comparison notes",
         "limits": "In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Direct Microsoft Word checks also remain outstanding.",
         "validation": "Validation scope and limitations",
-        "summary": "HTML and MathML to Word documentation.",
-        "docs": "Docs",
     },
     "ko": {
         "overview": "실행 예제",
@@ -44,8 +42,6 @@ COPY = {
         "notes": "화면 비교 시 참고할 점",
         "limits": "LibreOffice 7.3 참조 PDF에서 M17의 phantom 예약 폭, M19의 bevelled 분수, M20의 문자열 따옴표는 의도한 표시와 다릅니다. 구조·속성·문자는 XML에 보존되지만 화면 동등성은 확인하지 못했습니다. Microsoft Word에서 직접 확인하는 작업도 남아 있습니다.",
         "validation": "검증 범위와 한계",
-        "summary": "HTML과 MathML을 Word로 변환하는 한국어 문서입니다.",
-        "docs": "문서",
     },
 }
 
@@ -119,25 +115,9 @@ def example_pages(language, docs, catalog):
     (gallery / "00-index.md").write_text("\n".join(overview) + "\n", encoding="utf-8")
 
 
-def machine_docs(language, docs):
+def source_pages(docs):
     pages = [docs / "index.md"] + sorted(docs.glob("[0-9][0-9]-*.md"))
     pages += sorted((docs / "examples").glob("*.md"))
-    text = COPY[language]
-    index = ["# mathml2docx", "", "> " + text["summary"], "", "## " + text["docs"], ""]
-    full = []
-    for path in pages:
-        content = path.read_text(encoding="utf-8")
-        title = content.splitlines()[0].removeprefix("# ")
-        suffix = (
-            ""
-            if path.stem == "index"
-            else path.relative_to(docs).with_suffix("").as_posix() + "/"
-        )
-        url = SITE_URL + ("ko/" if language == "ko" else "") + suffix
-        index.append(f"- [{title}]({url})")
-        full.append(f"Source: {url}\n\n{content}")
-    (docs / "llms.txt").write_text("\n".join(index) + "\n", encoding="utf-8")
-    (docs / "llms-full.txt").write_text("\n\n---\n\n".join(full), encoding="utf-8")
     return {path.relative_to(docs).as_posix() for path in pages}
 
 
@@ -196,12 +176,13 @@ def validate_site(pages):
                     raise ValueError(f"Incorrect alternate URL: {html}")
             if parser.alternates["x-default"] != SITE_URL + suffix:
                 raise ValueError(f"Incorrect default URL: {html}")
-        search = json.loads((site / prefix / "search/search_index.json").read_text())
+        search = json.loads(
+            (site / prefix / "search/search_index.json").read_text(encoding="utf-8")
+        )
         if language not in search["config"]["lang"] or not search["docs"]:
             raise ValueError(f"Missing {language} search index")
-        for download in ("mathml2docx-skill.zip", "mathml2docx-examples.zip"):
-            if not (site / prefix / "downloads" / download).is_file():
-                raise ValueError(f"Missing {language} download: {download}")
+        if not (site / prefix / "downloads/mathml2docx-examples.zip").is_file():
+            raise ValueError(f"Missing {language} example download")
     print(
         f"Verified {len(pages)} paired pages: locale, language links, search, downloads."
     )
@@ -210,16 +191,10 @@ def validate_site(pages):
 def main():
     docs = ROOT / "docs"
     assets = docs / "downloads"
-    assets.mkdir(exist_ok=True)
-    skill = ROOT / "skills" / "mathml2docx"
-    with ZipFile(assets / "mathml2docx-skill.zip", "w", ZIP_DEFLATED) as archive:
-        for path in sorted(skill.rglob("*")):
-            if path.is_file() and "__pycache__" not in path.parts:
-                archive.write(path, path.relative_to(skill.parent))
-        archive.write(ROOT / "LICENSE", "mathml2docx/LICENSE")
-        archive.write(
-            ROOT / "THIRD_PARTY_NOTICES.md", "mathml2docx/THIRD_PARTY_NOTICES.md"
-        )
+    # Downloads are generated outputs; start fresh to avoid publishing stale files.
+    if assets.exists():
+        shutil.rmtree(assets)
+    assets.mkdir()
 
     catalogs = {
         language: json.loads((ROOT / "examples" / name).read_text(encoding="utf-8"))
@@ -251,7 +226,7 @@ def main():
     for language in ("en", "ko"):
         local_docs = docs if language == "en" else docs / "ko"
         example_pages(language, local_docs, catalogs[language])
-        page_sets[language] = machine_docs(language, local_docs)
+        page_sets[language] = source_pages(local_docs)
     if page_sets["en"] != page_sets["ko"]:
         raise ValueError(
             f"Missing translated pages: {page_sets['en'] ^ page_sets['ko']}"
@@ -259,7 +234,10 @@ def main():
     # Generated copies keep download URLs local to each locale, including local previews.
     # Only one copy of the source binaries is tracked and included in source archives.
     for directory in ("assets", "downloads"):
-        shutil.copytree(docs / directory, docs / "ko" / directory, dirs_exist_ok=True)
+        target = docs / "ko" / directory
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.copytree(docs / directory, target)
     for config in ("mkdocs.yml", "mkdocs.ko.yml"):
         subprocess.run(
             [

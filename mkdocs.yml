@@ -52,7 +52,6 @@ nav:
   - Equation-heavy mixed report: examples/24_dense_report.md
 - Validation and limitations: 11-validation.md
 - Project:
-  - Agents and skills: 03-agents.md
   - Documentation deployment: 04-publishing.md
   - Development and publishing: 09-development-release.md
   - XSL provenance: 06-xsl-provenance.md

@@ -12,11 +12,11 @@ python -m http.server 8000 --directory site
 
 Open `http://localhost:8000` for English or `http://localhost:8000/ko/` for Korean.
 The language selector opens the equivalent page in the other language. Each locale
-has its own navigation, search index, `llms.txt`, and `llms-full.txt`. Both provide
-skill and example downloads, sharing the same executable sources and binary originals.
+has its own navigation and search index. Both provide example source and DOCX
+downloads, sharing the same executable sources and binary originals.
 
 Both builds use MkDocs `--strict`, so documentation warnings fail the build.
-Post-build checks verify the paired pages (currently 38 per language), actual HTML
+Post-build checks verify the paired pages (currently 37 per language), actual HTML
 language, equivalent-page links, search indexes, and downloads. Adding translated
 pages automatically extends the checked page set.
 
@@ -44,9 +44,7 @@ settings and the deployment result.
 
 Update both languages with API changes and add new pages to both navigation menus.
 Edit example descriptions in the catalogs; direct changes to generated pages are
-overwritten on the next build. Example code lives in `examples/`, and the agent
-skill source is `skills/mathml2docx/`. The skill is in English; machine-readable
-documentation is generated from each locale's own text.
+overwritten on the next build. Example code lives in `examples/`.
 
 Do not commit `site/`, generated DOCX files, or the build copies under
 `docs/ko/assets/` and `docs/ko/downloads/`. Reference PDF originals are stored once
