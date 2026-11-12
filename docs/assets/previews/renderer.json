@@ -146,7 +146,12 @@
       "file": "29_math_fallbacks.docx",
       "equations": 0,
       "pdf": "29_math_fallbacks.pdf"
+    },
+    {
+      "file": "30_mathml_fidelity.docx",
+      "equations": 18,
+      "pdf": "30_mathml_fidelity.pdf"
     }
   ],
-  "scope": "Formula import and PDF math probe; visual fidelity is application dependent. Native Word enclosures in example 28 may be omitted by Writer; example 29 demonstrates explicit image recovery."
+  "scope": "Formula counts checked against independent input expectations before import, then LibreOffice formula import and actual PDF math probe. Visual fidelity is application dependent. Native Word enclosures in example 28 may be omitted by Writer; example 29 demonstrates explicit image recovery."
 }

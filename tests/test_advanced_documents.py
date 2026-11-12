@@ -165,7 +165,20 @@ class AdvancedDocumentTests(unittest.TestCase):
                     "style": "Normal",
                     "content": [
                         {"text": "Before"},
-                        {"math": [{"fraction": [["a"], ["b"]], "type": "bar"}]},
+                        {
+                            "math": [{"fraction": [["a"], ["b"]], "type": "bar"}],
+                            "math_runs": [
+                                {
+                                    "text": "ab",
+                                    "format": {},
+                                    "variant": {
+                                        "script": "roman",
+                                        "style": "i",
+                                        "normal": False,
+                                    },
+                                }
+                            ],
+                        },
                         {"break": "textWrapping"},
                         {"text": "After"},
                     ],
@@ -195,7 +208,12 @@ class AdvancedDocumentTests(unittest.TestCase):
             with ZipFile(saved, "w", ZIP_DEFLATED) as archive:
                 for name, data in original.files.items():
                     archive.writestr(name, data)
-            self.assertEqual(DocxOracle(saved).blocks(), expected)
+            displayed = DocxOracle(saved).blocks()
+            self.assertNotEqual(displayed, expected)
+            expected[0]["paragraph"]["content"][1].update(
+                display=True, math_alignment="centerGroup"
+            )
+            self.assertEqual(displayed, expected)
 
     def test_explicit_asymmetric_fences_and_conditional_bars_keep_their_scope(self):
         fence = {"fence": {"open": "(", "close": "]", "body": ["a,b"]}}

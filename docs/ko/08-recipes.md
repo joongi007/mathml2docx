@@ -1,6 +1,6 @@
 # 작업별 사용법
 
-[실행 예제 29개](examples/00-index.md)는 전체 코드와 생성 DOCX, LibreOffice에서 만든 PDF를 제공합니다.
+[실행 예제 30개](examples/00-index.md)는 전체 코드와 생성 DOCX, LibreOffice에서 만든 PDF를 제공합니다.
 이 페이지는 자주 조합하는 사용법과 저수준 API를 모았습니다.
 
 ## 파일 여러 개를 한꺼번에 변환

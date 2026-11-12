@@ -43,6 +43,35 @@
               ],
               "type": "bar"
             }
+          ],
+          "math_runs": [
+            {
+              "text": "x",
+              "format": {},
+              "variant": {
+                "script": "roman",
+                "style": "i",
+                "normal": false
+              }
+            },
+            {
+              "text": "2",
+              "format": {},
+              "variant": {
+                "script": "roman",
+                "style": "p",
+                "normal": false
+              }
+            },
+            {
+              "text": "y",
+              "format": {},
+              "variant": {
+                "script": "roman",
+                "style": "i",
+                "normal": false
+              }
+            }
           ]
         },
         {
@@ -118,6 +147,17 @@
                           ]
                         ]
                       }
+                    ],
+                    "math_runs": [
+                      {
+                        "text": "ai",
+                        "format": {},
+                        "variant": {
+                          "script": "roman",
+                          "style": "i",
+                          "normal": false
+                        }
+                      }
                     ]
                   }
                 ]
@@ -165,6 +205,26 @@
                                     ]
                                   ]
                                 }
+                              ],
+                              "math_runs": [
+                                {
+                                  "text": "3",
+                                  "format": {},
+                                  "variant": {
+                                    "script": "roman",
+                                    "style": "p",
+                                    "normal": false
+                                  }
+                                },
+                                {
+                                  "text": "z",
+                                  "format": {},
+                                  "variant": {
+                                    "script": "roman",
+                                    "style": "i",
+                                    "normal": false
+                                  }
+                                }
                               ]
                             }
                           ]
@@ -206,6 +266,17 @@
         {
           "math": [
             "q"
+          ],
+          "math_runs": [
+            {
+              "text": "q",
+              "format": {},
+              "variant": {
+                "script": "roman",
+                "style": "i",
+                "normal": false
+              }
+            }
           ]
         }
       ],

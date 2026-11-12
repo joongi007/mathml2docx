@@ -156,6 +156,10 @@
         [
           "MathML recovery and image fallbacks",
           "examples/29_math_fallbacks.md"
+        ],
+        [
+          "MathML notation and fidelity",
+          "examples/30_mathml_fidelity.md"
         ]
       ]
     },
@@ -355,6 +359,10 @@
         [
           "MathML 복구와 이미지 대체",
           "examples/29_math_fallbacks.md"
+        ],
+        [
+          "MathML 표기와 문서 보존",
+          "examples/30_mathml_fidelity.md"
         ]
       ]
     },

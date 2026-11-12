@@ -3,10 +3,23 @@
 from copy import deepcopy
 
 from bs4 import BeautifulSoup
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
 from .h2d import BLOCKS
+
+_PROPERTIES = {
+    qn(name)
+    for name in (
+        "w:pPr",
+        "w:rPr",
+        "w:sdtPr",
+        "w:sdtEndPr",
+        "w:customXmlPr",
+        "w:smartTagPr",
+    )
+}
 
 
 def _text(node):
@@ -26,7 +39,7 @@ def _split(node, offset):
         for child in list(part):
             part.remove(child)
     for child in node:
-        if child.tag in {qn("w:pPr"), qn("w:rPr")}:
+        if child.tag in _PROPERTIES:
             left.append(deepcopy(child))
             right.append(deepcopy(child))
             continue
@@ -44,15 +57,114 @@ def _split(node, offset):
     return left, right
 
 
+def _split_at(node, boundary):
+    """Copy the content before and after an actual XML boundary node.
+
+    Text offsets cannot distinguish a bookmark from adjacent equations, pictures,
+    or breaks. Keep the ancestors on either side so their formatting and hyperlink
+    attributes survive, even when the boundary is nested inside a wrapper.
+    """
+    left, right = deepcopy(node), deepcopy(node)
+    for part in (left, right):
+        for child in list(part):
+            part.remove(child)
+    found = False
+    for child in node:
+        if child.tag in _PROPERTIES:
+            left.append(deepcopy(child))
+            right.append(deepcopy(child))
+        elif child is boundary:
+            found = True
+        elif not found and any(value is boundary for value in child.iter()):
+            before, after = _split_at(child, boundary)
+            left.append(before)
+            right.append(after)
+            found = True
+        elif found:
+            right.append(deepcopy(child))
+        else:
+            left.append(deepcopy(child))
+    if not found:
+        raise ValueError("Bookmark endpoint not found")
+    return left, right
+
+
+def _has_content(node):
+    """Whether a split subtree contains content beyond formatting scaffolding."""
+    if node.tag in _PROPERTIES:
+        return False
+    if node.tag == qn("w:t"):
+        return bool(node.text)
+    if node.tag in {qn("m:oMath"), qn("m:oMathPara")}:
+        return True
+    if len(node):
+        return any(_has_content(child) for child in node)
+    # Empty wrappers result from splitting styled runs and hyperlinks. Other
+    # leaves include visible breaks/tabs and positional objects such as bookmarks.
+    return node.tag not in {qn("w:p"), qn("w:r"), qn("w:hyperlink")}
+
+
+def _inline_blocks(blocks):
+    return all(
+        block.tag == qn("w:p") and not any(True for _ in block.iter(qn("m:oMathPara")))
+        for block in blocks
+    )
+
+
+def _append_content(target, paragraph):
+    for child in list(paragraph):
+        if child.tag != qn("w:pPr"):
+            target.append(child)
+
+
+def _replace_nodes(first, originals, replacements):
+    parent = first.getparent()
+    for node in replacements:
+        first.addprevious(node)
+    for node in originals:
+        parent.remove(node)
+    if parent.tag == qn("w:tc") and (not len(parent) or parent[-1].tag != qn("w:p")):
+        parent.append(OxmlElement("w:p"))
+
+
 def _render(converter, document, html):
     body = document._element.body
     original = list(body)
+    part = document.part
+    relationships = dict(part.rels)
+    related_parts = dict(part.related_parts)
+    numbering = next(
+        (rel.target_part for rel in part.rels.values() if rel.reltype == RT.NUMBERING),
+        None,
+    )
+    numbering_xml = deepcopy(numbering.element) if numbering is not None else None
+    cached = set(part.__dict__)
     try:
         converter.add_html_to_document(html, document)
         result = [node for node in body if node not in original]
         for node in result:
             body.remove(node)
         return result
+    except Exception:
+        # Partial rendering can allocate list definitions and image/hyperlink
+        # relationships before a later equation fails. Roll those allocations
+        # back along with the temporary body nodes, leaving a reusable template.
+        part.rels.clear()
+        part.rels.update(relationships)
+        part.related_parts.clear()
+        part.related_parts.update(related_parts)
+        if numbering_xml is not None:
+            numbering.element.clear()
+            numbering.element.attrib.update(numbering_xml.attrib)
+            numbering.element.text = numbering_xml.text
+            numbering.element.tail = numbering_xml.tail
+            numbering.element.extend(deepcopy(list(numbering_xml)))
+        elif numbering is None:
+            # python-docx versions use either name for their lazy property cache.
+            for key in ("numbering_part", "_numbering_part"):
+                if key not in cached:
+                    part.__dict__.pop(key, None)
+        raise
     finally:
         for node in list(body):
             if node not in original:
@@ -85,46 +197,25 @@ def _inline(html):
 def _splice(paragraph, start, end, blocks, inline):
     left, rest = _split(paragraph, start)
     removed, right = _split(rest, end - start)
-    # A marker can span runs interleaved with pictures or equations. Text
-    # replacement must not silently delete those zero-width XML objects.
+    # A text marker can span equations, pictures, breaks, or bookmarks. Remove
+    # only its text, retaining those objects in their original relative order.
+    for value in list(removed.iter(qn("w:t"))):
+        value.getparent().remove(value)
     for child in list(removed):
-        if child.tag == qn("w:pPr"):
-            continue
-        if child.xpath(".//w:drawing|.//w:object") or child.tag in {
-            qn("m:oMath"),
-            qn("m:oMathPara"),
-        }:
-            preserved = deepcopy(child)
-            for value in list(preserved.iter(qn("w:t"))):
-                value.getparent().remove(value)
-            left.append(preserved)
-    if inline and all(
-        b.tag == qn("w:p") and not b.xpath("./m:oMathPara") for b in blocks
-    ):
+        if _has_content(child):
+            left.append(child)
+    if inline and _inline_blocks(blocks):
         for block in blocks:
-            for child in list(block):
-                if child.tag != qn("w:pPr"):
-                    left.append(child)
-        for child in list(right):
-            if child.tag != qn("w:pPr"):
-                left.append(child)
+            _append_content(left, block)
+        _append_content(left, right)
         replacement = [left]
     else:
-        replacement = (
-            [left]
-            if _text(left) or left.xpath(".//w:drawing|.//w:bookmarkStart")
-            else []
-        ) + blocks
-        if _text(right) or right.xpath(".//w:drawing|.//w:bookmarkEnd"):
+        replacement = ([left] if _has_content(left) else []) + blocks
+        if _has_content(right):
             replacement.append(right)
         if not replacement:
             replacement = [left]
-    for node in replacement:
-        paragraph.addprevious(node)
-    parent = paragraph.getparent()
-    parent.remove(paragraph)
-    if parent.tag == qn("w:tc") and parent[-1].tag != qn("w:p"):
-        parent.append(OxmlElement("w:p"))
+    _replace_nodes(paragraph, [paragraph], replacement)
 
 
 def replace_html(converter, document, marker, html):
@@ -173,50 +264,26 @@ def replace_bookmark(converter, document, name, html):
             "Bookmark endpoints must belong to the same document container"
         )
     nodes = list(first.getparent())
-    if nodes.index(first) > nodes.index(last):
+    if nodes.index(first) > nodes.index(last) or (
+        first is last
+        and list(first.iter()).index(start) > list(first.iter()).index(end)
+    ):
         raise ValueError("Bookmark end precedes start")
-
-    def offset(p, target):
-        total = 0
-        for node in p.iter():
-            if node is target:
-                return total
-            if node.tag == qn("w:t"):
-                total += len(node.text or "")
-        raise ValueError("Bookmark endpoint not found")
-
-    a, b = offset(first, start), offset(last, end)
     blocks = _render(converter, document, html)
     # Keep the bookmark around the inserted material, including multi-block HTML.
-    left, _ = _split(first, a)
-    _, right = _split(last, b)
-    for tree in (left, right):
-        for node in list(tree.iter()):
-            if node.tag in {qn("w:bookmarkStart"), qn("w:bookmarkEnd")} and node.get(
-                qn("w:id")
-            ) == start.get(qn("w:id")):
-                node.getparent().remove(node)
-    if (
-        first is last
-        and _inline(html)
-        and all(x.tag == qn("w:p") and not x.xpath("./m:oMathPara") for x in blocks)
-    ):
+    left, _ = _split_at(first, start)
+    _, right = _split_at(last, end)
+    if first is last and _inline(html) and _inline_blocks(blocks):
         left.append(deepcopy(start))
         for block in blocks:
-            for child in list(block):
-                if child.tag != qn("w:pPr"):
-                    left.append(child)
+            _append_content(left, block)
         left.append(deepcopy(end))
-        for child in list(right):
-            if child.tag != qn("w:pPr"):
-                left.append(child)
+        _append_content(left, right)
         replacements = [left]
     else:
         left.append(deepcopy(start))
         right.insert(1 if right.find(qn("w:pPr")) is not None else 0, deepcopy(end))
         replacements = [left] + blocks + [right]
-    for node in replacements:
-        first.addprevious(node)
-    parent = first.getparent()
-    for node in nodes[nodes.index(first) : nodes.index(last) + 1]:
-        parent.remove(node)
+    _replace_nodes(
+        first, nodes[nodes.index(first) : nodes.index(last) + 1], replacements
+    )

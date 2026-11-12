@@ -14,6 +14,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MUTATIONS = [
     (
+        "lose encoded mathvariant",
+        "effective = unicode_mathvariant(character) or variant",
+        "effective = variant",
+    ),
+    (
+        "lose root style defaults",
+        'if tag in {"math", "mstyle"}:',
+        'if tag == "mstyle":',
+    ),
+    (
+        "trim nonbreaking token spaces",
+        'return XML_SPACE_RUN.sub(" ", value.strip(XML_WHITESPACE))',
+        'return " ".join(value.split())',
+    ),
+    (
+        "skip structural prevalidation",
+        "    validate_structure(root)",
+        "    pass  # deliberate missing validation",
+    ),
+    (
+        "drop math CSS properties",
+        '            apply_math_style(part, inherited["_css"])',
+        "            pass  # deliberate missing style",
+    ),
+    (
         "swap isotope atomic and mass numbers",
         'script(pre[0], "sub"),\n                    script(pre[1], "sup")',
         'script(pre[1], "sub"),\n                    script(pre[0], "sup")',
@@ -35,24 +60,24 @@ MUTATIONS = [
     ),
     (
         "swap numerator/denominator",
-        'group(0, "num"),\n                group(1, "den")',
-        'group(1, "num"),\n                group(0, "den")',
+        'group(0, "num", script=True),\n                group(1, "den", script=True)',
+        'group(1, "num", script=True),\n                group(0, "den", script=True)',
     ),
     (
         "swap root degree/radicand",
-        'group(1, "deg"), group(0, "e")',
-        'group(0, "deg"), group(1, "e")',
+        'group(1, "deg", script=True), group(0, "e")',
+        'group(0, "deg", script=True), group(1, "e")',
     ),
     (
         "swap subscript/superscript",
-        'group(1, "sub"), group(2, "sup")',
-        'group(2, "sub"), group(1, "sup")',
+        'group(1, "sub", script=True),\n                    group(2, "sup", script=True)',
+        'group(2, "sub", script=True),\n                    group(1, "sup", script=True)',
     ),
     ("restore unwanted binomial bar", 'if thickness != "medium"', "if False"),
     (
         "lose explicit mathvariant",
-        "inherited[name] = node.get(name)",
-        'inherited[name] = "normal" if name == "mathvariant" else node.get(name)',
+        'result["mathvariant"] = node.get("mathvariant")',
+        'result["mathvariant"] = "normal"',
     ),
     (
         "lose delimiter character",
@@ -90,6 +115,8 @@ def main():
         for name in [
             "test_advanced_documents.py",
             "test_math_policies.py",
+            "test_math_audit_regressions.py",
+            "test_math_html_regressions.py",
             "docx_oracle.py",
         ]:
             shutil.copy(str(ROOT / "tests" / name), str(directory / "tests" / name))
@@ -111,11 +138,14 @@ def main():
         command = [
             sys.executable,
             "-m",
-            "unittest",
-            "tests.test_math_validation.CompositionCorpusTests.test_generated_roles_with_and_without_namespace",
-            "tests.test_math_validation.MathematicalMeaningTests",
-            "tests.test_advanced_documents.AdvancedDocumentTests.test_advanced_saved_equations_match_independently_authored_answers",
-            "tests.test_math_policies.MathPolicyTests.test_independent_saved_roles_for_chemistry_and_enclosures",
+            "pytest",
+            "-q",
+            "tests/test_math_validation.py::CompositionCorpusTests::test_generated_roles_with_and_without_namespace",
+            "tests/test_math_validation.py::MathematicalMeaningTests",
+            "tests/test_advanced_documents.py::AdvancedDocumentTests::test_advanced_saved_equations_match_independently_authored_answers",
+            "tests/test_math_policies.py::MathPolicyTests::test_independent_saved_roles_for_chemistry_and_enclosures",
+            "tests/test_math_audit_regressions.py",
+            "tests/test_math_html_regressions.py",
         ]
         baseline = subprocess.run(
             command,
@@ -143,7 +173,10 @@ def main():
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
             )
-            if result.returncode == 0 or "FAIL:" not in result.stdout:
+            if result.returncode != 1 or not any(
+                marker in result.stdout
+                for marker in ("AssertionError", "DID NOT RAISE", "FAIL:")
+            ):
                 raise RuntimeError(
                     "Mutation was not caught by an assertion: "
                     + name

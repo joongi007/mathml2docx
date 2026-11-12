@@ -96,3 +96,20 @@ python -m mathml2docx input.tex equation.docx --format latex
 `display="block"`과 지원하는 CSS display 값도 적용합니다. 미지원 수식은 기본적으로
 예외를 발생시키며 `unsupported_math='text'`, `mathml_fallback`, `mathml_preprocessor`로
 명시적인 대체 처리를 선택할 수 있습니다. [수식 처리](03-mathematics.md)를 참고하세요.
+
+## 수식 정확성과 입력 복구
+
+`math`·`mstyle`의 속성 기본값을 일관되게 적용합니다. compact 스타일의 movable limits는
+분수·첨자 내부를 포함해 옆 첨자로 배치하므로 이전의 위아래 배치에 의존하던 입력은
+모양이 달라질 수 있습니다. 의도에 맞는 `display="block"` 또는 `displaystyle`를 지정하세요.
+
+복합 악센트·병합/비정형 수식 표·RTL 배치를 기본 변환으로 보존할 수 없으면 명시적인
+대체 처리를 사용합니다. `mo`의 강제 줄바꿈도 `mspace`와 같은 정책을 따릅니다.
+미지원 형제가 먼저 나오더라도 잘못된 인자 수는 대체 전에 검출합니다.
+
+LaTeX 백엔드 등이 이미 출력한 Unicode 수학 알파벳에도 대응하는 OMML 서체를 지정합니다.
+Word가 해당 문자를 일반 문자로 풀어 저장할 때 이중 획·굵은 글꼴 등이 사라지지 않도록 합니다.
+
+토큰 공백과 문자열 이스케이프는 MathML 규칙을 따르며, XML 인코딩 선언이 이미 디코딩한
+Unicode를 바꾸지 않습니다. 수식 CSS와 XML 경계를 따르는 템플릿 치환으로 수식·서식·주변
+내용을 함께 보존합니다.

@@ -8,8 +8,8 @@ Document applications can still differ in fonts, equation layout and pagination.
 
 | Check | Purpose | Limit |
 | --- | --- | --- |
-| Independent equation answers | Fractions, script roles, radicals, matrices, delimiters and content | Does not compare pixels or interactive editing |
-| Saved-document checks | Text order, emphasis, tables, merges, numbering, images and links | Covers selected properties |
+| Independent equation answers | Fractions, script roles, radicals, matrices, delimiters, variants and content | Does not compare pixels or interactive editing |
+| Saved-document checks | Text order, math styles/layout, tables, merges, numbering, images and link targets | Covers selected properties |
 | Official ECMA-376 schemas | Valid OMML and body element ordering | Valid structure is not proof of intended meaning |
 | Mutation checks | Verify that representative equation damage is detected | Not every possible defect |
 | Word automation | Open, export and resave example documents with Word 16 | One installed Word environment |
@@ -23,7 +23,16 @@ partial derivatives, scientific prose, tables and images.
 
 Inputs live in `examples/assets/math-corpus/` and `examples/assets/advanced-math/`.
 Independent answers live in `tests/fixtures/`; generated DOCX is not kept in Git.
-[Examples](examples/00-index.md) provide files suitable for manual review.
+[Examples](examples/00-index.md) provide files suitable for manual review. The 30
+runnable examples contain 224 native equations;
+[example 30](examples/30_mathml_fidelity.md) adds independent answers for inherited
+defaults, compact/display limits, accents, CSS and template replacement.
+
+Before rendering, each generated document must match the separately authored
+`tests/fixtures/example_equation_counts.json` manifest. Counting only the formulas
+already present in a DOCX would miss equations lost during conversion. Checks
+also distinguish inline/display layout, effective math variants, nonbreaking
+spaces, colors, sizes and fonts. Internal hyperlinks must have bookmark targets.
 
 ## Fonts
 
@@ -80,6 +89,12 @@ reserved dimensions may differ. A skewed fraction can appear as a stacked fracti
 in LibreOffice. Compare the equation gallery with its input when these features
 matter. Structure checks do not certify visual equivalence.
 
+LibreOffice can misparse quoted `ms` strings in Word-target documents, omit part
+of the text or show a formula error. This is a content-loss limitation, not just
+font substitution. `math_target='libreoffice'` rejects native `ms` before output;
+select explicit source or image recovery for those strings. Example 30's PDF
+illustrates this viewer limitation; its DOCX is intended for Word.
+
 ## Reproduce the automated checks
 
 ```sh
@@ -103,5 +118,12 @@ python scripts/check_word.py --input examples/output --output examples/output/wo
 The tool opens inputs read-only and saves separate copies. Word may rewrite the
 Unicode minus U+2212 as ASCII hyphen-minus; only the Word resave comparison accepts
 that spelling difference inside math sequences. Independent converter answers
-remain Unicode-exact. Word web, macOS Word, accessibility and interactive equation
+remain Unicode-exact. The report separates raw serialization changes from
+effective differences. It resolves inherited formatting and known font-name
+aliases, then checks every originally declared math color, size, font and
+bold/italic property. Math script-family metadata on symbols without mathematical alphabet
+variants (such as `+` and `∈`) can be omitted from the effective comparison.
+Letters, digits and mapped symbols such as `∂` and `∇` remain exact. Word can wrap an isolated math-only paragraph as display math;
+that change is listed separately. An explicitly displayed equation becoming
+inline still fails. Word web, macOS Word, accessibility and interactive equation
 editing require separate review in the target environment.

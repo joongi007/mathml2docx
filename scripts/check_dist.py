@@ -42,11 +42,19 @@ def main():
             if any(name.lower().endswith(".docx") for name in names):
                 raise RuntimeError("Generated DOCX must not be bundled: " + str(source))
             for required in [
+                "examples/30_mathml_fidelity.py",
                 "examples/assets/math-corpus/catalog.json",
                 "examples/assets/advanced-math/catalog.json",
                 "tests/fixtures/advanced_math_expectations.json",
                 "tests/test_advanced_documents.py",
                 "tests/test_math_policies.py",
+                "tests/test_math_audit_regressions.py",
+                "tests/test_math_html_regressions.py",
+                "tests/test_math_template_regressions.py",
+                "tests/test_math_oracle_regressions.py",
+                "tests/test_word_comparison_regressions.py",
+                "tests/fixtures/example_equation_counts.json",
+                "tests/fixtures/mathml_fidelity_expectations.json",
                 "scripts/render_examples.py",
                 "examples/assets/mixed_math.html",
                 "tests/fixtures/math_expectations.json",

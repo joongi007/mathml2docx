@@ -60,6 +60,12 @@ an explicitly selected external directory. Those schemas retain their original
 terms and are not included in this repository's source or binary distributions.
 They are validation inputs, not conversion templates or runtime dependencies.
 
+MathML behavior and compact operator dictionaries follow the public
+[W3C MathML 3 specification](https://www.w3.org/TR/MathML3/) (including Appendix C).
+Character variant handling follows the Unicode mathematical alphanumeric
+characters. These standards inform the native implementation; no Office XSL
+conversion templates are included or executed.
+
 ## XSL removal
 
 Older source revisions included `mathml2docx/MML2OMML.XSL` without a recorded grant

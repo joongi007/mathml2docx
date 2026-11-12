@@ -19,6 +19,14 @@
 - Support selected enclosures and chemical prescripts, and explicit preprocessing, source/image
   fallback, and LibreOffice compatibility policies. Avoid empty postscript placeholders.
 
+- Honor scoped MathML defaults, compact movable limits, XML whitespace, Unicode input
+  declarations and quoted strings. Validate known arities before unsupported-element recovery.
+- Recover explicitly for unsupported merged/ragged matrices, forced breaks, RTL and complex
+  accents instead of silently changing their meaning. Preserve supported MathML CSS and anchors.
+- Preserve equations around template markers and within bookmark replacement boundaries.
+- Preserve linked display equations and mixed math styles through Word resaving; align
+  native OMML properties with Unicode mathematical alphabets already emitted by LaTeX backends.
+
 ### Compatibility changes
 
 - URL images and external stylesheets require explicit loaders; local images are limited
@@ -32,15 +40,17 @@
 
 - Replace MkDocs with a custom Markdown/Jinja static site, responsive navigation, bilingual
   search and code copying. Rewrite reader-facing guides and remove session status reports.
+- Check independently authored source equation counts before rendering, compare math run
+  styles and explicit display layout, and detect lost internal-link targets.
 - Verify LibreOffice formula import counts and a real PDF math probe; fail when Math is missing.
   Add a dedicated CI job and explicit Writer/Math/font setup instructions.
 
 - Add text equation inputs and independent JSON answers for inspecting saved DOCX structures.
-- Add 29 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
+- Add 30 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
 - Provide English-default and Korean READMEs and documentation, with equivalent-page
   language switching and localized search.
 - Add 18 advanced authored inputs with independent answers and optional Windows
-  Word open/PDF-export/resave checks (198 equations across 27 examples).
+  Word open/PDF-export/resave checks, with 224 native equations across 30 examples.
 - Exclude XSL and generated DOCX files from new package distributions; retain inherited MIT notices.
 - Manage dependencies with uv and verify legacy/modern Python plus Windows/macOS in CI.
 - Use develop for daily work, master pushes for unique TestPyPI candidates and remote

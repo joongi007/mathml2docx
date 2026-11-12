@@ -17,6 +17,8 @@ parser.convert('''<p>값 <math><mi>x</mi></math>의 단위는 미터입니다.</
 <math display="block"><mfrac><mn>1</mn><mn>2</mn></mfrac></math>''', 'layout.docx')
 ```
 
+인라인 수식에서 `movablelimits`를 사용하는 `munder`·`mover`·`munderover` 연산자는 compact 스타일의 옆 첨자로 배치합니다. display 스타일에서는 위아래 한계 위치를 유지합니다. 분수·첨자·표 셀은 각각의 수식 스타일을 설정하며 `displaystyle`로 재정의할 수 있습니다.
+
 표시 수식은 별도 문단과 OMML의 `oMathPara` 요소를 사용합니다.
 `display`를 생략하면 block이 되던 입력의 배치를 유지하려면
 `MathmlToDocx(default_math_display='block')`을 사용하세요.
@@ -33,7 +35,7 @@ parser.convert('''<p>값 <math><mi>x</mi></math>의 단위는 미터입니다.</
 | MathML | 지원 범위 |
 | --- | --- |
 | 토큰·행·분수·근호·일반 첨자 | 기본 OMML 수식 |
-| 악센트·위아래 선·극한·직사각 행렬 | 문서화된 속성 범위에서 기본 OMML 수식 |
+| 악센트·위아래 선·극한·직사각 행렬 | 문서화된 범위의 OMML 수식. 복합·숨김 악센트와 행렬 셀 병합은 명시적인 대체 처리 필요 |
 | `mmultiscripts` | 뒤 첨자 한 쌍·앞 첨자 한 쌍, 없는 첨자는 `none` |
 | `menclose` | `box`, `top`, `bottom`, `left`, `right`, `actuarial`, `radical`, 가로·세로·대각 취소선 |
 | `menclose`의 원·둥근 상자·나눗셈·화살표 테두리 | 명시적인 대체 처리 필요 |
@@ -123,3 +125,39 @@ parser.convert('<math data-display="separate"><mi>x</mi></math>', 'normalized.do
 
 정규화할 때는 수식의 의미를 보존하세요. 알 수 없는 태그를 제거하면 표기가 사라질 수 있습니다.
 화면 표현을 유지해야 한다면 이미지 렌더러를 연결하세요.
+
+## 속성 기본값·토큰·구조 검사
+
+`math`·`mstyle`의 지원하는 표시 속성 기본값은 하위 요소에 적용하고, 해당 요소의 직접
+지정을 우선합니다. 분수선 생략(`linethickness="0"`), 괄호·구분자, 문자열 따옴표,
+악센트와 movable limits 등이 포함됩니다. 중첩 스타일은 그 컨테이너 안에만 적용합니다.
+
+토큰 공백은 MathML의 XML 공백 규칙을 따릅니다. `mtext`를 포함해 코드의 들여쓰기는
+정규화하고, NBSP·narrow NBSP는 보존합니다. `ms` 안의 따옴표는 눈에 보이도록 이스케이프합니다.
+Unicode 문자열 입력은 이미 디코딩된 문자를 기준으로 처리하므로, XML 선언의 과거 인코딩
+이름 때문에 문자를 다시 인코딩하거나 깨뜨리지 않습니다.
+
+미지원 입력을 대체하기 전에 표시 트리 전체의 알려진 인자 수를 검사합니다. annotation의
+내용은 불투명한 메타데이터로 다룹니다. 잘못된 구조는 형제 순서와 관계없이 `ValueError`가
+되고, 기본 변환으로 표현할 수 없는 유효한 구조는 `UnsupportedMathMLError`로 대체 처리할 수
+있습니다. 병합·비정형 MathML 표, `mo`·`mspace` 강제 줄바꿈, RTL 배치, 복합·숨김 악센트도
+배치를 버리는 대신 이 정책을 사용합니다.
+
+## 서식·링크·템플릿
+
+지원하는 MathML CSS 색상·크기·글꼴은 HTML에서 상속하며 수식의 글자와 복합 기호에 적용합니다.
+하위 요소의 스타일을 우선하고, Word의 수학 글꼴 변형과 CSS 글꼴은 구분해 유지합니다.
+Unicode 수학 알파벳은 토큰과 `mtext`·`ms` 문자열에서 원래 서체를 보존하며
+일반 텍스트·공백·수학 문자를 섞을 수 있습니다.
+상대 크기, MathML의 `mathsize`·`mathcolor`, `currentColor`, RGBA도 지원 범위에서 계산합니다.
+`styles=False`이면 CSS 변환을 적용하지 않습니다.
+
+수식 ID는 내부 링크를 위한 Word 북마크가 됩니다. 표시 수식을 포함한 링크는 여러 문단에
+걸쳐 범위를 유지합니다. 링크가 있는 표시 수식도 Word 재저장 후 편집 가능한 구조,
+혼합 수학 서체와 표시 배치를 보존합니다. 표 셀의 표시 수식도 문단 경계를 유지합니다. 마커를 치환할 때 주변
+수식을 보존하며, 북마크는 수식만 있는 경우도 선택한 XML 범위를 교체합니다.
+[수식·템플릿 전체 예제](examples/30_mathml_fidelity.md)를 참고하세요.
+
+HTML 입력에는 접두사가 없는 `math`와 표시 태그를 사용합니다. 접두사가 있는 XML은
+`parse_mathml()`로 전달하세요. HTML 경로에 넣으면 일반 텍스트로 평탄화하는 대신 입력
+형식 오류를 발생시킵니다.

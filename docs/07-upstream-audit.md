@@ -85,14 +85,15 @@ of every merge pattern.
 
 - `tests/test_extended.py`: selectors/cascade/inheritance, relative font sizes,
   alpha compositing, markers/bookmarks, image preservation, DOCTYPE, and nested p.
-- `tests/test_examples.py`: execute all 27 examples separately and reopen their
+- `tests/test_examples.py`: execute all 30 examples separately and reopen their
   output to inspect tables, math, links, markers, and templates.
 - `tests/test_docx_oracles.py`: compare saved equation/gallery/report content with
   independently authored text answers; see [validation](11-validation.md).
 - [Runnable examples](examples/00-index.md): full source, input, generated DOCX
   downloads in the deployed site, and LibreOffice reference PDFs.
-- LibreOffice 7.3.7.2 rendered the 24 examples and available original issue inputs.
+- LibreOffice 24.2.7.2 imported all 224 equations in the 30 examples; earlier checks
+  also rendered available original issue inputs.
   Selected report/list/equation screens were inspected. Known visual differences
-  and outstanding Word checks are documented in [the limitations](11-validation.md).
+  and application-specific checks are documented in [the limitations](11-validation.md).
 - Qt font size alone is not inferred as heading semantics. Explicit headings and
   CSS formatting are preserved; Markdown is available as an optional frontend.

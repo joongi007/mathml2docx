@@ -100,3 +100,23 @@ block placement, use `MathmlToDocx(default_math_display='block')`. Explicit
 `display="block"` and supported CSS display values are honored. Unsupported
 formulas still raise by default; `unsupported_math='text'`, `mathml_fallback`
 and `mathml_preprocessor` provide explicit recovery. See [equation handling](03-mathematics.md).
+
+## Mathematical correctness and input recovery
+
+MathML defaults now apply consistently from `math` and `mstyle`. Compact-style
+movable limits use side scripts, including inside fractions and scripts; formulas
+that depended on the former stacked layout may look different. Use explicit
+`display="block"` or appropriate `displaystyle` where intended.
+
+Structured accents, merged/ragged mathematical tables and RTL layouts use explicit
+recovery when no faithful native representation is available. A forced break on
+`mo` is handled the same way as on `mspace`. Malformed argument counts are detected
+before recovery, including when an unsupported sibling appears first.
+
+Encoded Unicode mathematical alphabets now carry matching native OMML variants,
+including double-struck and bold characters emitted by LaTeX backends. Word can
+otherwise decode those characters while losing their intended style.
+
+Token whitespace and string escaping follow MathML rules. XML encoding declarations
+do not alter decoded Unicode input. CSS equation styling and XML-aware template
+boundaries preserve the selected text, math and surrounding content.

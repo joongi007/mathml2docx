@@ -17,6 +17,8 @@ from mathml2docx import mathml_to_omml
 MATHML = "http://www.w3.org/1998/Math/MathML"
 OMML = "http://schemas.openxmlformats.org/officeDocument/2006/math"
 PROBE = "2718281828459045235"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_EXPECTATIONS = ROOT / "tests/fixtures/example_equation_counts.json"
 
 
 def source_equations(path):
@@ -26,6 +28,26 @@ def source_equations(path):
         any((t.text or "").strip() for t in node.iter("{" + OMML + "}t"))
         for node in root.iter("{" + OMML + "}oMath")
     ]
+
+
+def expected_source_equations(path, expected_counts):
+    """Catch conversion-time deletion/duplication before viewer round-tripping."""
+    if path.stem not in expected_counts:
+        raise ValueError("No independently authored equation count for " + path.name)
+    equations = source_equations(path)
+    expected = expected_counts[path.stem]
+    if len(equations) != expected:
+        raise AssertionError(
+            "Expected "
+            + str(expected)
+            + " equations from input in "
+            + path.name
+            + "; found "
+            + str(len(equations))
+        )
+    if not all(equations):
+        raise AssertionError("Empty equation in generated source: " + path.name)
+    return equations
 
 
 def verify_fodt(path, expected):
@@ -80,7 +102,16 @@ def office_export(soffice, profile, kind, output, files):
         )
 
 
-def render(soffice, pdftotext, files, output, force=False):
+def render(
+    soffice, pdftotext, files, output, force=False, expectations=DEFAULT_EXPECTATIONS
+):
+    manifest = json.loads(expectations.read_text(encoding="utf-8"))
+    expected_counts = {
+        name: entry["equations"] for name, entry in manifest["documents"].items()
+    }
+    expected_inputs = {
+        path: expected_source_equations(path, expected_counts) for path in files
+    }
     output.mkdir(parents=True, exist_ok=True)
     for path in files:
         if (output / (path.stem + ".pdf")).exists() and not force:
@@ -116,7 +147,7 @@ def render(soffice, pdftotext, files, output, force=False):
         report = []
         for source in files:
             count = verify_fodt(
-                stage / (source.stem + ".fodt"), source_equations(source)
+                stage / (source.stem + ".fodt"), expected_inputs[source]
             )
             report.append(
                 dict(file=source.name, equations=count, pdf=(source.stem + ".pdf"))
@@ -154,6 +185,12 @@ def main():
         "--output", type=Path, default=Path("examples/output/libreoffice-review")
     )
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--expectations",
+        type=Path,
+        default=DEFAULT_EXPECTATIONS,
+        help="Independent input equation-count manifest",
+    )
     args = parser.parse_args()
     if not args.soffice or not args.pdftotext:
         parser.error(
@@ -162,7 +199,14 @@ def main():
     files = sorted(args.input.glob("[0-9][0-9]_*.docx"))
     if not files:
         parser.error("No examples found; run python -m examples.run_all first")
-    render(args.soffice, args.pdftotext, files, args.output.resolve(), args.force)
+    render(
+        args.soffice,
+        args.pdftotext,
+        files,
+        args.output.resolve(),
+        args.force,
+        args.expectations,
+    )
 
 
 if __name__ == "__main__":

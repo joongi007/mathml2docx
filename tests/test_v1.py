@@ -67,7 +67,7 @@ class MathTests(unittest.TestCase):
         self.check('<mover accent="true"><mi>x</mi><mo>^</mo></mover>', "./m:acc/m:e")
         self.check(
             "<munderover><mo>∑</mo><mn>0</mn><mi>n</mi></munderover>",
-            "./m:limUpp/m:e/m:limLow",
+            "./m:sSubSup",
         )
 
     def test_semantics(self):

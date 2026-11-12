@@ -175,12 +175,16 @@ class MathematicalMeaningTests(unittest.TestCase):
             "menclose",
             "maction",
             "mstack",
-            "mlongdiv",
             "apply",
-            "mglyph",
         ]:
             with self.subTest(tag=tag), self.assertRaises(UnsupportedMathMLError):
                 self.math("<" + tag + "><mi>x</mi></" + tag + ">")
+        for body in [
+            "<mlongdiv><mn>1</mn><mn>2</mn><mn>3</mn></mlongdiv>",
+            '<mglyph src="unused.png" alt="x"/>',
+        ]:
+            with self.subTest(body=body), self.assertRaises(UnsupportedMathMLError):
+                self.math(body)
         for source in [
             '<!DOCTYPE math SYSTEM "https://example.com/math.dtd"><math/>',
             '<!DOCTYPE math [<!ENTITY x SYSTEM "file:///etc/passwd">]><math><mi>&x;</mi></math>',

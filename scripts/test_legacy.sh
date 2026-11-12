@@ -19,6 +19,7 @@ docker run --rm \
     python -m pip install --disable-pip-version-check --upgrade "pip>=21.3,<22"
     python -m pip install --disable-pip-version-check ".[latex,markdown,test]"
     python -m unittest discover -v
+    python -m pytest -q tests/test_math_audit_regressions.py tests/test_math_html_regressions.py
     python -c "import doctest; from mathml2docx import utils; result=doctest.testmod(utils); assert result.failed == 0 and result.attempted == 11"
     python -m pip wheel --no-deps . --wheel-dir /tmp/distributions
     python -m venv /tmp/wheel-env

@@ -99,6 +99,28 @@ def example_pages(language, docs, catalog):
                     "",
                 ]
             )
+        if stem == "30_mathml_fidelity":
+            notice = (
+                "This DOCX targets Word. LibreOffice can misparse quoted `ms` strings, "
+                "omit text or show a formula error in this PDF preview. For LibreOffice "
+                "output, select `math_target='libreoffice'` and source/image recovery; "
+                "native `ms` is rejected for that target."
+                if language == "en"
+                else "이 DOCX는 Word를 대상으로 합니다. LibreOffice가 따옴표가 있는 `ms` 문자열을 "
+                "잘못 해석해 이 PDF에서 일부 글자를 생략하거나 수식 오류를 표시할 수 있습니다. "
+                "LibreOffice용 출력에는 `math_target='libreoffice'`와 원문·이미지 대체 처리를 "
+                "선택하세요. 해당 대상에서는 기본 `ms` 변환을 거절합니다."
+            )
+            content.extend(
+                [
+                    "## " + text["notes"],
+                    "",
+                    notice,
+                    "",
+                    f"[{text['validation']}](../11-validation.md)",
+                    "",
+                ]
+            )
         if stem == "23_complex_equations":
             content.extend(
                 [

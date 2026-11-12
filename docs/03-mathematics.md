@@ -17,6 +17,8 @@ parser.convert('''<p>The value <math><mi>x</mi></math>, measured in metres.</p>
 <math display="block"><mfrac><mn>1</mn><mn>2</mn></mfrac></math>''', 'layout.docx')
 ```
 
+Inline `munder`/`mover`/`munderover` operators with `movablelimits` use side scripts in compact style. Display-style equations keep their upper/lower limits. Fractions, scripts and table cells establish their own mathematical style; `displaystyle` can override it.
+
 Display equations use a separate paragraph and an OMML `oMathPara` wrapper.
 For older input that relies on omitted `display` meaning block, use
 `MathmlToDocx(default_math_display='block')`.
@@ -33,7 +35,7 @@ placement; it is not a substitute for `display`.
 | MathML | Support |
 | --- | --- |
 | Tokens, rows, fractions, roots and ordinary scripts | Native OMML |
-| Accents, over/underlines, limits and rectangular matrices | Native OMML within the documented attribute subset |
+| Accents, over/underlines, limits and rectangular matrices | Native OMML within the documented attribute subset; compound/hidden accents and matrix cell spans require explicit recovery |
 | `mmultiscripts` | One postscript pair and one prescript pair; `none` represents an absent script |
 | `menclose` | `box`, `top`, `bottom`, `left`, `right`, `actuarial`, `radical`, horizontal/vertical/diagonal strikes |
 | `menclose` circles, rounded boxes, long division or arrow enclosures | Explicit fallback required |
@@ -127,3 +129,44 @@ parser.convert('<math data-display="separate"><mi>x</mi></math>', 'normalized.do
 
 Preserve mathematical meaning when normalizing; removing an unknown tag can lose
 its notation. Use an image renderer when exact visual preservation matters.
+
+## Inherited defaults, tokens and validation
+
+Supported presentation defaults on `math` and `mstyle` apply to descendants;
+local attributes take priority. This includes barless fractions (`linethickness="0"`),
+fence characters/separators, string delimiters, accents and movable limits.
+Defaults end with their container, so a nested style does not change its siblings.
+
+Token whitespace follows MathML's XML whitespace rule. Formatting indentation is
+collapsed in `mtext` as well as other tokens; NBSP and narrow NBSP are preserved.
+`ms` visibly escapes delimiter characters inside its string. Unicode string input
+is authoritative: an XML declaration naming a legacy byte encoding does not
+re-encode or corrupt already-decoded characters.
+
+Known argument counts are checked throughout the presentation tree before
+unsupported-input recovery. Annotation payloads are opaque. Invalid structures
+raise `ValueError` regardless of sibling order; valid constructs that lack a
+native representation raise `UnsupportedMathMLError` and can use recovery.
+Merged or ragged MathML tables, forced `mo`/`mspace` line breaks, RTL layout and
+compound/hidden accents follow that recovery policy instead of losing their layout.
+
+## Styles, links and templates
+
+Supported MathML CSS color, size and font family inherit from HTML and apply to
+native equation runs and compound control glyphs. Descendant styles override
+inherited values. Word's mathematical variants remain separate from CSS fonts. Encoded Unicode
+math alphabets retain their variants in tokens and literal `mtext`/`ms` strings,
+including mixed text, spaces and mathematical letters.
+Relative sizes, MathML `mathsize`/`mathcolor`, `currentColor` and RGBA colors are
+resolved within the supported style subset. `styles=False` disables CSS conversion.
+
+Equation IDs create Word bookmarks for internal links. Links that span display
+math keep their scope across paragraphs. Linked display equations retain native
+editability, mixed math variants and display layout when resaved by Word. Display equations in cells retain their
+paragraph boundaries. Marker replacement preserves adjacent equations, while
+bookmark replacement removes the selected XML range, including equation-only
+ranges. See [the complete notation/template example](examples/30_mathml_fidelity.md).
+
+The HTML frontend expects HTML MathML serialization, with unprefixed `math` and
+presentation tags. Prefix-qualified XML belongs in `parse_mathml()`; passing it
+through HTML raises a format error rather than flattening it into plain text.

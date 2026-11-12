@@ -1,6 +1,6 @@
 # Runnable examples
 
-Explore 29 complete examples. Download a Word document or run its Python source locally.
+Explore 30 complete examples. Download a Word document or run its Python source locally.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -42,3 +42,4 @@ PDF previews show the LibreOffice output. Use the DOCX download to edit equation
 - [Advanced LaTeX report](27_advanced_latex.md): Eight distinct advanced LaTeX inputs exercise adjacent matrices, grouped powers, piecewise expressions, nested radicals, sums, and derivatives inside a formatted report.
 - [Chemical notation and enclosures](28_chemistry_enclosures.md): Upright element symbols, isotope prescripts, charges, reaction arrows and native enclosures.
 - [MathML recovery and image fallbacks](29_math_fallbacks.md): Preserve unsupported source or embed an explicitly supplied rendered expression.
+- [MathML notation and document fidelity](30_mathml_fidelity.md): Inherited defaults, inline/display sums, composite scripts, equation-safe templates, cell layout, CSS and Unicode.

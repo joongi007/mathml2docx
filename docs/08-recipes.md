@@ -1,6 +1,6 @@
 # Recipes
 
-[The 29 runnable examples](examples/00-index.md) include full source, generated DOCX
+[The 30 runnable examples](examples/00-index.md) include full source, generated DOCX
 downloads in a deployed site, and LibreOffice reference PDFs. This page covers
 common combinations and lower-level APIs.
 

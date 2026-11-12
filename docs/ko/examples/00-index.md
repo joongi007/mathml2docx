@@ -1,6 +1,6 @@
 # 실행 예제
 
-완전한 예제 29개를 살펴보세요. Word 문서를 내려받거나 Python 코드를 직접 실행할 수 있습니다.
+완전한 예제 30개를 살펴보세요. Word 문서를 내려받거나 Python 코드를 직접 실행할 수 있습니다.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -42,3 +42,4 @@ PDF에서 LibreOffice 출력 결과를 살펴볼 수 있습니다. Word에서 �
 - [고급 LaTeX 보고서](27_advanced_latex.md): 서로 다른 LaTeX 수식 8개로 연속 행렬·괄호 지수·조각함수·중첩 근호·합·편미분을 서식이 있는 보고서에서 검사합니다.
 - [화학 표기와 수식 테두리](28_chemistry_enclosures.md): 정체 원소 기호·동위원소 앞 첨자·전하·반응 화살표와 기본 수식 테두리.
 - [MathML 복구와 이미지 대체](29_math_fallbacks.md): 지원하지 않는 원문을 표시하거나 직접 제공한 수식 이미지를 내장합니다.
+- [MathML 표기와 문서 보존](30_mathml_fidelity.md): 속성 기본값·인라인/표시 합·복합 첨자·수식 템플릿·셀 배치·CSS·Unicode를 함께 사용합니다.

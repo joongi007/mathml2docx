@@ -39,9 +39,12 @@ delimiter characters, accents, matrix rows/columns, and phantom visibility/dimen
 Matrices are not flattened. Fixed-size parentheses stored as character runs and
 growing delimiters stored as objects remain distinguishable.
 
-For role comparison, Unicode mathematical alphabets are NFKC-normalized and
-pure spacing runs are omitted. This alone does not verify font distinctions or
-precise spacing. Selected `run_properties` separately require matching fields on
+For role comparison, only Unicode mathematical alphabets and their Letterlike
+equivalents are normalized; nonbreaking spaces and superscript digits remain
+distinct. Spacing-only role runs are omitted, while block comparisons retain
+run text, effective math variants, color, size and all four font slots. Explicit
+inline/display layout and alignment are compared separately. This does not
+verify precise physical spacing. Selected `run_properties` separately require matching fields on
 an actual run: MathML styles/text properties and LaTeX L15's double-struck R/bold x.
 Additional properties are tested by `tests/test_math_validation.py`.
 
@@ -73,6 +76,16 @@ structural checks does not replace direct Word display/edit/save inspection.
 
 ## Advanced inputs and Word persistence
 
+`example_equation_counts.json` records the expected native formula count for each
+runnable example independently of the generated DOCX. Rendering checks apply this
+manifest before calling LibreOffice, so formulas lost during conversion cannot
+be mistaken for a correct import count.
+
+`mathml_fidelity_expectations.json` contains 18 manually authored role answers
+for example 30. Its tests also inspect equation formatting, cell paragraph
+separation and link targets. Negative controls remove/duplicate equations, alter
+layout or styles, and break bookmark targets.
+
 `advanced_math_expectations.json` contains independent answers for the 18 inputs
 in `examples/assets/advanced-math/`. Tests also generate examples 25–27 and check
 the equations in report, existing-document/cell, and LaTeX contexts.
@@ -80,6 +93,12 @@ the equations in report, existing-document/cell, and LaTeX contexts.
 `check_word.py` optionally reads and resaves with installed Windows Word. Its
 Word-only comparison allows the observed U+2212-to-hyphen-minus spelling change
 in mathematical text and resolves Word style IDs by style names. The converter
-answer checks remain strict. `oMathPara` layout wrappers, proofing marks, and
-derived `lastRenderedPageBreak` markers do not add content. Explicit breaks,
-mathematical roles, ordinary text, and selected formatting remain checked.
+answer checks remain strict. Raw block comparisons retain `oMathPara` display
+layout and formatting. The Word-specific comparison also resolves inherited
+formatting and localized font names, reports raw metadata changes, and checks
+every originally declared math formatting property against the saved effective
+value. A math-only paragraph that Word serializes as a display wrapper is
+disclosed separately; an explicit display equation becoming inline remains a
+failure. Proofing marks and derived `lastRenderedPageBreak` markers are omitted.
+Explicit breaks, mathematical roles, ordinary text and authored formatting remain
+checked.

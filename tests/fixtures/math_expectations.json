@@ -155,18 +155,12 @@
   "M06": {
     "math": [
       {
-        "upper": [
+        "subsup": [
           [
-            {
-              "lower": [
-                [
-                  "∑"
-                ],
-                [
-                  "k=1"
-                ]
-              ]
-            }
+            "∑"
+          ],
+          [
+            "k=1"
           ],
           [
             "n"
@@ -1143,10 +1137,14 @@
     ],
     "run_properties": [
       {
-        "text": "ℝ"
+        "text": "ℝ",
+        "script": "double-struck",
+        "style": "p"
       },
       {
-        "text": "𝐱"
+        "text": "𝐱",
+        "script": "roman",
+        "style": "b"
       }
     ]
   },

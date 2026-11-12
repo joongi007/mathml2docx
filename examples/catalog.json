@@ -114,5 +114,9 @@
   "29_math_fallbacks": [
     "MathML recovery and image fallbacks",
     "Preserve unsupported source or embed an explicitly supplied rendered expression."
+  ],
+  "30_mathml_fidelity": [
+    "MathML notation and document fidelity",
+    "Inherited defaults, inline/display sums, composite scripts, equation-safe templates, cell layout, CSS and Unicode."
   ]
 }

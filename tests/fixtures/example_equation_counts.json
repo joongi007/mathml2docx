@@ -1,0 +1,125 @@
+{
+  "description": "Independently authored equation counts for example inputs; update deliberately when adding or changing example input.",
+  "documents": {
+    "01_quickstart": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "02_files_unicode": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "03_existing_document": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "04_inline_formatting": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "05_stylesheets": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "06_word_styles": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "07_page_layout": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "08_tables": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "09_lists": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "10_data_images": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "11_local_images": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "12_asset_loader": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "13_mathml": {
+      "equations": 4,
+      "basis": "One standalone fraction, one area equation, one indexed root/scripts equation, one matrix."
+    },
+    "14_latex": {
+      "equations": 1,
+      "basis": "One standalone LaTeX expression."
+    },
+    "15_markers": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "16_bookmarks": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "17_docxtpl": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "18_options": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "19_style_helpers": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "20_links": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "21_report": {
+      "equations": 1,
+      "basis": "One math element in assets/report.html."
+    },
+    "22_markdown": {
+      "equations": 0,
+      "basis": "No mathematical input (or explicit mathml=False in example 18)."
+    },
+    "23_complex_equations": {
+      "equations": 44,
+      "basis": "20 authored MathML cases plus 24 authored LaTeX cases."
+    },
+    "24_dense_report": {
+      "equations": 120,
+      "basis": "Five sections: 20 corpus equations plus four table fractions per section."
+    },
+    "25_research_report": {
+      "equations": 10,
+      "basis": "A01-A10, once each."
+    },
+    "26_template_workbook": {
+      "equations": 10,
+      "basis": "A01-A10 in ten separate cells."
+    },
+    "27_advanced_latex": {
+      "equations": 8,
+      "basis": "B01-B08, once each."
+    },
+    "28_chemistry_enclosures": {
+      "equations": 8,
+      "basis": "Water, sulfate, isotope equation, reaction equation and four enclosure equations."
+    },
+    "29_math_fallbacks": {
+      "equations": 0,
+      "basis": "Two explicitly rendered images and one source-text recovery; no native equations."
+    },
+    "30_mathml_fidelity": {
+      "equations": 18,
+      "basis": "Eight notation examples, three marker equations, one bookmark replacement, two cell equations, Unicode and string literals, and two linked equations."
+    }
+  }
+}

@@ -92,6 +92,7 @@ mathml2docx input.html output.docx --default-math-display block --unsupported-ma
 
 - [시작하기](https://joongi007.github.io/mathml2docx/ko/01-getting-started/) · [API와 옵션](https://joongi007.github.io/mathml2docx/ko/02-api/) · [활용법](https://joongi007.github.io/mathml2docx/ko/08-recipes/)
 - [실행 예제와 DOCX 다운로드](https://joongi007.github.io/mathml2docx/ko/examples/00-index/): 서식, 템플릿, 과학 보고서, 화학식과 대체 렌더링.
+- [MathML 보존 예제](https://joongi007.github.io/mathml2docx/ko/examples/30-mathml-fidelity/): 상속 기본값, 악센트, 수식 서식, 링크와 템플릿 치환.
 - [0.x에서 이전하기](https://joongi007.github.io/mathml2docx/ko/05-migration/) · [호환성과 검증](https://joongi007.github.io/mathml2docx/ko/11-validation/)
 - [English documentation](https://joongi007.github.io/mathml2docx/)
 

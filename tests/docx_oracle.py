@@ -8,6 +8,7 @@ It is a structural oracle, not a Word layout renderer.
 
 import hashlib
 import posixpath
+import re
 import unicodedata
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
@@ -33,7 +34,176 @@ def enabled(node, path, default=False, prefix="w"):
     return prop.get("{" + NS[prefix] + "}val", "1") not in {"0", "false", "off"}
 
 
+def math_alphabet(value):
+    """Normalize only equivalent math alphabets, never spacing or other symbols."""
+    letterlike = "ℂℍℕℙℚℝℤℭℌℑℜℨℬℰℱℋℐℒℳℛℯℊℴℎ"
+    return "".join(
+        unicodedata.normalize("NFKC", char)
+        if 0x1D400 <= ord(char) <= 0x1D7FF or char in letterlike
+        else char
+        for char in value
+    )
+
+
+def math_run_format(run):
+    properties = {}
+    for name, tag in [("color", "color"), ("size_half_points", "sz")]:
+        setting = value(run, "w:rPr/w:" + tag)
+        if setting is not None:
+            properties[name] = setting
+    fonts = run.find("w:rPr/w:rFonts", NS)
+    if fonts is not None:
+        for slot in ("ascii", "hAnsi", "eastAsia", "cs"):
+            setting = fonts.get("{" + NS["w"] + "}" + slot)
+            if setting is not None:
+                properties["font_" + slot] = setting
+    for name, tag in [("bold", "b"), ("italic", "i")]:
+        if run.find("w:rPr/w:" + tag, NS) is not None:
+            properties[name] = enabled(run, "w:rPr/w:" + tag)
+    return properties
+
+
+def effective_math_variant(run, char):
+    """Read equivalent Unicode/OMML math styles without discarding distinctions."""
+    normal = enabled(run, "m:rPr/m:nor", prefix="m")
+    script = value(run, "m:rPr/m:scr", "roman", "m")
+    style = value(run, "m:rPr/m:sty", "p" if normal else "i", "m")
+    for characters, family, variant in [
+        ("ℂℍℕℙℚℝℤ", "double-struck", "p"),
+        ("ℭℌℑℜℨ", "fraktur", "p"),
+        ("ℬℰℱℋℐℒℳℛℯℊℴ", "script", "p"),
+        ("ℎ", "roman", "i"),
+    ]:
+        if char in characters:
+            return {"script": family, "style": variant, "normal": normal}
+    name = unicodedata.name(char, "")
+    if name.startswith("MATHEMATICAL "):
+        for prefix, family, variant in [
+            ("SANS-SERIF BOLD ITALIC", "sans-serif", "bi"),
+            ("SANS-SERIF BOLD", "sans-serif", "b"),
+            ("SANS-SERIF ITALIC", "sans-serif", "i"),
+            ("BOLD SCRIPT", "script", "b"),
+            ("BOLD FRAKTUR", "fraktur", "b"),
+            ("BOLD ITALIC", "roman", "bi"),
+            ("DOUBLE-STRUCK", "double-struck", "p"),
+            ("SANS-SERIF", "sans-serif", "p"),
+            ("MONOSPACE", "monospace", "p"),
+            ("FRAKTUR", "fraktur", "p"),
+            ("SCRIPT", "script", "p"),
+            ("BOLD", "roman", "b"),
+            ("ITALIC", "roman", "i"),
+        ]:
+            if name.startswith("MATHEMATICAL " + prefix + " "):
+                script, style = family, variant
+                break
+    return {"script": script, "style": style, "normal": normal}
+
+
+def math_inline(node, display=False, alignment=None):
+    result = {"math": math_sequence(node)}
+    if display:
+        result.update(display=True, math_alignment=alignment)
+    formatted = []
+    for run in node.findall(".//m:r", NS):
+        properties = math_run_format(run)
+        for char in "".join(t.text or "" for t in run.findall("m:t", NS)):
+            variant = effective_math_variant(run, char)
+            token = math_alphabet(char)
+            if (
+                formatted
+                and formatted[-1]["format"] == properties
+                and formatted[-1]["variant"] == variant
+            ):
+                formatted[-1]["text"] += token
+            else:
+                formatted.append(
+                    {"text": token, "format": properties, "variant": variant}
+                )
+    result["math_runs"] = formatted
+    return result
+
+
+def math_content(node):
+    """Read a whole-equation hyperlink without losing its mathematical result.
+
+    Word can replace a HYPERLINK field inside oMath with a hyperlink element
+    inside that same oMath. Both express a link over the entire equation. Fields
+    spanning partial results or containing other/nested instructions are rejected.
+    """
+    children = list(node)
+    hyperlinks = [
+        child for child in children if child.tag == "{" + NS["w"] + "}hyperlink"
+    ]
+    field_tags = {"{" + NS["w"] + "}fldChar", "{" + NS["w"] + "}instrText"}
+    fields = [child for child in node.iter() if child.tag in field_tags]
+    if hyperlinks:
+        if len(children) != 1 or len(hyperlinks) != 1 or fields:
+            raise AssertionError(
+                "Oracle requires a whole-equation, unnested math hyperlink"
+            )
+        link = hyperlinks[0]
+        if any(
+            child.tag == "{" + NS["w"] + "}hyperlink" for child in list(link.iter())[1:]
+        ):
+            raise AssertionError("Nested math hyperlinks are unsupported")
+        return list(link), link
+    if not fields:
+        return children, None
+
+    def event(run):
+        if run.tag != "{" + NS["m"] + "}r":
+            return None
+        content = [
+            child
+            for child in run
+            if child.tag not in {"{" + NS["m"] + "}rPr", "{" + NS["w"] + "}rPr"}
+        ]
+        if content and all(
+            child.tag == "{" + NS["w"] + "}instrText" for child in content
+        ):
+            return "instruction", "".join(child.text or "" for child in content)
+        if len(content) == 1 and content[0].tag == "{" + NS["w"] + "}fldChar":
+            return content[0].get("{" + NS["w"] + "}fldCharType"), None
+        if any(child.tag in field_tags for child in content):
+            raise AssertionError("Mixed field instructions and mathematical result")
+        return None
+
+    events = [event(child) for child in children]
+    if not events or events[0] != ("begin", None) or events[-1] != ("end", None):
+        raise AssertionError("Malformed mathematical HYPERLINK field boundaries")
+    separators = [
+        index for index, item in enumerate(events) if item == ("separate", None)
+    ]
+    if len(separators) != 1:
+        raise AssertionError("Mathematical HYPERLINK field requires one separator")
+    separator = separators[0]
+    instructions = events[1:separator]
+    if not instructions or any(
+        item is None or item[0] != "instruction" for item in instructions
+    ):
+        raise AssertionError("Malformed mathematical HYPERLINK field instructions")
+    body = children[separator + 1 : -1]
+    if any(
+        child.tag in field_tags or child.tag == "{" + NS["w"] + "}hyperlink"
+        for item in body
+        for child in item.iter()
+    ):
+        raise AssertionError("Nested mathematical hyperlink fields are unsupported")
+    code = "".join(item[1] for item in instructions)
+    match = re.fullmatch(
+        r'\s*HYPERLINK\s+(?:(\\l)\s+)?"((?:[^"\\]|\\["\\])*)"\s*', code, re.I
+    )
+    if match is None or not match.group(2):
+        raise AssertionError(
+            "Unsupported or malformed mathematical field code: " + code
+        )
+    target = re.sub(r'\\(["\\])', r"\1", match.group(2))
+    return body, ("#" if match.group(1) else "") + target
+
+
 def math_sequence(nodes):
+    if getattr(nodes, "tag", None) == "{" + NS["m"] + "}oMath":
+        nodes, _ = math_content(nodes)
     result = []
     for node in nodes:
         tag = node.tag.rsplit("}", 1)[-1]
@@ -41,9 +211,7 @@ def math_sequence(nodes):
             # Unicode mathematical alphabets and character+mathvariant are
             # equivalent for this role comparison; explicit font checks are
             # separate so normalization cannot conceal lost mathematical style.
-            text = unicodedata.normalize(
-                "NFKC", "".join(n.text or "" for n in node.findall("m:t", NS))
-            )
+            text = math_alphabet("".join(n.text or "" for n in node.findall("m:t", NS)))
             if not text.strip():
                 continue
             if result and isinstance(result[-1], str):
@@ -182,14 +350,17 @@ class DocxOracle:
 
     def math_runs(self, index):
         math = self.document.findall(".//m:oMath", NS)[index]
+        math_content(math)
         return [
             {
                 "text": "".join(n.text or "" for n in run.findall("m:t", NS)),
                 "script": value(run, "m:rPr/m:scr", prefix="m"),
                 "style": value(run, "m:rPr/m:sty", prefix="m"),
                 "normal": enabled(run, "m:rPr/m:nor", prefix="m"),
+                **({"format": math_run_format(run)} if math_run_format(run) else {}),
             }
             for run in math.findall(".//m:r", NS)
+            if run.find("m:t", NS) is not None
         ]
 
     def blocks(self, container=None):
@@ -218,9 +389,28 @@ class DocxOracle:
                         )
                     rows.append(cells)
                 result.append({"table": rows})
-            elif node.tag not in {"{" + NS["w"] + "}sectPr", "{" + NS["w"] + "}tcPr"}:
+            elif node.tag not in {
+                "{" + NS["w"] + "}sectPr",
+                "{" + NS["w"] + "}tcPr",
+                "{" + NS["w"] + "}bookmarkStart",
+                "{" + NS["w"] + "}bookmarkEnd",
+            }:
                 raise AssertionError("Unrecognized document block: " + node.tag)
         return result
+
+    def assert_internal_links(self):
+        names = {
+            node.get("{" + NS["w"] + "}name")
+            for node in self.document.findall(".//w:bookmarkStart", NS)
+        }
+        for link in self.document.findall(".//w:hyperlink", NS):
+            target = link.get("{" + NS["w"] + "}anchor")
+            if target is not None and target not in names:
+                raise AssertionError("Internal hyperlink has no bookmark: " + target)
+        for equation in self.document.findall(".//m:oMath", NS):
+            _, link = math_content(equation)
+            if isinstance(link, str) and link.startswith("#") and link[1:] not in names:
+                raise AssertionError("Internal hyperlink has no bookmark: " + link[1:])
 
     @staticmethod
     def cell_fill(cell):
@@ -267,24 +457,20 @@ class DocxOracle:
         result = []
         for node in container:
             if node.tag == "{" + NS["m"] + "}oMath":
-                result.append({"math": math_sequence(node)})
+                result.append(self.math_inline(node))
             elif node.tag == "{" + NS["m"] + "}oMathPara":
-                # Word may wrap a display equation during a save. The wrapper
-                # adds layout properties; each contained equation stays distinct.
+                alignment = value(node, "m:oMathParaPr/m:jc", "centerGroup", "m")
                 for child in node:
                     if child.tag == "{" + NS["m"] + "}oMath":
-                        result.append({"math": math_sequence(child)})
+                        result.append(
+                            self.math_inline(child, display=True, alignment=alignment)
+                        )
                     elif child.tag != "{" + NS["m"] + "}oMathParaPr":
                         raise AssertionError(
                             "Unrecognized display math content: " + child.tag
                         )
             elif node.tag == "{" + NS["w"] + "}hyperlink":
-                rid = node.get("{" + NS["r"] + "}id")
-                target = (
-                    self.relationships[rid]["Target"]
-                    if rid
-                    else "#" + node.get("{" + NS["w"] + "}anchor")
-                )
+                target = self.hyperlink_target(node)
                 result.append({"link": target, "content": self.inline(node)})
             elif node.tag == "{" + NS["w"] + "}r":
                 for content in node:
@@ -351,4 +537,28 @@ class DocxOracle:
                 "{" + NS["w"] + "}proofErr",
             }:
                 raise AssertionError("Unrecognized inline content: " + node.tag)
+        return result
+
+    def hyperlink_target(self, node):
+        rid = node.get("{" + NS["r"] + "}id")
+        if rid:
+            relationship = self.relationships.get(rid)
+            if relationship is None or not relationship.get("Type", "").endswith(
+                "/hyperlink"
+            ):
+                raise AssertionError(
+                    "Hyperlink relationship is missing or has the wrong type"
+                )
+            return relationship["Target"]
+        anchor = node.get("{" + NS["w"] + "}anchor")
+        if anchor is None:
+            raise AssertionError("Hyperlink has no target")
+        return "#" + anchor
+
+    def math_inline(self, node, display=False, alignment=None):
+        _, link = math_content(node)
+        result = math_inline(node, display, alignment)
+        if link is not None:
+            target = link if isinstance(link, str) else self.hyperlink_target(link)
+            return {"link": target, "content": [result]}
         return result

@@ -20,6 +20,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches
 from docx.table import _Cell
+from lxml import etree
 
 from .config import DEFAULT_PARAGRAPH_STYLE, DEFAULT_TABLE_STYLE
 from .css import INHERITED, computed_styles
@@ -30,6 +31,7 @@ from .math import (
     mathml_to_omml,
     parse_mathml,
 )
+from .math_styles import MATH_CSS, math_style
 from .styles import css, length, paragraph_style, run_style, style_name
 
 BLOCKS = {
@@ -184,7 +186,7 @@ class _Renderer:
                 isinstance(self.target, _Cell)
                 and len(self.target.paragraphs) == 1
                 and not self.target.paragraphs[0]._p.xpath(
-                    "./w:r|./w:hyperlink|./m:oMath"
+                    "./w:r|./w:hyperlink|./m:oMath|./m:oMathPara"
                 )
                 and not self.target.paragraphs[0].text
             ):
@@ -203,6 +205,10 @@ class _Renderer:
 
     def properties(self, node, inherited):
         tag = node.name
+        if tag and ":" in tag and tag.rsplit(":", 1)[1] == "math":
+            raise ValueError(
+                "Prefixed XML MathML in HTML requires parse_mathml(); use an unprefixed math element in HTML"
+            )
         properties = {
             key: value
             for key, value in inherited.items()
@@ -280,7 +286,7 @@ class _Renderer:
             return
         if tag == "math":
             if self.config.options["mathml"]:
-                self.math(str(node), properties)
+                self.math(self.math_source(node, properties), properties)
             return
         if tag == "img":
             if self.config.options["images"]:
@@ -339,14 +345,7 @@ class _Renderer:
                     properties["_word_style"] = chosen.name
         anchor = node.get("id") or (node.get("name") if tag == "a" else None)
         if anchor:
-            ids = self.document._element.xpath("//w:bookmarkStart/@w:id")
-            number = str(max([int(value) for value in ids], default=-1) + 1)
-            start = OxmlElement("w:bookmarkStart")
-            start.set(qn("w:id"), number)
-            start.set(qn("w:name"), anchor)
-            end = OxmlElement("w:bookmarkEnd")
-            end.set(qn("w:id"), number)
-            self.paragraph_for()._p.extend([start, end])
+            self.bookmark(anchor)
         if tag == "a" and node.get("href"):
             self.link(node, properties)
             return
@@ -421,27 +420,159 @@ class _Renderer:
         paragraph.paragraph_format.first_line_indent = Inches(-0.15)
 
     def link(self, node, properties):
-        paragraph = self.paragraph_for()
         href = node["href"]
         if urlsplit(href).scheme.lower() not in {"", "http", "https", "mailto"}:
             for child in node.children:
                 self.render(child, properties)
             return
-        link = OxmlElement("w:hyperlink")
-        if href.startswith("#"):
-            link.set(qn("w:anchor"), href[1:])
-        else:
-            link.set(
-                qn("r:id"),
-                paragraph.part.relate_to(href, RT.HYPERLINK, is_external=True),
-            )
-        # Render children through the regular path, then move their runs into the hyperlink.
-        start = len(paragraph._p)
+        if re.search(r"[\x00-\x1f\x7f]", href):
+            raise ValueError("Hyperlink targets cannot contain control characters")
+        relationship = (
+            None
+            if href.startswith("#")
+            else self.document.part.relate_to(href, RT.HYPERLINK, is_external=True)
+        )
+        before = {p: set(p) for p in self.target._element.iter(qn("w:p"))}
         for child in node.children:
             self.render(child, properties)
-        for child in list(paragraph._p)[start:]:
-            link.append(child)
-        paragraph._p.append(link)
+        # Display math and block children can create several paragraphs. Each
+        # paragraph needs its own hyperlink over exactly the content just emitted.
+        for current in self.target._element.iter(qn("w:p")):
+            children = [
+                child
+                for child in current
+                if child not in before.get(current, ()) and child.tag != qn("w:pPr")
+            ]
+            if not children:
+                continue
+            pending = []
+
+            def emit_link(current=current, pending=pending):
+                if not pending:
+                    return
+                link = OxmlElement("w:hyperlink")
+                link.set(
+                    qn("w:anchor") if relationship is None else qn("r:id"),
+                    href[1:] if relationship is None else relationship,
+                )
+                index = current.index(pending[0])
+                for part in pending:
+                    link.append(part)
+                current.insert(index, link)
+                pending[:] = []
+
+            for child in children:
+                if child.tag == qn("m:oMathPara"):
+                    emit_link()
+                    for equation in child.findall(qn("m:oMath")):
+                        self.link_display_math(equation, href)
+                else:
+                    pending.append(child)
+            emit_link()
+
+    @staticmethod
+    def link_display_math(equation, href):
+        # Word unwraps display math enclosed by w:hyperlink. A field inside
+        # oMath preserves both display layout and the hyperlink's cached result.
+        # Explicit Word font flags prevent its field importer from resetting
+        # mixed native math styles to upright text.
+        for run in equation.iter(qn("m:r")):
+            if run.find(qn("m:t")) is None:
+                continue
+            native = run.find(qn("m:rPr"))
+            normal = native.find(qn("m:nor")) if native is not None else None
+            normal = normal is not None and normal.get(qn("m:val"), "1") not in {
+                "0",
+                "false",
+                "off",
+            }
+            style = native.find(qn("m:sty")) if native is not None else None
+            style = (
+                style.get(qn("m:val"))
+                if style is not None
+                else ("p" if normal else "i")
+            )
+            word = run.find(qn("w:rPr"))
+            if word is None:
+                word = OxmlElement("w:rPr")
+                run.insert(1 if native is not None else 0, word)
+            if word.find(qn("w:b")) is None:
+                word.get_or_add_b().val = style in {"b", "bi"}
+            if word.find(qn("w:i")) is None:
+                word.get_or_add_i().val = style in {"i", "bi"}
+        target = href[1:] if href.startswith("#") else href
+        target = target.replace("\\", "\\\\").replace('"', '\\"')
+        instruction = (
+            " HYPERLINK "
+            + ("\\l " if href.startswith("#") else "")
+            + '"'
+            + target
+            + '" '
+        )
+        for index, kind in enumerate(("begin", "instruction", "separate")):
+            run = OxmlElement("m:r")
+            content = OxmlElement(
+                "w:instrText" if kind == "instruction" else "w:fldChar"
+            )
+            if kind == "instruction":
+                content.text = instruction
+                content.set(qn("xml:space"), "preserve")
+            else:
+                content.set(qn("w:fldCharType"), kind)
+            run.append(content)
+            equation.insert(index, run)
+        end = OxmlElement("m:r")
+        marker = OxmlElement("w:fldChar")
+        marker.set(qn("w:fldCharType"), "end")
+        end.append(marker)
+        equation.append(end)
+
+    def bookmark(self, anchor):
+        ids = self.document._element.xpath("//w:bookmarkStart/@w:id")
+        number = str(max([int(value) for value in ids], default=-1) + 1)
+        start = OxmlElement("w:bookmarkStart")
+        start.set(qn("w:id"), number)
+        start.set(qn("w:name"), anchor)
+        end = OxmlElement("w:bookmarkEnd")
+        end.set(qn("w:id"), number)
+        self.paragraph_for()._p.extend([start, end])
+
+    def math_source(self, node, properties):
+        cloned = deepcopy(node)
+        if self.config.options["styles"]:
+            originals = [node] + node.find_all(True)
+            copies = [cloned] + cloned.find_all(True)
+            for original, copy in zip(originals, copies):
+                declarations = dict(
+                    self.computed.get(id(original), css(original.get("style", "")))
+                )
+                if original is node:
+                    native = math_style(node, properties)
+                    if properties.get("_background") and (
+                        "background-color" in declarations
+                        or not node.has_attr("mathbackground")
+                    ):
+                        declarations["background-color"] = (
+                            "#" + properties["_background"]
+                        )
+                    for name in MATH_CSS:
+                        attribute = {"color": "mathcolor", "font-size": "mathsize"}.get(
+                            name
+                        )
+                        if (
+                            attribute
+                            and node.has_attr(attribute)
+                            and name not in declarations
+                        ):
+                            if name in native:
+                                declarations[name] = native[name]
+                        elif name in properties:
+                            declarations[name] = properties[name]
+                if declarations:
+                    copy["style"] = ";".join(
+                        name + ":" + value for name, value in declarations.items()
+                    )
+        return str(cloned)
 
     def math(self, source, properties):
         # Validate both sides of preprocessing. Recovery must not hide malformed
@@ -451,10 +582,19 @@ class _Renderer:
         if preprocessor is not None:
             source = preprocessor(source)
             root = parse_mathml(source)
+        conversion_source = source
+        if not self.config.options["styles"]:
+            for node in root.iter():
+                node.attrib.pop("style", None)
+            conversion_source = etree.tostring(root, encoding="unicode")
+        root_css = css(root.get("style", "")) if self.config.options["styles"] else {}
         display = properties.get(
             "display",
-            root.get(
-                "display", self.config.options.get("default_math_display", "inline")
+            root_css.get(
+                "display",
+                root.get(
+                    "display", self.config.options.get("default_math_display", "inline")
+                ),
             ),
         )
         if display not in {
@@ -469,7 +609,7 @@ class _Renderer:
         replacement = None
         try:
             equation = mathml_to_omml(
-                source, target=self.config.options.get("math_target", "word")
+                conversion_source, target=self.config.options.get("math_target", "word")
             )
         except UnsupportedMathMLError as exc:
             fallback = self.config.options.get("mathml_fallback")
@@ -503,6 +643,8 @@ class _Renderer:
         ):
             self.paragraph = None
         paragraph = self.paragraph_for()
+        if root.get("id"):
+            self.bookmark(root.get("id"))
         if self.config.options["styles"]:
             paragraph_style(paragraph, properties, self.available())
         if replacement is None:

@@ -61,6 +61,34 @@ def main():
     parser.replace_html(doc, "{{content}}", "<b>new</b>")
     assert doc.paragraphs[0].text == "A new B"
     assert parser.parse_latex(r"\sum_{i=1}^{n}i")._element.xpath("//m:limUpp")
+    inherited = parser.parse_mathml(
+        '<math><mstyle linethickness="0"><mfrac><mn>5</mn><mn>2</mn></mfrac></mstyle></math>'
+    )
+    assert inherited._element.xpath("//m:fPr/m:type/@m:val") == ["noBar"]
+    unicode_math = parser.parse_mathml(
+        '<?xml version="1.0" encoding="ISO-8859-1"?><math><mtext>café</mtext></math>'
+    )
+    assert unicode_math._element.xpath("//m:t/text()") == ["café"]
+    styled_math = parser.convert(
+        '<math style="color:red;font-size:24pt"><mi>x</mi></math>'
+    )
+    assert styled_math._element.xpath("//m:r/w:rPr/w:color/@w:val") == ["FF0000"]
+    assert styled_math._element.xpath("//m:r/w:rPr/w:sz/@w:val") == ["48"]
+    inline_sum = parser.parse_mathml(
+        "<math><munderover><mo>∑</mo><mn>1</mn><mi>n</mi></munderover></math>"
+    )
+    assert inline_sum._element.xpath("//m:sSubSup")
+    encoded = parser.parse_mathml("<math><mi>ℝ</mi><mi>𝐱</mi></math>")
+    assert encoded._element.xpath("//m:r/m:rPr/m:scr/@m:val") == [
+        "double-struck",
+        "roman",
+    ]
+    assert encoded._element.xpath("//m:r/m:rPr/m:sty/@m:val") == ["p", "b"]
+    existing_math = parser.convert(
+        "<p><math><mi>x</mi></math>{{content}}<math><mi>y</mi></math></p>"
+    )
+    parser.replace_html(existing_math, "{{content}}", "<p>new</p>")
+    assert existing_math._element.xpath("//m:t/text()") == ["x", "y"]
     markdown = parser.parse_markdown("# Heading\n\n~~deleted~~")
     assert markdown.paragraphs[1].runs[0].font.strike
     with TemporaryDirectory() as tmp:
