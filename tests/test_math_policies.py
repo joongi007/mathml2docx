@@ -190,6 +190,7 @@ class MathPolicyTests(unittest.TestCase):
         for body in (
             "<mi>C</mi><mn>1</mn>",
             "<mprescripts/>",
+            "<mi>C</mi><none><mi>lost</mi></none><none/>",
             "<mi>C</mi><mprescripts/><mn>1</mn>",
             "<mi>C</mi><mprescripts/><mprescripts/>",
         ):

@@ -436,6 +436,10 @@ def convert(node, inherited=None):
                     )
                 current = pre
             else:
+                if math_name(child) == "none" and (
+                    len(child) or (child.text or "").strip()
+                ):
+                    raise ValueError("MathML none must be empty")
                 current.append(child)
         if len(post) % 2 or len(pre) % 2:
             raise ValueError("mmultiscripts requires subscript/superscript pairs")
