@@ -14,6 +14,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MUTATIONS = [
     (
+        "swap isotope atomic and mass numbers",
+        'script(pre[0], "sub"),\n                    script(pre[1], "sup")',
+        'script(pre[1], "sub"),\n                    script(pre[0], "sup")',
+    ),
+    (
+        "drop enclosure borders",
+        'visible = set(sides) if "box" in notations else set(sides) & notations',
+        "visible = set()",
+    ),
+    (
         "detach grouped LaTeX scripts",
         "    _group_latex_fence_scripts(root)",
         "    pass  # deliberate mutation",
@@ -77,7 +87,11 @@ def main():
             str(ROOT / "examples/assets/math-corpus"),
             str(directory / "examples/assets/math-corpus"),
         )
-        for name in ["test_advanced_documents.py", "docx_oracle.py"]:
+        for name in [
+            "test_advanced_documents.py",
+            "test_math_policies.py",
+            "docx_oracle.py",
+        ]:
             shutil.copy(str(ROOT / "tests" / name), str(directory / "tests" / name))
         shutil.copy(
             str(ROOT / "examples/advanced_math.py"),
@@ -101,6 +115,7 @@ def main():
             "tests.test_math_validation.CompositionCorpusTests.test_generated_roles_with_and_without_namespace",
             "tests.test_math_validation.MathematicalMeaningTests",
             "tests.test_advanced_documents.AdvancedDocumentTests.test_advanced_saved_equations_match_independently_authored_answers",
+            "tests.test_math_policies.MathPolicyTests.test_independent_saved_roles_for_chemistry_and_enclosures",
         ]
         baseline = subprocess.run(
             command,

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="{{ language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ description }}">
+  <meta name="color-scheme" content="light dark">
+  <title>{{ title }} · mathml2docx</title>
+  <link rel="canonical" href="{{ canonical }}">
+  {% for item in languages %}<link rel="alternate" hreflang="{{ item.code }}" href="{{ item.absolute }}">{% if item.code == 'en' %}<link rel="alternate" hreflang="x-default" href="{{ item.absolute }}">{% endif %}{% endfor %}
+  <link rel="stylesheet" href="{{ assets }}syntax.css">
+  <link rel="stylesheet" href="{{ assets }}site.css">
+  <script defer src="{{ assets }}site.js"></script>
+  <noscript><style>.sidebar{display:block}.menu-toggle{display:none}</style></noscript>
+</head>
+<body data-search-index="{{ search_index }}" data-locale-base="{{ locale_base }}"
+      data-searching="{{ text.searching }}" data-empty="{{ text.empty }}" data-failed="{{ text.failed }}"
+      data-count="{{ text.count }}" data-copy="{{ text['copy'] }}" data-copied="{{ text.copied }}" data-copy-failed="{{ text.copy_failed }}">
+  <a class="skip-link" href="#content">{{ text.skip }}</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="{{ home }}"><span class="brand-mark" aria-hidden="true">m</span>mathml2docx<span class="brand-divider">/</span><span class="brand-label">{{ text.label }}</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation">{{ text.menu }}</button>
+      <div class="header-links">
+        <nav class="languages" aria-label="{{ text.language }}">{% for item in languages %}<a href="{{ item.href }}" hreflang="{{ item.code }}" lang="{{ item.code }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.label }}</a>{% endfor %}</nav>
+        <a class="repository" href="{{ repo }}">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </header>
+  <div class="docs-layout">
+    <aside class="sidebar" id="navigation">
+      <div class="search-box">
+        <label for="docs-search">{{ text.search }}</label>
+        <div class="search-input-wrap"><input id="docs-search" type="search" autocomplete="off" aria-controls="search-results" placeholder="{{ text.search }}"><button id="clear-search" type="button" aria-label="{{ text.close }}" hidden>×</button></div>
+        <div id="search-panel" hidden><p id="search-status" role="status" aria-live="polite"></p><ol id="search-results"></ol></div>
+      </div>
+      <nav aria-label="{{ text.navigation }}">
+        {% for group in nav %}
+        {% if group.pages|length > 8 %}<details class="nav-group"{% if group.pages|selectattr('current')|list %} open{% endif %}><summary>{{ group.title }}</summary>{% else %}<section class="nav-group"><h2>{{ group.title }}</h2>{% endif %}
+          <ul>{% for page in group.pages %}<li><a href="{{ page.href }}"{% if page.current %} aria-current="page"{% endif %}>{{ page.title }}</a></li>{% endfor %}</ul>
+        {% if group.pages|length > 8 %}</details>{% else %}</section>{% endif %}
+        {% endfor %}
+      </nav>
+    </aside>
+    <main id="content" tabindex="-1">
+      <article class="prose">{{ content|safe }}</article>
+      <nav class="page-pagination" aria-label="{{ text.navigation }}">{% if previous %}<a href="{{ previous.href }}"><span>{{ text.previous }}</span>{{ previous.title }}</a>{% else %}<span></span>{% endif %}{% if next %}<a class="next" href="{{ next.href }}"><span>{{ text.next }}</span>{{ next.title }} <span aria-hidden="true">→</span></a>{% endif %}</nav>
+      <footer class="page-footer"><p>{{ text.footer }}</p><a href="{{ edit_url }}">{{ text.edit }}</a></footer>
+    </main>
+    <aside class="page-toc" aria-label="{{ text.contents }}"><p>{{ text.contents }}</p><ul>{% for heading in toc %}<li class="toc-level-{{ heading.level }}"><a href="#{{ heading.id }}">{{ heading.title }}</a></li>{% endfor %}</ul></aside>
+  </div>
+</body>
+</html>

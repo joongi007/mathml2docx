@@ -89,6 +89,10 @@ class UnsupportedMathMLError(ValueError):
     """The input uses a MathML construct this converter cannot preserve."""
 
 
+class MathMLFallbackWarning(UserWarning):
+    """A formula was replaced with visible text or an external image."""
+
+
 def element(name, *children, **attributes):
     node = OxmlElement("m:" + name)
     for key, value in attributes.items():
@@ -126,8 +130,8 @@ def fenced(begin, end, content):
     )
 
 
-def mathml_to_omml(source):
-    """Return an oMath element. Unsupported structures raise instead of losing data."""
+def parse_mathml(source):
+    """Parse one MathML root without DTDs, entities, or network access."""
     if not isinstance(source, str):
         raise TypeError("MathML must be a string")
     if "<!DOCTYPE" in source.upper() or "<!ENTITY" in source.upper():
@@ -145,7 +149,60 @@ def mathml_to_omml(source):
         raise ValueError("Invalid MathML XML: " + str(exc)) from exc
     if etree.QName(root).localname != "math":
         raise ValueError("MathML root must be math")
-    return element("oMath", *convert(root))
+    return root
+
+
+def mathml_to_omml(source, *, target="word"):
+    """Return an oMath element. Unsupported structures raise instead of losing data."""
+    root = parse_mathml(source)
+    if target not in {"word", "libreoffice"}:
+        raise ValueError("Math target must be word or libreoffice")
+    result = element("oMath", *convert(root))
+    if target == "libreoffice":
+        for node in root.iter():
+            if any(
+                etree.QName(p).localname in {"annotation", "annotation-xml"}
+                for p in node.iterancestors()
+            ):
+                continue
+            if etree.QName(node).localname in {"annotation", "annotation-xml"}:
+                continue
+            tag = math_name(node)
+            if tag in {"mphantom", "ms"} or (
+                tag == "mfrac" and node.get("bevelled") == "true"
+            ):
+                raise UnsupportedMathMLError(
+                    "LibreOffice may change phantom spacing, bevelled fractions or string quotes; use an image fallback"
+                )
+            if tag == "menclose" and set(node.get("notation", "longdiv").split()) - {
+                "radical"
+            }:
+                raise UnsupportedMathMLError(
+                    "LibreOffice does not reliably display OMML enclosures; use an image fallback"
+                )
+            if tag == "mmultiscripts":
+                children = list(node)
+                markers = [
+                    i
+                    for i, child in enumerate(children)
+                    if math_name(child) == "mprescripts"
+                ]
+                if markers and any(
+                    math_name(child) == "none" for child in children[markers[0] + 1 :]
+                ):
+                    raise UnsupportedMathMLError(
+                        "LibreOffice displays empty prescripts as placeholders; use an image fallback"
+                    )
+    if target == "libreoffice":
+        # Writer's importer ignores sty=p on identifiers in some versions.
+        # nor expresses the same upright intent in the supported ODF importer.
+        namespace = {"m": "http://schemas.openxmlformats.org/officeDocument/2006/math"}
+        for properties in result.xpath(
+            './/m:rPr[m:scr[@m:val="roman"] and m:sty[@m:val="p"] and not(m:nor)]',
+            namespaces=namespace,
+        ):
+            properties.insert(0, element("nor", val="1"))
+    return result
 
 
 def math_name(node):
@@ -366,6 +423,117 @@ def convert(node, inherited=None):
                 group(1, "sup" if tag == "msup" else "sub"),
             )
         ]
+    if tag == "mmultiscripts":
+        if not children or math_name(children[0]) in {"none", "mprescripts"}:
+            raise ValueError("mmultiscripts requires a base expression")
+        post, pre = [], []
+        current = post
+        for child in children[1:]:
+            if math_name(child) == "mprescripts":
+                if current is pre or len(child) or (child.text or "").strip():
+                    raise ValueError(
+                        "mmultiscripts allows one empty mprescripts marker"
+                    )
+                current = pre
+            else:
+                current.append(child)
+        if len(post) % 2 or len(pre) % 2:
+            raise ValueError("mmultiscripts requires subscript/superscript pairs")
+        if len(post) > 2 or len(pre) > 2:
+            raise UnsupportedMathMLError(
+                "Multiple script columns require a fallback renderer"
+            )
+
+        def script(child, name):
+            if math_name(child) == "none":
+                if len(child) or (child.text or "").strip():
+                    raise ValueError("MathML none must be empty")
+                return element(name)
+            return element(name, *parts(child))
+
+        base = parts(children[0])
+        if post:
+            has_sub, has_sup = [math_name(child) != "none" for child in post]
+            if has_sub and has_sup:
+                base = [
+                    element(
+                        "sSubSup",
+                        element("e", *base),
+                        script(post[0], "sub"),
+                        script(post[1], "sup"),
+                    )
+                ]
+            elif has_sub or has_sup:
+                base = [
+                    element(
+                        "sSub" if has_sub else "sSup",
+                        element("e", *base),
+                        script(
+                            post[0] if has_sub else post[1], "sub" if has_sub else "sup"
+                        ),
+                    )
+                ]
+        if pre:
+            base = [
+                element(
+                    "sPre",
+                    script(pre[0], "sub"),
+                    script(pre[1], "sup"),
+                    element("e", *base),
+                )
+            ]
+        return base
+    if tag == "menclose":
+        notations = set(node.get("notation", "longdiv").split())
+        sides = {
+            "top": "hideTop",
+            "bottom": "hideBot",
+            "left": "hideLeft",
+            "right": "hideRight",
+        }
+        strikes = {
+            "horizontalstrike": "strikeH",
+            "verticalstrike": "strikeV",
+            "updiagonalstrike": "strikeBLTR",
+            "downdiagonalstrike": "strikeTLBR",
+        }
+        supported = set(sides) | set(strikes) | {"box", "radical", "actuarial"}
+        if notations - supported:
+            raise UnsupportedMathMLError(
+                "Unsupported menclose notation: "
+                + " ".join(sorted(notations - supported))
+            )
+        base = [part for child in children for part in parts(child)]
+        if "radical" in notations:
+            base = [
+                element(
+                    "rad",
+                    element("radPr", element("degHide", val="1")),
+                    element("deg"),
+                    element("e", *base),
+                )
+            ]
+        if notations - {"radical"}:
+            visible = set(sides) if "box" in notations else set(sides) & notations
+            if "actuarial" in notations:
+                visible.update({"top", "right"})
+            properties = [
+                element(name, val="0" if side in visible else "1")
+                for side, name in sides.items()
+            ]
+            properties.extend(
+                element(name, val="1")
+                for notation, name in strikes.items()
+                if notation in notations
+            )
+            base = [
+                element(
+                    "borderBox",
+                    element("borderBoxPr", *properties),
+                    element("e", *base),
+                )
+            ]
+        return base
     if tag in {"msqrt", "mroot"}:
         if tag == "mroot":
             arity(2)
@@ -591,8 +759,8 @@ def _group_latex_fence_scripts(root):
                 stack.clear()
 
 
-def latex_to_omml(source):
-    """Convert LaTeX math via the optional MIT-licensed latex2mathml package."""
+def latex_to_mathml(source):
+    """Normalize optional LaTeX backend output before the shared MathML pipeline."""
     # Ruff's oldest target is 3.7; the core package also supports early 3.6.
     if sys.version_info < (3, 6, 2):  # noqa: UP036
         raise ImportError(
@@ -638,4 +806,9 @@ def latex_to_omml(source):
         replacement = layouts[name][policy == "limits"]
         namespace = etree.QName(node).namespace
         node.tag = "{" + namespace + "}" + replacement if namespace else replacement
-    return mathml_to_omml(etree.tostring(root, encoding="unicode"))
+    return etree.tostring(root, encoding="unicode")
+
+
+def latex_to_omml(source, *, target="word"):
+    """Convert LaTeX math via the optional MIT-licensed latex2mathml package."""
+    return mathml_to_omml(latex_to_mathml(source), target=target)

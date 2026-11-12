@@ -1,6 +1,6 @@
 # Runnable examples
 
-The documentation build executes 27 Python examples to generate DOCX downloads.
+Explore 29 complete examples. Download a Word document or run its Python source locally.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -11,7 +11,7 @@ Run from a repository checkout after installing the dependencies above. Local ou
 
 [All example source and assets (ZIP)](../downloads/mathml2docx-examples.zip)
 
-The reference PDFs were rendered with LibreOffice 7.3.7. They are historical previews, not automatically refreshed by this build; Word versions and fonts may produce different results.
+PDF previews show the LibreOffice output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.
 
 - [Quick start](01_quickstart.md): Save HTML with one convert() call and receive a Document.
 - [Files, encoding, and Unicode](02_files_unicode.md): Use UTF-8 input, Korean/Japanese/accented text, and exact output extensions.
@@ -40,3 +40,5 @@ The reference PDFs were rendered with LibreOffice 7.3.7. They are historical pre
 - [Advanced research report](25_research_report.md): Ten distinct advanced MathML formulas with Korean/English prose, merged and nested tables, lists, images, links, and page breaks.
 - [Advanced template workbook](26_template_workbook.md): Put the same advanced formulas into existing documents and table cells; combine marker replacement, nested tables, headers, footers, and a landscape page.
 - [Advanced LaTeX report](27_advanced_latex.md): Eight distinct advanced LaTeX inputs exercise adjacent matrices, grouped powers, piecewise expressions, nested radicals, sums, and derivatives inside a formatted report.
+- [Chemical notation and enclosures](28_chemistry_enclosures.md): Upright element symbols, isotope prescripts, charges, reaction arrows and native enclosures.
+- [MathML recovery and image fallbacks](29_math_fallbacks.md): Preserve unsupported source or embed an explicitly supplied rendered expression.

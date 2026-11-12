@@ -1,119 +1,112 @@
 # mathml2docx
 
-[English](https://github.com/joongi007/mathml2docx/blob/master/README.md) · [한국어](https://github.com/joongi007/mathml2docx/blob/master/README.ko.md)
+[English](README.md) · [한국어](README.ko.md) · [사용 문서](https://joongi007.github.io/mathml2docx/ko/)
 
-Python으로 HTML과 MathML을 Word 문서로 변환합니다. 수식은 Word에서 편집할 수 있어
-보고서·학습지·문서 템플릿에 활용할 수 있습니다. 문서를 생성하는 컴퓨터에 Microsoft
-Office가 설치되어 있을 필요는 없습니다.
+Python에서 HTML과 MathML을 Word 문서로 변환합니다. **편집 가능한 수식**, 서식 있는
+본문, 표와 이미지를 보고서·학습지·문서 템플릿에 넣을 수 있습니다.
+문서를 생성할 때 Microsoft Office는 필요하지 않습니다.
 
-**Python 3.6 이상** · LaTeX·Markdown 선택 지원 · MIT 라이선스
+Python 3.6 이상 · 선택 기능으로 LaTeX·Markdown 지원 · MIT 라이선스
 
 ## 설치
 
-아래 예제는 **이 저장소의 1.0 코드**를 기준으로 합니다. 그대로 실행하려면 저장소를
-설치하세요. 기존 PyPI 배포 버전은 API가 다릅니다.
+이 README는 1.0 API를 설명합니다. PyPI에 1.0이 출시되기 전에는 저장소 버전을 설치하세요.
 
 ```sh
-git clone https://github.com/joongi007/mathml2docx.git
-cd mathml2docx
-python -m pip install .
+python -m pip install 'git+https://github.com/joongi007/mathml2docx.git@master'
+# LaTeX·Markdown 기능도 설치:
+python -m pip install 'mathml2docx[latex,markdown] @ git+https://github.com/joongi007/mathml2docx.git@master'
 ```
 
-LaTeX와 Markdown도 사용하려면 선택 의존성을 설치합니다.
+선택 기능인 LaTeX 변환은 Python 3.6.2 이상이 필요합니다. 라이브러리 사용에는 uv가
+필요하지 않습니다. 재현 가능한 설치를 원하면 `master` 대신 검토한 커밋이나 릴리스 태그를 지정하세요.
 
-```sh
-python -m pip install '.[latex,markdown]'
-```
-
-LaTeX 기능에는 Python **3.6.2 이상**이 필요합니다. 라이브러리 사용에 uv는 필요하지 않습니다.
-
-## 첫 문서 만들기
+## 첫 Word 문서 만들기
 
 ```python
 from mathml2docx import convert
 
-html = '''
+convert('''
 <h1>학습 노트</h1>
-<p>아래 분수는 Word에서도 편집할 수 있습니다.</p>
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mfrac><mn>1</mn><mn>2</mn></mfrac>
-</math>
-'''
-
-convert(html, 'lesson.docx')
+<p>값 <math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>은 이분의 일입니다.</p>
+<math display="block"><msup><mi>x</mi><mn>2</mn></msup></math>
+''', 'lesson.docx')
 ```
 
-실행 후 `lesson.docx`를 열어보세요. Python에서 더 수정하려면 출력 경로를 생략한
-`document = convert(html)`로 문서를 받은 뒤, 준비됐을 때
-`document.save('lesson.docx')`로 저장하세요.
+`lesson.docx`를 Word에서 열면 본문과 수식을 편집할 수 있습니다. `convert()`는
+python-docx의 `Document`도 반환합니다. 출력 경로를 생략하면 Python에서 계속 수정할 수 있습니다.
 
-## 어떤 내용을 변환할 수 있나요?
+## 지원 기능
 
-- **HTML:** 제목·문단·링크·글자 서식·목록
-- **표:** 셀 병합·중첩 표·Word 표 스타일
-- **이미지:** data URL·명시한 로컬 파일·사용자 정의 로더
-- **스타일:** 지원하는 CSS 선택자·글꼴·색상·정렬·페이지 나누기
-- **수식:** 지원하는 MathML 분수·근호·첨자·한계식·악센트·행렬
-- **기존 문서:** 문서나 셀에 내용 추가, 마커·북마크의 내용 교체
-
-HTML·CSS·MathML의 일부 기능을 지원하며, 브라우저 화면 전체를 재현하지는 않습니다.
-미지원 MathML 요소는 `UnsupportedMathMLError`로 알립니다.
-자세한 범위는 [지원 기능과 마이그레이션](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/05-migration.md),
-[검증 결과와 알려진 한계](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/11-validation.md)를 참고하세요.
-Word에서 직접 확인해야 하는 항목도 검증 문서에 기록했습니다.
-
-## 다른 사용 방법
-
-| 하고 싶은 작업 | 예제 |
+| 입력·작업 | 기능 |
 | --- | --- |
-| HTML 파일 변환·다국어 처리 | [파일과 인코딩](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/02_files_unicode.md) |
-| 기존 문서나 표 셀에 HTML 추가 | [기존 문서](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/03_existing_document.md) |
-| Word 스타일 적용·HTML 클래스 매핑 | [Word 스타일](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/06_word_styles.md) |
-| 템플릿의 내용 교체 | [마커](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/15_markers.md) · [북마크](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/16_bookmarks.md) |
-| 고급 수식·서식·템플릿을 함께 검토 | [연구 보고서](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/25_research_report.md) · [워크북](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/26_template_workbook.md) · [고급 LaTeX](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/27_advanced_latex.md) |
-| 수식·표·이미지를 함께 사용 | [복잡한 수식](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/23_complex_equations.md) · [혼합 보고서](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/24_dense_report.md) |
+| HTML | 제목, 문단, 링크, 중첩 목록, 글자 서식 |
+| 표 | 셀 병합, 중첩 표, Word 표 스타일 |
+| 이미지 | 데이터 URL, 허용한 로컬 파일, 직접 제공하는 로더 |
+| CSS | 지원하는 선택자, 글꼴, 색상, 정렬, 페이지 나누기 |
+| MathML | 분수, 근호, 첨자, 극한, 악센트, 행렬, 일부 테두리 표기와 동위원소 첨자 |
+| LaTeX·Markdown | latex2mathml과 Python-Markdown을 사용하는 선택 기능 |
+| 템플릿 | 기존 문서·셀에 추가하고 마커·북마크 내용 교체 |
 
-## LaTeX와 Markdown
+HTML·CSS·Presentation MathML의 문서화된 일부 기능을 지원합니다.
+브라우저의 전체 화면 배치를 그대로 재현하는 도구는 아닙니다.
 
-위의 선택 의존성을 설치한 뒤 실행하세요.
+## 수식 배치와 미지원 입력
+
+MathML 표준에 따라 `<math>`의 **기본 배치는 inline**입니다. 별도 표시 수식에는
+`display="block"`을 지정하세요. `display`가 없는 입력을 기존처럼 block으로 처리하려면:
+
+```python
+from mathml2docx import MathmlToDocx
+
+parser = MathmlToDocx(default_math_display='block')
+```
+
+지원하지 않는 수식 구조는 기본적으로 `UnsupportedMathMLError`를 발생시킵니다.
+다양한 입력을 받는 프로그램에서는 `unsupported_math='text'`로 XML 원문을 문서에 표시하거나,
+`mathml_fallback(source, error)`로 텍스트·이미지를 제공하거나,
+`mathml_preprocessor(source)`로 입력을 정규화할 수 있습니다.
+대체 시에는 `MathMLFallbackWarning`을 남기며, 잘못된 XML은 계속 오류로 처리합니다.
+지원 표기와 전체 예제는 [수식 처리 안내](https://joongi007.github.io/mathml2docx/ko/03-mathematics/)를 참고하세요.
+
+## LaTeX·Markdown·명령줄
 
 ```python
 from mathml2docx import MathmlToDocx
 
 parser = MathmlToDocx()
 parser.parse_latex(r'\frac{1}{2} + x_1^2').save('equation.docx')
-parser.parse_markdown('# 노트\n\n**굵게**와 ~~삭제한~~ 내용.').save('notes.docx')
+parser.parse_markdown('# 노트\n\n**강조**와 ~~삭제~~ 표시.').save('notes.docx')
 ```
-
-LaTeX는 입력 형식으로 직접 지정합니다. HTML 안의 `$...$`를 자동으로 수식 변환하지는 않습니다.
-
-## 명령줄 사용
 
 ```sh
 mathml2docx input.html output.docx
 mathml2docx equation.tex equation.docx --format latex
-mathml2docx notes.md notes.docx --format markdown
+mathml2docx input.html output.docx --default-math-display block --unsupported-math text
 ```
 
-기존 출력 파일을 교체하려면 `--force`를 사용하세요. URL 이미지와 외부 스타일시트는
-자동으로 내려받지 않습니다. Python에서 명시적인 로더를 제공할 수 있습니다.
+기존 출력 파일을 교체하려면 `--force`를 사용하세요. HTML의 달러 기호는 LaTeX 구분자로
+해석하지 않습니다. 네트워크 이미지와 외부 스타일시트는 명시적인 로더가 필요합니다.
 
-## 사용법 문서
+## 사용 문서와 예제
 
-- [시작하기](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/01-getting-started.md) · [API 참고](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/02-api.md) · [작업별 사용법](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/08-recipes.md)
-- [실행 예제 27개](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/examples/00-index.md): 전체 코드와 로컬 DOCX 생성 명령
-- 웹 문서: [English](https://joongi007.github.io/mathml2docx/) · [한국어](https://joongi007.github.io/mathml2docx/ko/). Pages 활성화와 배포 성공 후 공개되며, 배포된 문서에서 예제 파일도 내려받을 수 있습니다.
+- [시작하기](https://joongi007.github.io/mathml2docx/ko/01-getting-started/) · [API와 옵션](https://joongi007.github.io/mathml2docx/ko/02-api/) · [활용법](https://joongi007.github.io/mathml2docx/ko/08-recipes/)
+- [실행 예제와 DOCX 다운로드](https://joongi007.github.io/mathml2docx/ko/examples/00-index/): 서식, 템플릿, 과학 보고서, 화학식과 대체 렌더링.
+- [0.x에서 이전하기](https://joongi007.github.io/mathml2docx/ko/05-migration/) · [호환성과 검증](https://joongi007.github.io/mathml2docx/ko/11-validation/)
+- [English documentation](https://joongi007.github.io/mathml2docx/)
 
-## 개발 참여
+LibreOffice로 PDF를 생성하려면 **Writer와 Math**, 사용할 글꼴을 설치하세요.
+Writer만 설치하면 수식이 빈칸으로 나올 수 있습니다.
+[렌더링 안내](https://joongi007.github.io/mathml2docx/ko/11-validation/#libreoffice)에 설치·검사 명령이 있습니다. 테두리 등 알려진 차이에는
+`math_target='libreoffice'`와 명시적인 대체 처리를 사용하세요.
 
-변경 작업은 `develop`에서 시작합니다. uv 개발 환경·테스트·브랜치·배포 방법은
-[개발·릴리스 안내](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/09-development-release.md)에,
-1.0 변경 사항은 [변경 기록](https://github.com/joongi007/mathml2docx/blob/master/CHANGELOG.md)에 정리했습니다.
+## 기여와 라이선스
 
-## 라이선스
+개발은 `develop`에서 시작합니다. 환경 구성·테스트·배포는
+[개발과 릴리스](https://joongi007.github.io/mathml2docx/ko/09-development-release/)를,
+변경 사항은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
 
-[MIT](https://github.com/joongi007/mathml2docx/blob/master/LICENSE) 라이선스이며, 원본
-[html2docx](https://github.com/pqzx/html2docx)의 저작권 고지를 유지합니다.
-의존성에는 각자의 라이선스가 적용됩니다. [제삼자 고지](https://github.com/joongi007/mathml2docx/blob/master/THIRD_PARTY_NOTICES.md)를 참고하세요.
-1.0 변환기는 기존 Office XSL 없이 Word 수식을 직접 생성합니다. 과거 XSL 사본의 권한은
-별도 미해결 사항으로 [라이선스 범위](https://github.com/joongi007/mathml2docx/blob/master/docs/ko/10-licensing.md)에 설명했습니다.
+[MIT](LICENSE) 라이선스이며 [html2docx](https://github.com/pqzx/html2docx)에서 파생됐습니다.
+의존성의 라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 정리돼 있습니다.
+1.0 변환기는 OMML을 직접 생성하며 Office XSL을 포함하지 않습니다.
+과거 0.x 배포물은 별도의 [출처 기록](https://joongi007.github.io/mathml2docx/ko/06-xsl-provenance/)을 참고하세요.

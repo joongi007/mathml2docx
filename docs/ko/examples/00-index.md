@@ -1,6 +1,6 @@
 # 실행 예제
 
-문서 빌드에서 Python 예제 27개를 실행해 내려받을 DOCX를 생성합니다.
+완전한 예제 29개를 살펴보세요. Word 문서를 내려받거나 Python 코드를 직접 실행할 수 있습니다.
 
 ```sh
 uv sync --locked --extra latex --extra markdown --group docs --group examples
@@ -11,7 +11,7 @@ uv run --no-sync python -m examples.run_all
 
 [전체 예제 코드와 자산 (ZIP)](../downloads/mathml2docx-examples.zip)
 
-참조 PDF는 LibreOffice 7.3.7에서 렌더링한 과거 미리보기이며, 이번 빌드에서 자동으로 갱신하지 않습니다. Word 버전과 글꼴에 따라 결과가 달라질 수 있습니다.
+PDF에서 LibreOffice 출력 결과를 살펴볼 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.
 
 - [빠른 시작](01_quickstart.md): convert() 한 번으로 HTML을 저장하고 Document를 반환받습니다.
 - [파일·인코딩·다국어](02_files_unicode.md): UTF-8 입력, 한글·일본어·악센트 문자와 정확한 출력 확장자를 다룹니다.
@@ -40,3 +40,5 @@ uv run --no-sync python -m examples.run_all
 - [고급 수식 연구 보고서](25_research_report.md): 서로 다른 고급 MathML 수식 10개를 한영 본문·병합/중첩 표·목록·이미지·링크·페이지 나누기와 결합합니다.
 - [고급 수식 템플릿 워크북](26_template_workbook.md): 고급 수식을 기존 문서와 표 셀에 넣고 마커 교체·중첩 표·머리글·바닥글·가로 페이지를 함께 사용합니다.
 - [고급 LaTeX 보고서](27_advanced_latex.md): 서로 다른 LaTeX 수식 8개로 연속 행렬·괄호 지수·조각함수·중첩 근호·합·편미분을 서식이 있는 보고서에서 검사합니다.
+- [화학 표기와 수식 테두리](28_chemistry_enclosures.md): 정체 원소 기호·동위원소 앞 첨자·전하·반응 화살표와 기본 수식 테두리.
+- [MathML 복구와 이미지 대체](29_math_fallbacks.md): 지원하지 않는 원문을 표시하거나 직접 제공한 수식 이미지를 내장합니다.

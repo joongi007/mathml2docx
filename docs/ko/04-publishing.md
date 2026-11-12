@@ -1,64 +1,48 @@
-# 문서 운영
+# 문서 사이트 빌드
 
-## 로컬 빌드
+문서 사이트는 Python 빌더가 Markdown을 HTML로 변환하는 정적 사이트입니다.
+Jinja2 템플릿과 Pygments 코드 강조를 사용하며 MkDocs나 JavaScript 빌드 도구는 필요하지 않습니다.
 
-저장소 루트에서 Python 3.10 이상으로 실행합니다.
+## 로컬 빌드와 미리보기
+
+Python 3.10 이상과 uv 0.13.7 이상을 사용해 저장소 루트에서 실행하세요.
 
 ```sh
-uv sync --locked --extra latex --extra markdown --group docs --group examples
+uv sync --locked --all-extras --group docs --group examples
 uv run --no-sync python scripts/build_docs.py
 python -m http.server 8000 --directory site
 ```
 
-`http://localhost:8000`은 영문 기본 문서, `http://localhost:8000/ko/`는 한국어 문서입니다.
-언어 선택은 현재 보고 있는 페이지의 다른 언어판으로 이동합니다. 언어마다 탐색 메뉴·
-검색 색인을 생성합니다. 두 언어에서 예제 코드와 DOCX 다운로드를 제공하며,
-실행 코드와 바이너리 원본은 공유합니다.
+영어는 `http://localhost:8000/`, 한국어는 `http://localhost:8000/ko/`에서 확인합니다.
+빌드는 Python 예제를 실행해 DOCX와 소스 ZIP을 생성하고 두 언어를 HTML로 변환합니다.
+로컬 링크·앵커·번역 쌍·검색 인덱스·다운로드를 검사한 뒤에만 출력 폴더를 교체합니다.
+다른 생성 폴더에 빌드하려면 `--output PATH`를 지정하세요.
 
-두 언어 모두 MkDocs `--strict`로 빌드하므로 경고가 있으면 실패합니다. 빌드 후 40쌍의
-페이지가 갖춰졌는지, 실제 HTML의 언어·같은 페이지 전환 링크·검색·다운로드도 확인합니다.
-번역 페이지를 추가하면 두 언어의 페이지 수에 맞춰 검사 범위가 늘어납니다.
+## 내용과 레이아웃 수정
 
-## GitHub Pages
+| 내용 | 원본 |
+| --- | --- |
+| 영어·한국어 안내 | `docs/*.md` / `docs/ko/*.md` |
+| 두 언어 목차 | `docs_site/navigation.json` |
+| 페이지 템플릿·디자인 토큰·동작 | `docs_site/page.html`, `site.css`, `site.js` |
+| 예제 제목·설명 | `examples/catalog.json`, `catalog.ko.json` |
+| 실행 예제 코드 | `examples/` |
+| Markdown 변환·링크 검사 | `scripts/site_builder.py` |
 
-**Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 설정합니다.
-master에 변경이 반영되면 `Documentation` 워크플로가 두 언어를 하나의 사이트로 빌드해
-`github-pages` 환경으로 배포합니다. PR은 빌드만 합니다. Actions에서 수동 실행도 가능합니다.
+새 페이지는 두 언어로 추가하고 각각의 목차에 등록하세요. 렌더링·레이아웃을 바꿀 때도
+기존 URL을 유지합니다. 자동 생성되는 예제 페이지는 카탈로그와 Python 코드를 수정하면
+다음 빌드에 반영됩니다.
 
-주소는 영문 `https://joongi007.github.io/mathml2docx/`,
-한국어 `https://joongi007.github.io/mathml2docx/ko/`입니다.
-워크플로 파일이 있다는 사실만으로 Pages가 활성화되지는 않습니다. 저장소 설정과
-실제 배포 결과를 확인하세요.
+검색은 브라우저에서 언어별 JSON 인덱스를 조회하며 영어·한국어·API 이름의 부분 문자열을
+찾습니다. 결과는 HTML이 아닌 텍스트로 삽입합니다. JavaScript 없이도 본문과 목차를
+읽을 수 있으며, 검색과 코드 복사 기능은 JavaScript가 필요합니다.
 
-## 원본과 번역 관리
+## 배포
 
-| 대상 | 영어 | 한국어 |
-| --- | --- | --- |
-| README | `README.md` | `README.ko.md` |
-| 안내 문서 | `docs/*.md` | `docs/ko/*.md` |
-| 탐색·검색 설정 | `mkdocs.yml` | `mkdocs.ko.yml` |
-| 예제 설명 | `examples/catalog.json` | `examples/catalog.ko.json` |
-| 생성되는 예제 문서 | `docs/examples/` | `docs/ko/examples/` |
+GitHub의 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로
+지정하세요. `Documentation` 워크플로우는 PR과 develop 푸시에서 빌드하고,
+master 빌드만 `github-pages` 환경으로 배포합니다.
 
-기능이나 API가 바뀌면 양쪽 문서를 함께 수정하세요. 새 페이지는 양쪽 탐색 메뉴에 추가합니다.
-예제 설명은 카탈로그에서 수정합니다. 생성된 문서를 직접 고치면 다음 빌드에서 덮어씁니다.
-예제 코드의 원본은 `examples/`에 있습니다.
-
-`site/`, 생성 DOCX, `docs/ko/assets/`·`downloads/`의 빌드용 사본은 커밋하지 않습니다.
-참조 PDF 원본은 `docs/assets/previews/` 한 곳에서 관리합니다. 별도 LibreOffice를 설치해
-`python scripts/render_examples.py`를 실행한 뒤 검토한 PDF를 복사할 수 있습니다.
-기존 PDF는 과거 미리보기이므로 문서 빌드 때 자동 갱신하지 않습니다.
-
-## MkDocs가 필요한가요?
-
-필수는 아닙니다. GitHub Pages는 정적 HTML·CSS·JavaScript를 호스팅하므로 자체 사이트도
-가능합니다. 현재는 Markdown 원본과 기존 주소를 유지하면서 목차·검색·링크 검사·테마를
-활용하려고 MkDocs를 사용합니다. 별도 다국어 플러그인 없이 두 설정을 빌드하고,
-작은 공통 템플릿과 hook으로 언어 전환을 제공합니다.
-
-전용 레이아웃이나 인터랙티브 변환기가 필요하면 테마를 확장하거나 자체 사이트로
-이전할 수 있습니다. Markdown·예제 카탈로그·Python 예제는 변환 엔진과 분리되어 있습니다.
-이전할 때는 기존 주소, 다국어 페이지 대응, 검색, 다운로드와 접근성을 함께 유지하세요.
-
-공식 안내: [GitHub Pages 사용자 지정 워크플로](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages),
-[MkDocs 테마 사용자 지정](https://www.mkdocs.org/user-guide/customizing-your-theme/).
+생성된 `site/`·DOCX·예제 출력 폴더는 커밋하지 않습니다. 참조 PDF를 갱신하려면
+LibreOffice Writer·Math·글꼴·Poppler를 설치한 뒤 [렌더링 검사](11-validation.md#libreoffice)를
+실행하세요. PDF 미리보기와 편집 가능한 DOCX는 별도 파일입니다.

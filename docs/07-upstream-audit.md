@@ -1,15 +1,11 @@
-# Upstream issue review
+# Upstream issue compatibility
 
-Reviewed on 2026-11-09, with implementation and verification on 2026-11-10 and
-additional DOCX answer checks on 2026-11-11. The public GitHub API supplied all
-49 open/closed issues from `pqzx/html2docx`, excluding pull requests. No upstream
-issue was modified or closed.
-
-The count includes duplicates, questions, withdrawn reports, and administrative
-or publishing requests. Addressable code defects/features were implemented with
-the limitations below. XML, execution, and LibreOffice checks do not establish
-pixel-identical Word output or complete CSS/MathML support. Upstream publishing
-and repository security settings are separate administrative tasks.
+mathml2docx is derived from `pqzx/html2docx`. This record maps 49 upstream issue
+reports (open and closed, excluding pull requests) to behavior in the 1.0 converter.
+The review snapshot is dated 2026-11-09; the table records reproduction evidence,
+fixes and remaining input-specific limits. Questions and administrative requests
+are distinguished from converter defects. See [validation](11-validation.md) for
+the difference between structure checks and document-application rendering.
 
 ## Verifying existing fixes
 

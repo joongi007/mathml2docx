@@ -1,7 +1,6 @@
 # Migrating to 1.0.0
 
 Version 1.0.0 converts MathML directly into Word's OMML without an XSL file.
-Changing the package version does not publish it to PyPI; publishing is a separate step.
 
 ```python
 from mathml2docx import convert, MathmlToDocx, TableStyle, ParagraphStyle
@@ -40,7 +39,7 @@ parser.parse_latex(r'\frac{1}{2} + x^2').save('equation.docx')
 Tokens (`mi`, `mn`, `mo`, `mtext`, `ms`), grouping, fractions, scripts, square and
 indexed roots, delimiters, limits, accents, rectangular matrices, and phantom are
 supported. `semantics` converts its first expression and omits annotations.
-`menclose`, `mmultiscripts`, and Content MathML are unsupported. Not every font,
+Selected `menclose` notations and one pair each of pre/post scripts in `mmultiscripts` are supported. Content MathML needs preprocessing or fallback. Not every font,
 spacing, accent, or other presentation attribute is reproduced.
 
 LaTeX passes through latex2mathml and the same native converter. Independent answer
@@ -93,3 +92,11 @@ python -m mathml2docx input.tex equation.docx --format latex
 ```
 
 Existing output is refused unless `--force` is supplied.
+
+## Math layout and recovery
+
+MathML without `display` is now inline, matching the standard. To preserve old
+block placement, use `MathmlToDocx(default_math_display='block')`. Explicit
+`display="block"` and supported CSS display values are honored. Unsupported
+formulas still raise by default; `unsupported_math='text'`, `mathml_fallback`
+and `mathml_preprocessor` provide explicit recovery. See [equation handling](03-mathematics.md).

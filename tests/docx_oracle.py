@@ -61,11 +61,12 @@ def math_sequence(nodes):
                     "type": value(node, "m:fPr/m:type", "bar", "m"),
                 }
             )
-        elif tag in {"sSup", "sSub", "sSubSup", "limLow", "limUpp", "func"}:
+        elif tag in {"sSup", "sSub", "sSubSup", "sPre", "limLow", "limUpp", "func"}:
             role, args = {
                 "sSup": ("sup", ["e", "sup"]),
                 "sSub": ("sub", ["e", "sub"]),
                 "sSubSup": ("subsup", ["e", "sub", "sup"]),
+                "sPre": ("prescript", ["e", "sub", "sup"]),
                 "limLow": ("lower", ["e", "lim"]),
                 "limUpp": ("upper", ["e", "lim"]),
                 "func": ("function", ["fName", "e"]),
@@ -117,6 +118,34 @@ def math_sequence(nodes):
                     "bar": {
                         "position": value(node, "m:barPr/m:pos", "bot", "m"),
                         "body": math_sequence(node.find("m:e", NS)),
+                    }
+                }
+            )
+        elif tag == "borderBox":
+            result.append(
+                {
+                    "enclosure": {
+                        "body": math_sequence(node.find("m:e", NS)),
+                        "sides": [
+                            side
+                            for side, prop in [
+                                ("top", "hideTop"),
+                                ("bottom", "hideBot"),
+                                ("left", "hideLeft"),
+                                ("right", "hideRight"),
+                            ]
+                            if not enabled(node, "m:borderBoxPr/m:" + prop, prefix="m")
+                        ],
+                        "strikes": [
+                            kind
+                            for kind, prop in [
+                                ("horizontal", "strikeH"),
+                                ("vertical", "strikeV"),
+                                ("up", "strikeBLTR"),
+                                ("down", "strikeTLBR"),
+                            ]
+                            if enabled(node, "m:borderBoxPr/m:" + prop, prefix="m")
+                        ],
                     }
                 }
             )

@@ -10,6 +10,8 @@ python -m examples.27_advanced_latex
 
 [Generated DOCX](../downloads/examples/27_advanced_latex.docx)
 
+[Reference PDF](../assets/previews/27_advanced_latex.pdf)
+
 ## Complete source
 
 ```python
@@ -38,7 +40,7 @@ parser = MathmlToDocx(
     stylesheet="* {font-family:'Malgun Gothic'} p,td {font-size:10pt} h2 {color:navy}",
 )
 parser.add_html_to_document(
-    "<h1>Advanced LaTeX / 복합 수식</h1><p>각 식은 별도 정답으로 검사합니다.</p>",
+    "<h1>Advanced LaTeX / 복합 수식</h1><p>행렬·적분·편미분을 다루는 연구 노트입니다.</p>",
     document,
 )
 for index, entry in enumerate(entry for entry in CATALOG if entry["format"] == "latex"):

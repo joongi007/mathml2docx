@@ -44,6 +44,6 @@ save(document, "23_complex_equations.docx")
 
 ## 화면 비교 시 참고할 점
 
-LibreOffice 7.3 참조 PDF에서 M17의 phantom 예약 폭, M19의 bevelled 분수, M20의 문자열 따옴표는 의도한 표시와 다릅니다. 구조·속성·문자는 XML에 보존되지만 화면 동등성은 확인하지 못했습니다. Word 16 자동 열기·출력·재저장은 검사했으며, 대화형 편집과 해당 표시의 집중 검토는 남아 있습니다.
+phantom의 예약 공간, 기울어진 분수, 문자열 따옴표 등은 Word와 LibreOffice에서 다르게 표시될 수 있습니다. 이런 세부 표현이 중요하면 입력과 생성된 문서를 함께 비교하세요.
 
 [검증 범위와 한계](../11-validation.md)

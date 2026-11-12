@@ -1,22 +1,4 @@
-# Development, compatibility, and publishing
-
-## Preserved versions
-
-The existing master history is not reset or force-pushed. These tags preserve
-previous source states locally and remotely:
-
-| Tag | Commit | Contents |
-| --- | --- | --- |
-| `v0.1.3-legacy` | `89205f4` | Original 0.1.3 source |
-| `snapshot/pre-python36-compat` | `a8ef2ec` | 1.0 candidate before restoring Python 3.6 support |
-
-Compatibility and validation work was reviewed on `compat/python36-uv` and merged
-to master. These historical tags may still contain the old XSL; preservation does
-not resolve its redistribution rights. See [provenance](06-xsl-provenance.md).
-
-Publishing a GitHub Release is separate from merging or pushing source.
-Develop pushes do not upload packages. Master pushes publish TestPyPI candidates;
-verified final version tags publish to PyPI, as described below.
+# Development and releases
 
 ## Development environment
 
@@ -82,8 +64,7 @@ binary; the legacy check uses an explicit container image.
 
 ## Branch workflow
 
-The existing `master` branch is the main/release branch; it has not been renamed
-`main`. Start everyday work from `develop`:
+`master` is the release branch. Start everyday work from `develop`:
 
 ```sh
 git switch develop
@@ -207,32 +188,3 @@ tag `v1.0.1` on that commit. Merge master back into develop (or open a back-merg
 PR) so the fix survives the next release. If develop already targets `1.1.0`,
 resolve version/lock conflicts while keeping develop's intended version.
 This flow keeps a hotfix independent of unreleased features.
-
-## Remaining release checks
-
-Local tests, independent DOCX answers, schemas, bilingual docs, distribution checks,
-and workflow gates cover the supported subset. Before the first stable upload:
-
-- Inspect Word display, editing, and resaving, including M17/M19/M20 differences.
-- Confirm index ownership and both Trusted Publishers/environment settings.
-- Observe a successful real TestPyPI upload and its installation checks.
-- Review final versions/changelog and historical XSL-containing copies.
-- Enable **Settings → Pages → Source: GitHub Actions** for documentation hosting.
-
-Pages is separate from package publishing. Workflow definitions alone do not
-prove account settings or actual remote installation. No final release tag is
-created automatically by these workflows.
-
-## Validation history
-
-On 2026-11-10, the 108-test suite passed on Python 3.6 with both the default and
-2.16.5 LaTeX backends, as did doctests and installation smoke checks. Those checks
-were primarily structural/persistence checks and did not establish all meanings.
-Python 3.7/3.8 were also exercised; Python 3.14 reported 108 tests plus 860 subcases.
-
-Independent saved-DOCX answers added on 2026-11-11 exposed text/accent/spacing
-mismatches in 2.16, which is no longer supported. Before the separate release-gate
-tests, the runtime suite reported 117 tests and 941 subcases on Python 3.14 and
-passed on real Python 3.6.15 and Python 3.8. Inputs and JSON answers are retained;
-generated DOCX files are excluded from Git and source distributions.
-See [validation scope](11-validation.md) for distinctions from direct Word checks.

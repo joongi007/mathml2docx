@@ -30,7 +30,7 @@ parser.parse_latex(r'\frac{1}{2} + x^2').save('equation.docx')
 - URL 이미지는 자동으로 다운로드하지 않습니다. 기본적으로 data URL만 처리합니다.
   로컬 이미지는 `img_src_base_path` 아래 파일만 읽습니다. URL·사용자 자산 처리는
   `image_loader(source)` 콜백으로 직접 제공하며, 콜백이 `bytes`나 파일 객체를 반환해야 합니다.
-- Office XSL은 제거했습니다. 과거 릴리스와 Git 기록에는 남아 있으므로 이번 변경이
+- Office XSL은 제거했습니다. 과거 릴리스와 Git 기록에는 남아 있으므로 이전이
   과거 배포본의 라이선스 상태까지 해결하지는 않습니다.
 - 미지원 MathML은 `UnsupportedMathMLError`로 알려 줍니다. 전체 MathML 규격이나
   모든 LaTeX 패키지를 지원한다고 보장하지 않습니다.
@@ -39,8 +39,8 @@ parser.parse_latex(r'\frac{1}{2} + x^2').save('equation.docx')
 
 기본 토큰(`mi`, `mn`, `mo`, `mtext`, `ms`), 그룹, 분수, 위·아래 첨자, 제곱근과 n제곱근,
 울타리, 위·아래 한계, 악센트, 직사각 행렬, phantom을 지원합니다. `semantics`는 첫
-표현식을 변환하고 주석은 제외합니다. `menclose`, `mmultiscripts`, Content MathML 등은
-현재 지원하지 않습니다. 글꼴·간격·악센트 등 MathML 표현 속성 전체를 재현하지는 않습니다.
+표현식을 변환하고 주석은 제외합니다. 일부 `menclose` 표기와 `mmultiscripts`의 앞뒤 첨자 한 쌍을 지원합니다.
+Content MathML은 전처리 또는 대체 처리가 필요합니다. 글꼴·간격·악센트 등 MathML 표현 속성 전체를 재현하지는 않습니다.
 LaTeX는 `latex2mathml`이 생성한 MathML에 이 지원 범위가 적용됩니다.
 독립 정답 비교에서 구형 latex2mathml 2.16의 문자·악센트·명령 손실이 확인되어
 선택 LaTeX 기능은 Python 3.6.2 이상과 latex2mathml 3.64 이상으로 제한합니다.
@@ -88,3 +88,11 @@ python -m mathml2docx input.tex equation.docx --format latex
 ```
 
 기존 출력 파일은 거절하며 `--force`로 덮어쓸 수 있습니다.
+
+## 수식 배치와 대체 처리
+
+`display`를 생략한 MathML은 표준에 맞춰 인라인으로 배치합니다. 이전의 블록 배치를
+유지하려면 `MathmlToDocx(default_math_display='block')`을 사용하세요. 명시적인
+`display="block"`과 지원하는 CSS display 값도 적용합니다. 미지원 수식은 기본적으로
+예외를 발생시키며 `unsupported_math='text'`, `mathml_fallback`, `mathml_preprocessor`로
+명시적인 대체 처리를 선택할 수 있습니다. [수식 처리](03-mathematics.md)를 참고하세요.

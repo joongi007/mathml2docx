@@ -106,5 +106,13 @@
   "27_advanced_latex": [
     "Advanced LaTeX report",
     "Eight distinct advanced LaTeX inputs exercise adjacent matrices, grouped powers, piecewise expressions, nested radicals, sums, and derivatives inside a formatted report."
+  ],
+  "28_chemistry_enclosures": [
+    "Chemical notation and enclosures",
+    "Upright element symbols, isotope prescripts, charges, reaction arrows and native enclosures."
+  ],
+  "29_math_fallbacks": [
+    "MathML recovery and image fallbacks",
+    "Preserve unsupported source or embed an explicitly supplied rendered expression."
   ]
 }

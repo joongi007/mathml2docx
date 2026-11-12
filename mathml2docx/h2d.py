@@ -23,7 +23,13 @@ from docx.table import _Cell
 
 from .config import DEFAULT_PARAGRAPH_STYLE, DEFAULT_TABLE_STYLE
 from .css import INHERITED, computed_styles
-from .math import mathml_to_omml
+from .math import (
+    MathMLFallbackWarning,
+    UnsupportedMathMLError,
+    element,
+    mathml_to_omml,
+    parse_mathml,
+)
 from .styles import css, length, paragraph_style, run_style, style_name
 
 BLOCKS = {
@@ -67,6 +73,11 @@ class HtmlToDocx:
             "styles": True,
             "img_src_base_path": None,
             "image_loader": None,
+            "default_math_display": "inline",
+            "unsupported_math": "error",
+            "mathml_preprocessor": None,
+            "mathml_fallback": None,
+            "math_target": "word",
         }
         self.table_style = DEFAULT_TABLE_STYLE
         self.paragraph_style = DEFAULT_PARAGRAPH_STYLE
@@ -132,6 +143,9 @@ class HtmlToDocx:
         if not isinstance(cell, _Cell):
             raise TypeError("cell must be a python-docx table cell")
         self.add_html_to_document(html, cell)
+
+    def _add_mathml_to_document(self, source, document):
+        _Renderer(self, document).math(source, {})
 
     @staticmethod
     def add_image_to_cell(cell, image):
@@ -266,11 +280,7 @@ class _Renderer:
             return
         if tag == "math":
             if self.config.options["mathml"]:
-                if node.get("display", "block") != "inline":
-                    self.paragraph = None
-                self.paragraph_for()._p.append(mathml_to_omml(str(node)))
-                if node.get("display", "block") != "inline":
-                    self.paragraph = None
+                self.math(str(node), properties)
             return
         if tag == "img":
             if self.config.options["images"]:
@@ -432,6 +442,88 @@ class _Renderer:
         for child in list(paragraph._p)[start:]:
             link.append(child)
         paragraph._p.append(link)
+
+    def math(self, source, properties):
+        # Validate both sides of preprocessing. Recovery must not hide malformed
+        # XML, DTDs, wrong arity, or exceptions raised by application callbacks.
+        root = parse_mathml(source)
+        preprocessor = self.config.options.get("mathml_preprocessor")
+        if preprocessor is not None:
+            source = preprocessor(source)
+            root = parse_mathml(source)
+        display = properties.get(
+            "display",
+            root.get(
+                "display", self.config.options.get("default_math_display", "inline")
+            ),
+        )
+        if display not in {
+            "inline",
+            "block",
+            "inline math",
+            "block math",
+            "inline-block",
+        }:
+            raise ValueError("Math display must be inline or block")
+        block = display in {"block", "block math"}
+        replacement = None
+        try:
+            equation = mathml_to_omml(
+                source, target=self.config.options.get("math_target", "word")
+            )
+        except UnsupportedMathMLError as exc:
+            fallback = self.config.options.get("mathml_fallback")
+            if fallback is not None:
+                replacement = fallback(source, exc)
+            elif self.config.options.get("unsupported_math", "error") == "text":
+                replacement = "[Unconverted MathML] " + source
+            else:
+                raise
+            if isinstance(replacement, bytes):
+                replacement = BytesIO(replacement)
+            if not isinstance(replacement, (str, BytesIO)):
+                raise TypeError(
+                    "mathml_fallback must return text, image bytes, or BytesIO"
+                ) from exc
+            if (isinstance(replacement, str) and not replacement.strip()) or (
+                isinstance(replacement, BytesIO) and not replacement.getbuffer().nbytes
+            ):
+                raise ValueError("MathML fallback must not be empty") from exc
+            warnings.warn(
+                "MathML fallback used: " + str(exc), MathMLFallbackWarning, stacklevel=3
+            )
+        if block:
+            self.paragraph = None
+        paragraph = self.paragraph_for()
+        if self.config.options["styles"]:
+            paragraph_style(paragraph, properties, self.available())
+        if replacement is None:
+            if block:
+                alignment = {"left": "left", "right": "right", "center": "center"}.get(
+                    properties.get("text-align"), "center"
+                )
+                equation = element(
+                    "oMathPara",
+                    element("oMathParaPr", element("jc", val=alignment)),
+                    equation,
+                )
+            paragraph._p.append(equation)
+        elif isinstance(replacement, str):
+            run = paragraph.add_run(replacement)
+            if self.config.options["styles"]:
+                run_style(run, properties)
+        else:
+            replacement.seek(0)
+            shape = paragraph.add_run().add_picture(replacement)
+            limit = Inches(self.available())
+            if shape.width > limit:
+                shape.height = round(shape.height * limit / shape.width)
+                shape.width = limit
+            shape._inline.docPr.set(
+                "descr", root.get("alttext") or "MathML image: " + source
+            )
+        if block:
+            self.paragraph = None
 
     def image(self, node):
         source = node.get("src", "")

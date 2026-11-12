@@ -10,6 +10,8 @@ python -m examples.26_template_workbook
 
 [생성된 DOCX](../downloads/examples/26_template_workbook.docx)
 
+[참조 PDF](../assets/previews/26_template_workbook.pdf)
+
 ## 전체 코드
 
 ```python

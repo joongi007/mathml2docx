@@ -44,6 +44,6 @@ save(document, "23_complex_equations.docx")
 
 ## Visual comparison notes
 
-In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Automated Word 16 open/export/save checks passed; interactive editing and focused visual review remain outstanding.
+Some equation properties vary between Word and LibreOffice, particularly phantom spacing, bevelled fractions and string quotes. Compare the input with the generated document when those details matter.
 
 [Validation scope and limitations](../11-validation.md)

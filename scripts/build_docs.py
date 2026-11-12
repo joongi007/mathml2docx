@@ -1,13 +1,13 @@
 """Build English/Korean documentation and runnable example downloads."""
 
+import argparse
 import json
 import os
 import shutil
 import subprocess
 import sys
-from html.parser import HTMLParser
+import tempfile
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
 from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +15,7 @@ SITE_URL = "https://joongi007.github.io/mathml2docx/"
 COPY = {
     "en": {
         "overview": "Runnable examples",
-        "intro": "The documentation build executes {count} Python examples to generate DOCX downloads.",
+        "intro": "Explore {count} complete examples. Download a Word document or run its Python source locally.",
         "run": "Run",
         "docx": "Generated DOCX",
         "pdf": "Reference PDF",
@@ -23,14 +23,14 @@ COPY = {
         "input": "Input HTML",
         "zip": "All example source and assets (ZIP)",
         "local": "Run from a repository checkout after installing the dependencies above. Local outputs go to `examples/output/`. Run an individual example with, for instance, `python -m examples.01_quickstart`.",
-        "previews": "The reference PDFs were rendered with LibreOffice 7.3.7. They are historical previews, not automatically refreshed by this build; Word versions and fonts may produce different results.",
+        "previews": "PDF previews show the LibreOffice output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.",
         "notes": "Visual comparison notes",
-        "limits": "In the LibreOffice 7.3 reference PDF, M17 phantom width, M19 bevelled fractions, and M20 string quotes differ from the intended display. Their structures, properties, and characters are retained in XML, but visual equivalence has not been established. Automated Word 16 open/export/save checks passed; interactive editing and focused visual review remain outstanding.",
+        "limits": "Some equation properties vary between Word and LibreOffice, particularly phantom spacing, bevelled fractions and string quotes. Compare the input with the generated document when those details matter.",
         "validation": "Validation scope and limitations",
     },
     "ko": {
         "overview": "실행 예제",
-        "intro": "문서 빌드에서 Python 예제 {count}개를 실행해 내려받을 DOCX를 생성합니다.",
+        "intro": "완전한 예제 {count}개를 살펴보세요. Word 문서를 내려받거나 Python 코드를 직접 실행할 수 있습니다.",
         "run": "실행",
         "docx": "생성된 DOCX",
         "pdf": "참조 PDF",
@@ -38,9 +38,9 @@ COPY = {
         "input": "입력 HTML",
         "zip": "전체 예제 코드와 자산 (ZIP)",
         "local": "위 의존성을 설치한 뒤 저장소 루트에서 실행하세요. 로컬 결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행할 수 있습니다. 실행 코드는 두 언어 문서가 공유합니다.",
-        "previews": "참조 PDF는 LibreOffice 7.3.7에서 렌더링한 과거 미리보기이며, 이번 빌드에서 자동으로 갱신하지 않습니다. Word 버전과 글꼴에 따라 결과가 달라질 수 있습니다.",
+        "previews": "PDF에서 LibreOffice 출력 결과를 살펴볼 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.",
         "notes": "화면 비교 시 참고할 점",
-        "limits": "LibreOffice 7.3 참조 PDF에서 M17의 phantom 예약 폭, M19의 bevelled 분수, M20의 문자열 따옴표는 의도한 표시와 다릅니다. 구조·속성·문자는 XML에 보존되지만 화면 동등성은 확인하지 못했습니다. Word 16 자동 열기·출력·재저장은 검사했으며, 대화형 편집과 해당 표시의 집중 검토는 남아 있습니다.",
+        "limits": "phantom의 예약 공간, 기울어진 분수, 문자열 따옴표 등은 Word와 LibreOffice에서 다르게 표시될 수 있습니다. 이런 세부 표현이 중요하면 입력과 생성된 문서를 함께 비교하세요.",
         "validation": "검증 범위와 한계",
     },
 }
@@ -154,107 +154,28 @@ def source_pages(docs):
     return {path.relative_to(docs).as_posix() for path in pages}
 
 
-class LanguageLinks(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.language = None
-        self.links = {}
-        self.current = []
-        self.alternates = {}
-        self.edit_url = None
-
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        if tag == "html":
-            self.language = attrs.get("lang")
-        if tag == "a" and "hreflang" in attrs:
-            self.links[attrs["hreflang"]] = attrs["href"]
-            if attrs.get("aria-current") == "page":
-                self.current.append(attrs["hreflang"])
-        if tag == "a" and attrs.get("href", "").startswith(
-            "https://github.com/joongi007/mathml2docx/edit/"
-        ):
-            self.edit_url = attrs["href"]
-        if tag == "link" and attrs.get("rel") == "alternate":
-            self.alternates[attrs["hreflang"]] = attrs["href"]
-
-
-def validate_site(pages):
-    """Check real output: locale, equivalent-page links, search and downloads."""
-    site = ROOT / "site"
-    for language, prefix in (("en", ""), ("ko", "ko/")):
-        for source in pages:
-            suffix = "" if source == "index.md" else source.removesuffix(".md") + "/"
-            html = site / prefix / suffix / "index.html"
-            parser = LanguageLinks()
-            parser.feed(html.read_text(encoding="utf-8"))
-            if parser.language != language or parser.current != [language]:
-                raise ValueError(f"Incorrect language/current selector: {html}")
-            if parser.edit_url != (
-                "https://github.com/joongi007/mathml2docx/edit/master/docs/"
-                + prefix
-                + source
-            ):
-                raise ValueError(f"Incorrect edit source: {html}: {parser.edit_url}")
-            for target_language, target_prefix in (("en", ""), ("ko", "ko/")):
-                href = parser.links[target_language]
-                expected = site / target_prefix / suffix / "index.html"
-                actual = html.parent / unquote(urlsplit(href).path) / "index.html"
-                if actual.resolve() != expected.resolve() or not actual.is_file():
-                    raise ValueError(f"Broken language link: {html}: {href}")
-                if (
-                    parser.alternates[target_language]
-                    != SITE_URL + target_prefix + suffix
-                ):
-                    raise ValueError(f"Incorrect alternate URL: {html}")
-            if parser.alternates["x-default"] != SITE_URL + suffix:
-                raise ValueError(f"Incorrect default URL: {html}")
-        search = json.loads(
-            (site / prefix / "search/search_index.json").read_text(encoding="utf-8")
-        )
-        if language not in search["config"]["lang"] or not search["docs"]:
-            raise ValueError(f"Missing {language} search index")
-        if not (site / prefix / "downloads/mathml2docx-examples.zip").is_file():
-            raise ValueError(f"Missing {language} example download")
-    print(
-        f"Verified {len(pages)} paired pages: locale, language links, search, downloads."
-    )
-
-
 def main():
-    docs = ROOT / "docs"
-    assets = docs / "downloads"
-    # Downloads are generated outputs; start fresh to avoid publishing stale files.
-    if assets.exists():
-        shutil.rmtree(assets)
-    assets.mkdir()
+    from site_builder import build_static_site, validate_site
 
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT / "site")
+    args = parser.parse_args()
+    output = args.output.resolve()
+    if output != ROOT / "site" and (
+        output == ROOT or ROOT in output.parents or output in ROOT.parents
+    ):
+        parser.error("Use site/ or a generated directory outside the repository")
+    if output.exists() and not (
+        (output / ".nojekyll").is_file() and (output / "sitemap.xml").is_file()
+    ):
+        parser.error("Refusing to replace a directory without generated-site markers")
+    docs = ROOT / "docs"
     catalogs = {
         language: json.loads((ROOT / "examples" / name).read_text(encoding="utf-8"))
-        for language, name in (("en", "catalog.json"), ("ko", "catalog.ko.json"))
+        for language, name in [("en", "catalog.json"), ("ko", "catalog.ko.json")]
     }
     if catalogs["en"].keys() != catalogs["ko"].keys():
-        raise ValueError(
-            "English and Korean example catalogs must cover the same examples"
-        )
-    subprocess.run(
-        [sys.executable, "-m", "examples.run_all"],
-        cwd=ROOT,
-        env=dict(os.environ, MATHML2DOCX_EXAMPLE_OUTPUT=str(assets / "examples")),
-        check=True,
-        stdout=subprocess.DEVNULL,
-    )
-    with ZipFile(assets / "mathml2docx-examples.zip", "w", ZIP_DEFLATED) as archive:
-        for path in sorted((ROOT / "examples").rglob("*")):
-            if (
-                path.is_file()
-                and "output" not in path.parts
-                and "__pycache__" not in path.parts
-            ):
-                archive.write(path, path.relative_to(ROOT))
-        archive.write(ROOT / "LICENSE", "LICENSE")
-        archive.write(ROOT / "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_NOTICES.md")
-
+        raise ValueError("English and Korean catalogs must cover the same examples")
     page_sets = {}
     for language in ("en", "ko"):
         local_docs = docs if language == "en" else docs / "ko"
@@ -262,30 +183,43 @@ def main():
         page_sets[language] = source_pages(local_docs)
     if page_sets["en"] != page_sets["ko"]:
         raise ValueError(
-            f"Missing translated pages: {page_sets['en'] ^ page_sets['ko']}"
+            "Missing translated pages: " + str(page_sets["en"] ^ page_sets["ko"])
         )
-    # Generated copies keep download URLs local to each locale, including local previews.
-    # Only one copy of the source binaries is tracked and included in source archives.
-    for directory in ("assets", "downloads"):
-        target = docs / "ko" / directory
-        if target.exists():
-            shutil.rmtree(target)
-        shutil.copytree(docs / directory, target)
-    for config in ("mkdocs.yml", "mkdocs.ko.yml"):
+    with tempfile.TemporaryDirectory(prefix="mathml2docx-site-") as tmp:
+        stage = Path(tmp) / "site"
+        downloads = stage / "downloads"
+        downloads.mkdir(parents=True)
         subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "mkdocs",
-                "build",
-                "--strict",
-                "--config-file",
-                config,
-            ],
+            [sys.executable, "-m", "examples.run_all"],
             cwd=ROOT,
+            env=dict(
+                os.environ, MATHML2DOCX_EXAMPLE_OUTPUT=str(downloads / "examples")
+            ),
             check=True,
+            stdout=subprocess.DEVNULL,
         )
-    validate_site(page_sets["en"])
+        with ZipFile(
+            downloads / "mathml2docx-examples.zip", "w", ZIP_DEFLATED
+        ) as archive:
+            for path in sorted((ROOT / "examples").rglob("*")):
+                if (
+                    path.is_file()
+                    and "output" not in path.parts
+                    and "__pycache__" not in path.parts
+                ):
+                    archive.write(path, path.relative_to(ROOT))
+            for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
+                archive.write(ROOT / name, name)
+        shutil.copytree(docs / "assets", stage / "assets")
+        shutil.copytree(stage / "assets", stage / "ko/assets")
+        shutil.copytree(downloads, stage / "ko/downloads")
+        build_static_site(ROOT, stage, page_sets["en"])
+        validate_site(stage, page_sets["en"])
+        # Only replace the published build after generation and link checks pass.
+        if output.exists():
+            shutil.rmtree(output)
+        shutil.copytree(stage, output)
+    print("Built custom static documentation:", output)
 
 
 if __name__ == "__main__":

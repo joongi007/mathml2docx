@@ -10,6 +10,8 @@ python -m examples.26_template_workbook
 
 [Generated DOCX](../downloads/examples/26_template_workbook.docx)
 
+[Reference PDF](../assets/previews/26_template_workbook.pdf)
+
 ## Complete source
 
 ```python

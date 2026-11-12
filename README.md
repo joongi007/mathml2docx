@@ -1,81 +1,77 @@
 # mathml2docx
 
-[English](https://github.com/joongi007/mathml2docx/blob/master/README.md) · [한국어](https://github.com/joongi007/mathml2docx/blob/master/README.ko.md)
+[English](README.md) · [한국어](README.ko.md) · [Documentation](https://joongi007.github.io/mathml2docx/)
 
-Turn HTML and MathML into Word documents with Python. Equations stay editable in
-Word, so you can use the output in reports, worksheets, and document templates.
-Microsoft Office does not need to be installed to generate a document.
+Convert HTML and MathML into Word documents with Python. Create reports, worksheets
+and templates with **editable equations**, formatted text, tables and images.
+Microsoft Office is not required to generate a document.
 
-**Python 3.6+** · Optional LaTeX and Markdown support · MIT license
+Python 3.6+ · Optional LaTeX and Markdown inputs · MIT license
 
-## Install
+## Installation
 
-The examples below use the **1.0 code in this repository**. Install the checkout
-to follow along; the older PyPI release has a different API.
-
-```sh
-git clone https://github.com/joongi007/mathml2docx.git
-cd mathml2docx
-python -m pip install .
-```
-
-For LaTeX and Markdown, install the optional dependencies:
+This README describes the 1.0 API. Install the repository version while 1.0 is
+unreleased on PyPI:
 
 ```sh
-python -m pip install '.[latex,markdown]'
+python -m pip install 'git+https://github.com/joongi007/mathml2docx.git@master'
+# With optional LaTeX and Markdown support:
+python -m pip install 'mathml2docx[latex,markdown] @ git+https://github.com/joongi007/mathml2docx.git@master'
 ```
 
-LaTeX requires Python **3.6.2+**. You do not need uv to use the library.
+Python 3.6.2+ is required for the optional LaTeX frontend. Library users do not need uv.
+For a reproducible installation, replace `master` with a reviewed commit or release tag.
 
-## Create your first document
+## Your first Word document
 
 ```python
 from mathml2docx import convert
 
-html = '''
+convert('''
 <h1>Lesson notes</h1>
-<p>This fraction remains editable in Word:</p>
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mfrac><mn>1</mn><mn>2</mn></mfrac>
-</math>
-'''
-
-convert(html, 'lesson.docx')
+<p>The value <math><mfrac><mn>1</mn><mn>2</mn></mfrac></math> is one half.</p>
+<math display="block"><msup><mi>x</mi><mn>2</mn></msup></math>
+''', 'lesson.docx')
 ```
 
-Run the code and open `lesson.docx`. To keep editing in Python, omit the output
-path with `document = convert(html)`, then call `document.save('lesson.docx')`
-when you are ready.
+Open `lesson.docx` in Word to edit its text and equations. `convert()` also returns
+a python-docx `Document`; omit the output path to continue editing it in Python.
 
-## What can I convert?
+## What it supports
 
-- **HTML:** headings, paragraphs, links, text formatting, and lists.
-- **Tables:** merged cells, nested tables, and Word table styles.
-- **Images:** embedded data URLs, explicitly configured local files, and custom loaders.
-- **Styles:** supported CSS selectors, fonts, colors, alignment, and page breaks.
-- **Equations:** supported MathML fractions, roots, scripts, limits, accents, and matrices.
-- **Existing documents:** add content to a document or cell, or replace a marker/bookmark.
-
-This library supports a subset of HTML/CSS and MathML. It does not reproduce a
-whole browser page. Unsupported MathML elements raise `UnsupportedMathMLError`.
-See [support and migration](https://github.com/joongi007/mathml2docx/blob/master/docs/05-migration.md)
-and [validation and known limitations](https://github.com/joongi007/mathml2docx/blob/master/docs/11-validation.md)
-for details, including the remaining direct Word checks.
-
-## More ways to use it
-
-| I want to… | Example |
+| Input or task | Features |
 | --- | --- |
-| Convert HTML files and handle Unicode | [Files and encoding](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/02_files_unicode.md) |
-| Add HTML to an existing document or table cell | [Existing documents](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/03_existing_document.md) |
-| Apply Word styles and map HTML classes | [Word styles](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/06_word_styles.md) |
-| Replace content in a template | [Markers](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/15_markers.md) · [Bookmarks](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/16_bookmarks.md) |
-| Review advanced scientific formulas and templates | [Research report](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/25_research_report.md) · [Workbook](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/26_template_workbook.md) · [Advanced LaTeX](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/27_advanced_latex.md) |
-| Combine equations, tables, and images | [Complex equations](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/23_complex_equations.md) · [Mixed report](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/24_dense_report.md) |
+| HTML | Headings, paragraphs, links, nested lists and text formatting |
+| Tables | Merged cells, nested tables and Word table styles |
+| Images | Data URLs, configured local files and explicit application loaders |
+| CSS | Supported selectors, fonts, colors, alignment and page breaks |
+| MathML | Fractions, roots, scripts, limits, accents, matrices, selected enclosures and isotope scripts |
+| LaTeX / Markdown | Optional frontends using latex2mathml and Python-Markdown |
+| Templates | Add to an existing document or cell; replace markers and bookmarks |
 
-## LaTeX and Markdown
+The converter implements a documented subset of HTML, CSS and Presentation MathML.
+It does not reproduce a complete browser layout.
 
-After installing the optional dependencies above:
+## Equation layout and unsupported input
+
+`<math>` is **inline by default**, following MathML. Use `display="block"` for a
+separate display equation. To retain block behavior for input that omits `display`:
+
+```python
+from mathml2docx import MathmlToDocx
+
+parser = MathmlToDocx(default_math_display='block')
+```
+
+Unsupported mathematical structures raise `UnsupportedMathMLError` by default.
+Applications handling mixed input can select `unsupported_math='text'` to preserve
+the formula's XML visibly, provide `mathml_fallback(source, error)` returning text
+or an image, or normalize input with `mathml_preprocessor(source)`. Recovery emits
+`MathMLFallbackWarning`; invalid XML still raises an error.
+See [equation handling](https://joongi007.github.io/mathml2docx/03-mathematics/)
+for supported notations and complete examples.
+
+## LaTeX, Markdown and command line
 
 ```python
 from mathml2docx import MathmlToDocx
@@ -85,37 +81,34 @@ parser.parse_latex(r'\frac{1}{2} + x_1^2').save('equation.docx')
 parser.parse_markdown('# Notes\n\n**Bold** and ~~removed~~ text.').save('notes.docx')
 ```
 
-LaTeX is an explicit input format. Dollar-delimited expressions in HTML are not
-converted automatically.
-
-## Command line
-
 ```sh
 mathml2docx input.html output.docx
 mathml2docx equation.tex equation.docx --format latex
-mathml2docx notes.md notes.docx --format markdown
+mathml2docx input.html output.docx --default-math-display block --unsupported-math text
 ```
 
-Use `--force` to replace an existing output file. Images from URLs and external
-stylesheets are not downloaded automatically; Python applications can supply
-explicit loaders.
+Use `--force` to replace an existing output file. HTML dollar delimiters are not
+interpreted as LaTeX. Network images and stylesheets require explicit loaders.
 
-## Documentation
+## Guides and examples
 
-- [Getting started](https://github.com/joongi007/mathml2docx/blob/master/docs/01-getting-started.md) · [API reference](https://github.com/joongi007/mathml2docx/blob/master/docs/02-api.md) · [Recipes](https://github.com/joongi007/mathml2docx/blob/master/docs/08-recipes.md)
-- [All 27 runnable examples](https://github.com/joongi007/mathml2docx/blob/master/docs/examples/00-index.md), with complete source and commands to generate DOCX locally.
-- Web documentation: [English](https://joongi007.github.io/mathml2docx/) · [한국어](https://joongi007.github.io/mathml2docx/ko/). The site becomes available after Pages activation and a successful deployment; deployed builds include example downloads.
+- [Getting started](https://joongi007.github.io/mathml2docx/01-getting-started/) · [API and options](https://joongi007.github.io/mathml2docx/02-api/) · [Recipes](https://joongi007.github.io/mathml2docx/08-recipes/)
+- [Runnable examples and DOCX downloads](https://joongi007.github.io/mathml2docx/examples/00-index/): formatting, templates, scientific reports, chemistry and fallback rendering.
+- [Migration from 0.x](https://joongi007.github.io/mathml2docx/05-migration/) · [Compatibility and validation](https://joongi007.github.io/mathml2docx/11-validation/)
+- [한국어 문서](https://joongi007.github.io/mathml2docx/ko/)
 
-## Contributing
+For headless PDF conversion with LibreOffice, install **Writer and Math**, plus
+appropriate fonts. Writer-only installations can leave equations blank. The
+[rendering guide](https://joongi007.github.io/mathml2docx/11-validation/#libreoffice)
+includes installation and verification commands. Use `math_target='libreoffice'`
+with an explicit fallback for known enclosure differences.
 
-Start changes on `develop`. See the [development and release guide](https://github.com/joongi007/mathml2docx/blob/master/docs/09-development-release.md)
-for uv setup, tests, branching, and publishing. See the [changelog](https://github.com/joongi007/mathml2docx/blob/master/CHANGELOG.md)
-for the 1.0 changes.
+## Contributing and license
 
-## License
+Work from `develop`; see [development and releases](https://joongi007.github.io/mathml2docx/09-development-release/)
+for setup, tests and publishing. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
-[MIT](https://github.com/joongi007/mathml2docx/blob/master/LICENSE), with attribution to the original
-[html2docx](https://github.com/pqzx/html2docx) project. Dependencies retain their own licenses;
-see [third-party notices](https://github.com/joongi007/mathml2docx/blob/master/THIRD_PARTY_NOTICES.md).
-The 1.0 converter builds Word equations directly without the former Office XSL.
-Historical XSL copies have a separate, unresolved [licensing scope](https://github.com/joongi007/mathml2docx/blob/master/docs/10-licensing.md).
+[MIT](LICENSE), derived from [html2docx](https://github.com/pqzx/html2docx).
+Dependencies retain their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The 1.0 converter constructs OMML directly and includes no Office XSL. Historical
+0.x distributions are covered separately in the [provenance record](https://joongi007.github.io/mathml2docx/06-xsl-provenance/).

@@ -3,7 +3,7 @@
 from docx import Document
 
 from .h2d import HtmlToDocx
-from .math import latex_to_omml, mathml_to_omml
+from .math import latex_to_mathml
 
 
 class MathmlToDocx(HtmlToDocx):
@@ -22,6 +22,11 @@ class MathmlToDocx(HtmlToDocx):
         style_map=None,
         stylesheet="",
         stylesheet_loader=None,
+        default_math_display="inline",
+        unsupported_math="error",
+        mathml_preprocessor=None,
+        mathml_fallback=None,
+        math_target="word",
     ):
         super().__init__()
         for name, value in {
@@ -32,6 +37,11 @@ class MathmlToDocx(HtmlToDocx):
             "styles": styles,
             "img_src_base_path": img_src_base_path,
             "image_loader": image_loader,
+            "default_math_display": default_math_display,
+            "unsupported_math": unsupported_math,
+            "mathml_preprocessor": mathml_preprocessor,
+            "mathml_fallback": mathml_fallback,
+            "math_target": math_target,
         }.items():
             setattr(self.options, name, value)
         self.table_style = table_style
@@ -66,13 +76,11 @@ class MathmlToDocx(HtmlToDocx):
 
     def parse_mathml(self, source):
         document = Document()
-        document.add_paragraph()._p.append(mathml_to_omml(source))
+        self._add_mathml_to_document(source, document)
         return document
 
     def parse_latex(self, source):
-        document = Document()
-        document.add_paragraph()._p.append(latex_to_omml(source))
-        return document
+        return self.parse_mathml(latex_to_mathml(source))
 
     def parse_markdown(self, source):
         """Convert Markdown with tables, fenced code and ~~strikethrough~~."""
@@ -102,6 +110,11 @@ class _OptionsDict(dict):
         "styles": "styles",
         "img_src_base_path": "img_src_base_path",
         "image_loader": "image_loader",
+        "default_math_display": "default_math_display",
+        "unsupported_math": "unsupported_math",
+        "mathml_preprocessor": "mathml_preprocessor",
+        "mathml_fallback": "mathml_fallback",
+        "math_target": "math_target",
     }
 
     def __getattr__(self, name):
@@ -114,6 +127,10 @@ class _OptionsDict(dict):
         key = self._keys.get(name)
         if key is None:
             raise AttributeError(name)
+        self[key] = value
+
+    def __setitem__(self, key, value):
+        name = "fix_html" if key == "fix-html" else key
         if name in {
             "fix_html",
             "images",
@@ -122,6 +139,16 @@ class _OptionsDict(dict):
             "styles",
         } and not isinstance(value, bool):
             raise TypeError(f"{name} must be bool")
-        if name == "image_loader" and value is not None and not callable(value):
-            raise TypeError("image_loader must be callable or None")
-        self[key] = value
+        if (
+            name in {"image_loader", "mathml_preprocessor", "mathml_fallback"}
+            and value is not None
+            and not callable(value)
+        ):
+            raise TypeError(name + " must be callable or None")
+        if name == "default_math_display" and value not in {"inline", "block"}:
+            raise ValueError("default_math_display must be inline or block")
+        if name == "unsupported_math" and value not in {"error", "text"}:
+            raise ValueError("unsupported_math must be error or text")
+        if name == "math_target" and value not in {"word", "libreoffice"}:
+            raise ValueError("math_target must be word or libreoffice")
+        super().__setitem__(key, value)

@@ -52,7 +52,7 @@ Repository = "https://github.com/joongi007/mathml2docx"
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.9,<1", "build>=1,<2", "twine>=6,<7", "packaging>=24,<27"]
-docs = ["mkdocs==1.6.1"]
+docs = ["Markdown>=3.5,<4", "Jinja2>=3.1,<4", "Pygments>=2.18,<3"]
 examples = ["docxtpl>=0.20,<1", "Markdown>=3.5,<4"]
 
 [tool.uv]
@@ -64,7 +64,7 @@ docs = { requires-python = ">=3.10" }
 examples = { requires-python = ">=3.10" }
 
 [tool.flit.sdist]
-include = ["CHANGELOG.md", "README.ko.md", "docs/", "docs_theme/", "examples/", "scripts/", "tests/", ".github/", "mkdocs.yml", "mkdocs.ko.yml", "uv.lock", ".python-version"]
+include = ["CHANGELOG.md", "README.ko.md", "docs/", "docs_site/", "examples/", "scripts/", "tests/", ".github/", "uv.lock", ".python-version"]
 exclude = ["docs/downloads/", "docs/ko/assets/", "docs/ko/downloads/", "examples/output/", "**/*.docx", "**/__pycache__/", "**/*.pyc"]
 
 [tool.ruff]

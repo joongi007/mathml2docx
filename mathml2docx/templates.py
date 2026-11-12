@@ -90,12 +90,17 @@ def _splice(paragraph, start, end, blocks, inline):
     for child in list(removed):
         if child.tag == qn("w:pPr"):
             continue
-        if child.xpath(".//w:drawing|.//w:object") or child.tag == qn("m:oMath"):
+        if child.xpath(".//w:drawing|.//w:object") or child.tag in {
+            qn("m:oMath"),
+            qn("m:oMathPara"),
+        }:
             preserved = deepcopy(child)
             for value in list(preserved.iter(qn("w:t"))):
                 value.getparent().remove(value)
             left.append(preserved)
-    if inline and all(b.tag == qn("w:p") for b in blocks):
+    if inline and all(
+        b.tag == qn("w:p") and not b.xpath("./m:oMathPara") for b in blocks
+    ):
         for block in blocks:
             for child in list(block):
                 if child.tag != qn("w:pPr"):
@@ -191,7 +196,11 @@ def replace_bookmark(converter, document, name, html):
                 qn("w:id")
             ) == start.get(qn("w:id")):
                 node.getparent().remove(node)
-    if first is last and _inline(html) and all(x.tag == qn("w:p") for x in blocks):
+    if (
+        first is last
+        and _inline(html)
+        and all(x.tag == qn("w:p") and not x.xpath("./m:oMathPara") for x in blocks)
+    ):
         left.append(deepcopy(start))
         for block in blocks:
             for child in list(block):

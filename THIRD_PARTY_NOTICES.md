@@ -45,7 +45,8 @@ if bundling or redistributing those dependencies.
 | latex2mathml | Optional LaTeX frontend | [MIT](https://github.com/roniemartinez/latex2mathml/blob/master/LICENSE) |
 | Python-Markdown | Optional Markdown frontend | [BSD-3-Clause](https://github.com/Python-Markdown/markdown/blob/master/LICENSE.md) |
 | docxtpl | Optional tests/examples and user-selected integration | [Project](https://github.com/elapouya/python-docx-template), LGPL-2.1-only in tested 0.20.2 metadata |
-| MkDocs | Documentation generation | [BSD-2-Clause](https://github.com/mkdocs/mkdocs/blob/master/LICENSE) |
+| Jinja2 | Static documentation templates | [BSD-3-Clause](https://github.com/pallets/jinja/blob/main/LICENSE.txt) |
+| Pygments | Documentation code highlighting | [BSD-2-Clause](https://github.com/pygments/pygments/blob/master/LICENSE) |
 | pytest | Test execution | [MIT](https://github.com/pytest-dev/pytest/blob/main/LICENSE) |
 | Ruff | Development lint/format | [MIT](https://github.com/astral-sh/ruff/blob/main/LICENSE) |
 | flit_core | Build backend | [BSD-3-Clause](https://github.com/pypa/flit/blob/main/LICENSE) |
@@ -77,4 +78,9 @@ Reference PDFs are generated from the project-authored examples with LibreOffice
 LibreOffice itself and original font files are not bundled in this package.
 PDF font subsets retain the embedding information produced by the renderer. Font
 licenses and availability are separate from this project's MIT license. The preview
-rendering environment used Noto CJK, Liberation and DejaVu fonts as available.
+rendering environment used Noto CJK, Carlito, STIX and DejaVu fonts as available.
+
+The documentation layout and OKLCH token values are project-authored. Color-role
+organization was informed by the Apache-2.0 [open-design GitHub token package](https://github.com/nexu-io/open-design/blob/main/design-systems/github/tokens.css);
+its CSS was not vendored. The circled/boxed-x example images were drawn for this
+project with DejaVu glyphs; no font files are included.

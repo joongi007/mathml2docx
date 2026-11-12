@@ -44,6 +44,11 @@ parser = MathmlToDocx(table_style=TableStyle.GRID)
 | `stylesheet` | `""` | 추가 CSS 스타일시트 문자열 |
 | `stylesheet_loader` | `None` | 외부 CSS 경로를 받아 CSS 문자열을 반환하는 명시적 콜백 |
 | `style_map` | `None` | 태그 → class → Word 스타일 이름 매핑 |
+| `default_math_display` | `'inline'` | MathML의 display를 생략했을 때 배치. `'block'`으로 이전 배치 선택 |
+| `unsupported_math` | `'error'` | `'error'`는 예외 발생, `'text'`는 미지원 수식의 전체 XML 표시 |
+| `mathml_preprocessor` | `None` | 완전한 MathML 문자열을 받아 반환하는 콜백 |
+| `mathml_fallback` | `None` | `(source, error)`를 받아 텍스트·이미지 바이트·`BytesIO`를 반환하는 콜백 |
+| `math_target` | `'word'` | `'libreoffice'`는 정체 식별자를 명시하고 표시 손실이 알려진 표기를 대체 처리 |
 
 생성 후 `parser.options.images = False`로 설정을 변경할 수 있습니다.
 표·문단 스타일과 매핑은 `parser.table_style`, `parser.paragraph_style`, `parser.style_map`에
@@ -56,3 +61,5 @@ parser = MathmlToDocx(table_style=TableStyle.GRID)
 수식·CSS 지원 범위와 호환성 변경은 [마이그레이션 문서](05-migration.md)를 참고하세요.
 
 전체 실행 코드는 [예제 모음](examples/00-index.md), 기능별 조합은 [작업별 사용법](08-recipes.md)을 참고하세요.
+
+[수식 배치·테두리·화학 표기·미지원 입력 처리](03-mathematics.md)를 참고하세요.

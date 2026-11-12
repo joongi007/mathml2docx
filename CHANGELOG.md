@@ -15,6 +15,10 @@
 - Correct fraction types, mathematical alphabets, accents, delimiters, cases tables,
   limit grouping, per-operator layout directives, inline spacing, and OOXML property order.
 
+- Follow MathML inline defaults, with configurable missing-display layout and CSS precedence.
+- Support selected enclosures and chemical prescripts, and explicit preprocessing, source/image
+  fallback, and LibreOffice compatibility policies. Avoid empty postscript placeholders.
+
 ### Compatibility changes
 
 - URL images and external stylesheets require explicit loaders; local images are limited
@@ -26,8 +30,13 @@
 
 ### Validation and packaging
 
+- Replace MkDocs with a custom Markdown/Jinja static site, responsive navigation, bilingual
+  search and code copying. Rewrite reader-facing guides and remove session status reports.
+- Verify LibreOffice formula import counts and a real PDF math probe; fail when Math is missing.
+  Add a dedicated CI job and explicit Writer/Math/font setup instructions.
+
 - Add text equation inputs and independent JSON answers for inspecting saved DOCX structures.
-- Add 27 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
+- Add 29 runnable examples, schema validation, mixed-document checks, and targeted corruption tests.
 - Provide English-default and Korean READMEs and documentation, with equivalent-page
   language switching and localized search.
 - Add 18 advanced authored inputs with independent answers and optional Windows
@@ -37,5 +46,5 @@
 - Use develop for daily work, master pushes for unique TestPyPI candidates and remote
   installation checks, and verified final tags for PyPI publishing through OIDC.
 
-Historical XSL redistribution rights and direct Microsoft Word checks remain separate work.
+Historical XSL redistribution rights and application-specific visual review remain separate concerns.
 See the migration, licensing, validation, and publishing documentation before release.

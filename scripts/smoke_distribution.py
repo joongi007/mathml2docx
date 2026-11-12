@@ -21,6 +21,17 @@ def main():
         "<style>p {color:navy}</style><p>Wheel</p><math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>"
     )
     assert str(doc.paragraphs[0].runs[0].font.color.rgb) == "000080"
+    sentence = parser.convert("<p>A<math><mi>x</mi></math>B</p>")
+    assert len(sentence.paragraphs) == 1
+    block = MathmlToDocx(default_math_display="block").convert(
+        "<math><mi>x</mi></math>"
+    )
+    assert block._element.xpath("//m:oMathPara/m:oMath")
+    isotope = parser.parse_mathml(
+        "<math><mmultiscripts><mi>C</mi><none/><none/><mprescripts/><mn>6</mn><mn>14</mn></mmultiscripts></math>"
+    )
+    assert isotope._element.xpath("//m:sPre/m:sub//m:t/text()") == ["6"]
+    assert not isotope._element.xpath("//m:sSubSup")
     korean = parser.parse_html_string(
         '<p style="font-family:Malgun Gothic">한글 and English</p>'
     )

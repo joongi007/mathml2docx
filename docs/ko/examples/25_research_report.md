@@ -10,6 +10,8 @@ python -m examples.25_research_report
 
 [생성된 DOCX](../downloads/examples/25_research_report.docx)
 
+[참조 PDF](../assets/previews/25_research_report.pdf)
+
 ## 전체 코드
 
 ```python
@@ -28,10 +30,8 @@ body {font-family:'Malgun Gothic';font-size:10pt;color:#1e293b}
 h1,h2 {color:#17365d} h1 {font-size:20pt} h2 {font-size:14pt} .equation {text-align:center;margin-top:12pt;margin-bottom:12pt}
 .note {background-color:#eef2ff} th {background-color:#dbeafe}
 </style><h1>Advanced numerical methods / 고급 수치 해석</h1>
-<p class="note">한글 설명과 mathematical notation in one report. Each numbered
-formula is a different authored problem, rather than another placement of the same expression.</p>
-<p><b>Review:</b> inspect nested fractions, complete matrix boundaries, derivative
-roles, and line wrapping. <a href="https://example.com/methods">Method reference</a>.</p>"""
+<p class="note">한글 설명과 mathematical notation in one report. These methods combine probability, matrix analysis and variational calculus.</p>
+<p><b>Methods:</b> normalized models, matrix identities and differential equations. <a href="https://example.com/methods">Method reference</a>.</p>"""
 ]
 for index, entry in enumerate(e for e in CATALOG if e["format"] == "mathml"):
     sections.extend(

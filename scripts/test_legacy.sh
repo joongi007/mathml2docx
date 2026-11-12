@@ -12,8 +12,8 @@ docker run --rm \
   "$legacy_image" sh -eu -c '
     mkdir /tmp/project
     cp -R /source/mathml2docx /source/tests /source/examples /source/docs \
-      /source/scripts /source/docs_theme /source/.github /source/pyproject.toml \
-      /source/README.md /source/README.ko.md /source/CHANGELOG.md /source/LICENSE /source/THIRD_PARTY_NOTICES.md /source/mkdocs.yml /source/mkdocs.ko.yml /source/uv.lock \
+      /source/scripts /source/docs_site /source/.github /source/pyproject.toml \
+      /source/README.md /source/README.ko.md /source/CHANGELOG.md /source/LICENSE /source/THIRD_PARTY_NOTICES.md /source/uv.lock \
       /source/.python-version /tmp/project/
     cd /tmp/project
     python -m pip install --disable-pip-version-check --upgrade "pip>=21.3,<22"

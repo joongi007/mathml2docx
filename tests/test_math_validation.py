@@ -173,7 +173,6 @@ class MathematicalMeaningTests(unittest.TestCase):
     def test_unsupported_constructs_and_external_entities(self):
         for tag in [
             "menclose",
-            "mmultiscripts",
             "maction",
             "mstack",
             "mlongdiv",

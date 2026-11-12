@@ -1,0 +1,152 @@
+{
+  "version": "LibreOffice 24.2.7.2 420(Build:2)",
+  "pdf_math_probe": true,
+  "documents": [
+    {
+      "file": "01_quickstart.docx",
+      "equations": 0,
+      "pdf": "01_quickstart.pdf"
+    },
+    {
+      "file": "02_files_unicode.docx",
+      "equations": 0,
+      "pdf": "02_files_unicode.pdf"
+    },
+    {
+      "file": "03_existing_document.docx",
+      "equations": 0,
+      "pdf": "03_existing_document.pdf"
+    },
+    {
+      "file": "04_inline_formatting.docx",
+      "equations": 0,
+      "pdf": "04_inline_formatting.pdf"
+    },
+    {
+      "file": "05_stylesheets.docx",
+      "equations": 0,
+      "pdf": "05_stylesheets.pdf"
+    },
+    {
+      "file": "06_word_styles.docx",
+      "equations": 0,
+      "pdf": "06_word_styles.pdf"
+    },
+    {
+      "file": "07_page_layout.docx",
+      "equations": 0,
+      "pdf": "07_page_layout.pdf"
+    },
+    {
+      "file": "08_tables.docx",
+      "equations": 0,
+      "pdf": "08_tables.pdf"
+    },
+    {
+      "file": "09_lists.docx",
+      "equations": 0,
+      "pdf": "09_lists.pdf"
+    },
+    {
+      "file": "10_data_images.docx",
+      "equations": 0,
+      "pdf": "10_data_images.pdf"
+    },
+    {
+      "file": "11_local_images.docx",
+      "equations": 0,
+      "pdf": "11_local_images.pdf"
+    },
+    {
+      "file": "12_asset_loader.docx",
+      "equations": 0,
+      "pdf": "12_asset_loader.pdf"
+    },
+    {
+      "file": "13_mathml.docx",
+      "equations": 4,
+      "pdf": "13_mathml.pdf"
+    },
+    {
+      "file": "14_latex.docx",
+      "equations": 1,
+      "pdf": "14_latex.pdf"
+    },
+    {
+      "file": "15_markers.docx",
+      "equations": 0,
+      "pdf": "15_markers.pdf"
+    },
+    {
+      "file": "16_bookmarks.docx",
+      "equations": 0,
+      "pdf": "16_bookmarks.pdf"
+    },
+    {
+      "file": "17_docxtpl.docx",
+      "equations": 0,
+      "pdf": "17_docxtpl.pdf"
+    },
+    {
+      "file": "18_options.docx",
+      "equations": 0,
+      "pdf": "18_options.pdf"
+    },
+    {
+      "file": "19_style_helpers.docx",
+      "equations": 0,
+      "pdf": "19_style_helpers.pdf"
+    },
+    {
+      "file": "20_links.docx",
+      "equations": 0,
+      "pdf": "20_links.pdf"
+    },
+    {
+      "file": "21_report.docx",
+      "equations": 1,
+      "pdf": "21_report.pdf"
+    },
+    {
+      "file": "22_markdown.docx",
+      "equations": 0,
+      "pdf": "22_markdown.pdf"
+    },
+    {
+      "file": "23_complex_equations.docx",
+      "equations": 44,
+      "pdf": "23_complex_equations.pdf"
+    },
+    {
+      "file": "24_dense_report.docx",
+      "equations": 120,
+      "pdf": "24_dense_report.pdf"
+    },
+    {
+      "file": "25_research_report.docx",
+      "equations": 10,
+      "pdf": "25_research_report.pdf"
+    },
+    {
+      "file": "26_template_workbook.docx",
+      "equations": 10,
+      "pdf": "26_template_workbook.pdf"
+    },
+    {
+      "file": "27_advanced_latex.docx",
+      "equations": 8,
+      "pdf": "27_advanced_latex.pdf"
+    },
+    {
+      "file": "28_chemistry_enclosures.docx",
+      "equations": 8,
+      "pdf": "28_chemistry_enclosures.pdf"
+    },
+    {
+      "file": "29_math_fallbacks.docx",
+      "equations": 0,
+      "pdf": "29_math_fallbacks.pdf"
+    }
+  ],
+  "scope": "Formula import and PDF math probe; visual fidelity is application dependent. Native Word enclosures in example 28 may be omitted by Writer; example 29 demonstrates explicit image recovery."
+}

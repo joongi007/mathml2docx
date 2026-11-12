@@ -44,6 +44,11 @@ parser = MathmlToDocx(table_style=TableStyle.GRID)
 | `stylesheet` | `""` | Additional CSS stylesheet text |
 | `stylesheet_loader` | `None` | Explicit callback returning CSS text for an external source |
 | `style_map` | `None` | Tag → class → Word style name mapping |
+| `default_math_display` | `'inline'` | Layout when the MathML display attribute is omitted; `'block'` restores the older behavior |
+| `unsupported_math` | `'error'` | `'error'` raises; `'text'` visibly preserves the unsupported formula's XML |
+| `mathml_preprocessor` | `None` | Callback accepting and returning a complete MathML string |
+| `mathml_fallback` | `None` | Callback `(source, error)` returning literal text, image bytes or `BytesIO` |
+| `math_target` | `'word'` | `'libreoffice'` requests explicit upright identifiers and recovery for known lossy native notation |
 
 Change options after construction with, for example, `parser.options.images = False`.
 Set styles and mappings through `parser.table_style`, `parser.paragraph_style`, and
@@ -55,3 +60,5 @@ the calling application must enforce its own destination, size, and time limits.
 
 See [migration and support scope](05-migration.md), [complete examples](examples/00-index.md),
 and [recipes](08-recipes.md).
+
+[Equation layout, supported enclosures, chemical notation and recovery](03-mathematics.md).
