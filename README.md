@@ -94,7 +94,7 @@ interpreted as LaTeX. Network images and stylesheets require explicit loaders.
 
 - [Getting started](https://joongi007.github.io/mathml2docx/01-getting-started/) · [API and options](https://joongi007.github.io/mathml2docx/02-api/) · [Recipes](https://joongi007.github.io/mathml2docx/08-recipes/)
 - [Runnable examples and DOCX downloads](https://joongi007.github.io/mathml2docx/examples/00-index/): formatting, templates, scientific reports, chemistry and fallback rendering.
-- [MathML fidelity example](https://joongi007.github.io/mathml2docx/examples/30-mathml-fidelity/): inherited defaults, accents, equation styles, links and template replacement.
+- [MathML fidelity example](https://joongi007.github.io/mathml2docx/examples/30_mathml_fidelity/): inherited defaults, accents, equation styles, links and template replacement.
 - [Migration from 0.x](https://joongi007.github.io/mathml2docx/05-migration/) · [Compatibility and validation](https://joongi007.github.io/mathml2docx/11-validation/)
 - [한국어 문서](https://joongi007.github.io/mathml2docx/ko/)
 

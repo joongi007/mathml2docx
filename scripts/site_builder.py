@@ -349,3 +349,35 @@ def validate_site(site, pages):
         checked,
         "local links/anchors; localized search and downloads.",
     )
+
+
+def validate_readme_links(site, readmes):
+    """Check README links to this published site against the staged output."""
+    from markdown import markdown
+
+    checked = 0
+    for readme in readmes:
+        soup = BeautifulSoup(
+            markdown(readme.read_text(encoding="utf-8"), extensions=["fenced_code"]),
+            "html.parser",
+        )
+        for anchor in soup.find_all("a", href=True):
+            href = anchor["href"]
+            if not href.startswith(SITE_URL):
+                continue
+            parts = urlsplit(href[len(SITE_URL) :])
+            target = site / unquote(parts.path)
+            if not parts.path or parts.path.endswith("/"):
+                target = target / "index.html"
+            if not target.is_file():
+                raise ValueError(
+                    "Broken README documentation link: " + str(readme) + ": " + href
+                )
+            if parts.fragment:
+                page = BeautifulSoup(target.read_text(encoding="utf-8"), "html.parser")
+                if page.find(id=unquote(parts.fragment)) is None:
+                    raise ValueError(
+                        "Missing README link anchor: " + str(readme) + ": " + href
+                    )
+            checked += 1
+    print("Verified", checked, "README documentation links and anchors")

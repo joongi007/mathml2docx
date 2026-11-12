@@ -177,7 +177,7 @@ def source_pages(docs):
 
 
 def main():
-    from site_builder import build_static_site, validate_site
+    from site_builder import build_static_site, validate_readme_links, validate_site
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "site")
@@ -237,6 +237,7 @@ def main():
         shutil.copytree(downloads, stage / "ko/downloads")
         build_static_site(ROOT, stage, page_sets["en"])
         validate_site(stage, page_sets["en"])
+        validate_readme_links(stage, [ROOT / "README.md", ROOT / "README.ko.md"])
         # Only replace the published build after generation and link checks pass.
         if output.exists():
             shutil.rmtree(output)
