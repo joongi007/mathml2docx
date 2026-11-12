@@ -492,7 +492,15 @@ class _Renderer:
             warnings.warn(
                 "MathML fallback used: " + str(exc), MathMLFallbackWarning, stacklevel=3
             )
-        if block:
+        if (
+            block
+            and self.paragraph is not None
+            and any(
+                child.tag
+                not in {qn("w:pPr"), qn("w:bookmarkStart"), qn("w:bookmarkEnd")}
+                for child in self.paragraph._p
+            )
+        ):
             self.paragraph = None
         paragraph = self.paragraph_for()
         if self.config.options["styles"]:

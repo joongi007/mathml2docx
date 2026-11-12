@@ -281,3 +281,13 @@ class MathPolicyTests(unittest.TestCase):
                 self.assertIsNotNone(mathml_to_omml(source))
                 with self.assertRaises(UnsupportedMathMLError):
                     mathml_to_omml(source, target="libreoffice")
+
+    def test_display_only_paragraph_does_not_add_empty_preceding_paragraph(self):
+        doc = convert(
+            '<p style="text-align:right"><math display="block"><mi>x</mi></math></p>'
+        )
+        self.assertEqual(len(doc.paragraphs), 1)
+        self.assertEqual(len(doc._element.xpath("//m:oMathPara")), 1)
+        doc = convert('<p><br><math display="block"><mi>x</mi></math></p>')
+        self.assertEqual(len(doc.paragraphs), 2)
+        self.assertEqual(len(doc._element.xpath("//w:br")), 1)
