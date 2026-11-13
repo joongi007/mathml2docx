@@ -1,10 +1,12 @@
 # Recipes
 
 [The 30 runnable examples](examples/00-index.md) include full source, generated DOCX
-downloads in a deployed site, and LibreOffice reference PDFs. This page covers
+downloads and LibreOffice reference PDFs. This page covers
 common combinations and lower-level APIs.
 
 ## Convert several files
+
+Place the HTML files to convert in an `input/` directory before running this example.
 
 ```python
 from pathlib import Path
@@ -44,6 +46,11 @@ support table below are applied; Flexbox, Grid, JavaScript, and pixel-perfect
 browser reproduction are not provided.
 
 ## Inline markers and bookmarks
+
+Prepare `template.docx` with exactly one `{{customer}}` marker and a Word bookmark
+named `result`. This example replaces those existing locations; the
+[marker](examples/15_markers.md) and [bookmark](examples/16_bookmarks.md) examples
+also show how to create the starting document in Python.
 
 ```python
 from docx import Document

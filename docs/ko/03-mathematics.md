@@ -64,6 +64,8 @@ Writer에서 열 문서에는 `MathmlToDocx(math_target='libreoffice')`를 사�
 있으므로 이 경우에는 대체 처리가 필요합니다.
 
 ```python
+from mathml2docx import MathmlToDocx
+
 parser = MathmlToDocx(math_target='libreoffice', unsupported_math='text')
 ```
 

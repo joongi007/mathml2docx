@@ -1,0 +1,4 @@
+:root {color-scheme:light;font-family:system-ui,sans-serif;background:Canvas;color:CanvasText}
+body {margin:0;padding:1rem}
+#diagram svg {display:block;max-width:100%;height:auto;margin:auto}
+#diagram-status {font-size:14px;line-height:1.6}

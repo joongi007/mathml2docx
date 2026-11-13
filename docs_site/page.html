@@ -1,7 +1,8 @@
 <!doctype html>
-<html lang="{{ language }}">
+<html lang="{{ language }}" class="no-js">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="{{ content_security_policy }}">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="{{ description }}">
   <meta name="google-site-verification" content="9ttkOi3mp0nQ0sbqtMzv7OmcxgYa1eDZCf-rPxq4KUU">
@@ -12,7 +13,6 @@
   <link rel="stylesheet" href="{{ assets }}syntax.css">
   <link rel="stylesheet" href="{{ assets }}site.css">
   <script defer src="{{ assets }}site.js"></script>
-  <noscript><style>.sidebar{display:block}.menu-toggle{display:none}</style></noscript>
 </head>
 <body data-search-index="{{ search_index }}" data-locale-base="{{ locale_base }}"
       data-searching="{{ text.searching }}" data-empty="{{ text.empty }}" data-failed="{{ text.failed }}"

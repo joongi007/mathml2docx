@@ -1,6 +1,7 @@
 /* Navigation, locale-local search and code copying; page content needs no JavaScript. */
 (() => {
   'use strict';
+  document.documentElement.classList.remove('no-js');
   const body = document.body;
   const menu = document.querySelector('.menu-toggle');
   const sidebar = document.getElementById('navigation');
@@ -66,8 +67,11 @@
       results.replaceChildren();
       status.textContent = matches.length ? matches.length + ' ' + body.dataset.count : body.dataset.empty;
       for (const {doc} of matches) {
+        const base = new URL(body.dataset.localeBase, location.href);
+        const destination = new URL(doc.location, base);
+        if (destination.origin !== location.origin || !destination.pathname.startsWith(base.pathname)) { continue; }
         const item = document.createElement('li'); const link = document.createElement('a');
-        link.href = new URL(doc.location, new URL(body.dataset.localeBase, location.href)).href;
+        link.href = destination.href;
         const title = document.createElement('strong'); title.textContent = doc.heading === doc.title ? doc.title : doc.title + ' › ' + doc.heading;
         const snippet = document.createElement('small');
         const at = normalize(doc.text).indexOf(terms[0]); const start = Math.max(0, at - 30);

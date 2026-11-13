@@ -8,7 +8,7 @@
 - SHA-256: `5558e69d8bd6534927c4176bd5d5032d0d4bdc17bdaab7de580ca41e996a609b`.
 - 조사 시점 [AbiWord의 동명 파일](https://github.com/AbiWord/abiword/blob/master/plugins/openxml/omml_xslt/mml2omml.xsl)과 바이트 단위로 동일했습니다.
 
-이 일치는 동일한 사본이 공개되어 있다는 증거입니다. 사용자가 실제로 복사한 사이트나
+이 일치는 동일한 사본이 공개되어 있다는 증거입니다. 이 프로젝트가 파일을 가져온 사이트나
 최초 저작자를 특정하는 증거, 재배포 허락의 증거는 아닙니다. 저장소의 MIT 고지만으로
 제삼자 파일의 권한까지 확보했다고 판단하지 않습니다.
 [Microsoft의 일반 재배포 정책](https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/permissions)은
@@ -21,7 +21,7 @@ LaTeX의 선택 의존성 [latex2mathml](https://github.com/roniemartinez/latex2
 자체 MIT 라이선스로 배포되며 소스를 이 패키지에 복사하지 않습니다.
 
 이 변경은 기존 Git 이력과 이미 배포된 0.x 패키지를 변경하지 않습니다.
-과거 배포본의 처리나 재배포 허락 여부에 대한 최종 판단은 별도 과제입니다.
+이번 릴리스가 과거 사본의 재배포 권한을 입증하지는 않습니다.
 
 현재 배포물의 프로젝트·의존성 고지와 기능적 대체 범위는
 [라이선스 설명](10-licensing.md)에 정리했습니다. 이 문서의 출처 조사 결과와 별개로,

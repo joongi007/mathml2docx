@@ -87,7 +87,7 @@ def inline_assets(source, config=None):
         soup.insert(0, style)
     # Scripts are unnecessary for these static inputs. CSP also isolates opened
     # standalone previews, while the embedding iframe uses an empty sandbox.
-    for node in soup.find_all(["script", "base", "iframe", "object", "embed"]):
+    for node in soup.find_all(["script", "base", "meta", "iframe", "object", "embed"]):
         node.decompose()
     for node in soup.find_all(True):
         for key in list(node.attrs):

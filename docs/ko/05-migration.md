@@ -1,4 +1,4 @@
-# 1.0.0으로 옮기기
+# 0.x에서 1.x로 옮기기
 
 1.0.0은 XSL 파일 없이 MathML을 Word 수식(OMML)으로 변환합니다.
 
@@ -74,7 +74,8 @@ from docx import Document
 from mathml2docx import MathmlToDocx
 
 parser = MathmlToDocx(style_map={'p': {'quotation': 'Quote'}})
-document = Document('template.docx')
+document = Document()
+document.add_paragraph('{{content}}')
 parser.add_html_to_document('<p class="quotation">인용</p>', document)
 # 고유 마커를 HTML로 교체합니다. 여러 run에 걸친 마커도 지원합니다.
 parser.replace_html(document, '{{content}}', '<p>삽입할 내용</p>')

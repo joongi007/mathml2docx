@@ -1,8 +1,7 @@
 # Building the documentation
 
 The documentation is a static HTML site rendered from Markdown by the project's
-Python builder. It uses Jinja2 templates and Pygments for code highlighting;
-MkDocs and a JavaScript build toolchain are not required.
+Python builder. It uses Jinja2 templates and Pygments for code highlighting.
 
 This is a contributor guide for building the documentation website. Package
 installation is covered in [getting started](01-getting-started.md).
@@ -34,14 +33,38 @@ Use `--output PATH` to build into another generated directory.
 | Executable example code | `examples/` |
 | Markdown rendering and link validation | `scripts/site_builder.py` |
 
-Add each page in both languages and list it in each navigation. Existing URLs are
-preserved when replacing Markdown rendering or layout. Edit generated example
+Add each page in both languages and list it in each navigation. Preserve published
+URLs when changing page names or navigation. Edit generated example
 pages through the catalogs and Python sources; builds regenerate their Markdown.
 
 Search runs in the browser against a local, language-specific JSON index.
 It supports substring queries for English, Korean and API names. Search results
 are inserted as text, not HTML. Content and navigation remain readable without
-JavaScript; interactive search and copy buttons require JavaScript.
+JavaScript; search, copy buttons and diagram rendering require JavaScript.
+
+## Mermaid diagrams
+
+Use a fenced `mermaid` block to include a diagram:
+
+```mermaid
+flowchart LR
+    Markdown --> Builder
+    Builder --> English
+    Builder --> Korean
+```
+
+Diagrams render on the documentation website. The package's `parse_markdown()`
+preserves Mermaid fences as code; insert a rendered image to put a diagram in DOCX.
+
+The builder downloads Mermaid 12.3.0 from npm, verifies the pinned SHA-512 and
+serves the bundle and its license locally. Diagrams run in an isolated iframe
+with scripts allowed and same-origin access denied. Strict mode, plain-text
+labels and size/edge limits are fixed by the site. Diagram directives and YAML
+configuration are rejected; source remains available if rendering fails.
+
+Markdown HTML is sanitized with an allow list. The site also applies a Content
+Security Policy that permits its own assets and blocks inline scripts, external
+frames and object embeds. Search results use text nodes and local page URLs.
 
 ## Deployment
 

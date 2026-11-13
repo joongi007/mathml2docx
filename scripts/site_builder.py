@@ -111,6 +111,9 @@ def build_static_site(root, site, pages):
     from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
     from pygments.formatters import HtmlFormatter
 
+    from scripts.mermaid_docs import mark_mermaid_fences, render_mermaid
+    from scripts.site_security import SITE_CSP, sanitize_document
+
     theme = root / "docs_site"
     env = Environment(
         loader=FileSystemLoader(str(theme)),
@@ -123,7 +126,8 @@ def build_static_site(root, site, pages):
     assets.mkdir(parents=True, exist_ok=True)
     for path in theme.glob("*.css"):
         shutil.copy2(path, assets / path.name)
-    shutil.copy2(theme / "site.js", assets / "site.js")
+    for path in theme.glob("*.js"):
+        shutil.copy2(path, assets / path.name)
     (assets / "syntax.css").write_text(
         HtmlFormatter(style="friendly").get_style_defs(".codehilite"), encoding="utf-8"
     )
@@ -146,9 +150,13 @@ def build_static_site(root, site, pages):
                     "codehilite": {"guess_lang": False},
                 },
             )
-            rendered = md.convert((local_docs / source).read_text(encoding="utf-8"))
+            markdown_source = mark_mermaid_fences(
+                (local_docs / source).read_text(encoding="utf-8")
+            )
+            rendered = sanitize_document(md.convert(markdown_source))
             rendered = rewrite_links(rendered, source, pages)
             soup = BeautifulSoup(rendered, "html.parser")
+            render_mermaid(soup, assets, current, relative, language)
             headings = soup.find_all("h1")
             if len(headings) != 1:
                 raise ValueError("Each page needs one h1: " + source)
@@ -252,6 +260,7 @@ def build_static_site(root, site, pages):
                 next=neighbor(1),
                 comparison_page=source.startswith("examples/")
                 and source != "examples/00-index.md",
+                content_security_policy=SITE_CSP,
             )
             destination = site / current / "index.html"
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -282,6 +291,8 @@ def build_static_site(root, site, pages):
 
 def validate_site(site, pages):
     """Fail on broken pages, anchors, translations, search or example downloads."""
+    from scripts.site_security import SITE_CSP
+
     ids = {}
     for path in site.rglob("*.html"):
         soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
@@ -303,11 +314,17 @@ def validate_site(site, pages):
                 raise ValueError("Invalid template dictionary lookup: " + str(path))
             if soup.html["lang"] != language or len(soup.select("main h1")) != 1:
                 raise ValueError("Invalid language or page title: " + str(path))
+            csp = soup.find("meta", attrs={"http-equiv": "Content-Security-Policy"})
+            if csp is None or csp.get("content") != SITE_CSP:
+                raise ValueError("Missing or changed documentation CSP: " + str(path))
             for frame in soup.select(".example-preview iframe"):
                 if not frame.get("title") or frame.get("loading") != "lazy":
                     raise ValueError("Preview needs a title and lazy loading")
                 if frame["src"].endswith(".html") and frame.get("sandbox") != []:
                     raise ValueError("HTML preview must use an empty sandbox")
+            for frame in soup.select(".mermaid-frame"):
+                if frame.get("sandbox") != ["allow-scripts"]:
+                    raise ValueError("Mermaid must not have same-origin permission")
             language_links = soup.select("a[hreflang]")
             if len(language_links) != 2 or [
                 n["hreflang"] for n in language_links if n.get("aria-current") == "page"

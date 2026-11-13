@@ -77,4 +77,4 @@
   installation checks, and verified final tags for PyPI publishing through OIDC.
 
 Historical XSL redistribution rights and application-specific visual review remain separate concerns.
-See the migration, licensing, validation, and publishing documentation before release.
+See the migration, licensing and validation guides for compatibility and distribution limits.

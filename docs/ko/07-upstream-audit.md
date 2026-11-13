@@ -8,7 +8,10 @@ mathml2docx는 `pqzx/html2docx`에서 파생됐습니다. 이 기록은 원본 �
 
 ## 기존 수정 검증
 
-변경 전 HEAD(`89205f4`)의 패키지를 임시 경로로 복원해 `tests/test_existing_fixes.py`의 6개 테스트를 실행했습니다. base64/인라인 이미지, src 누락, 선행 br, UTF-8/문단 스타일, 내용이 있는 rowspan, 기본 글자 서식은 모두 통과했습니다. 동일 테스트를 새 엔진에서도 실행합니다.
+1.0 이전 구현의 [기준 커밋 `89205f4`](https://github.com/joongi007/mathml2docx/commit/89205f4)을
+임시 경로로 복원해 `tests/test_existing_fixes.py`의 6개 테스트를 실행했습니다.
+base64/인라인 이미지, src 누락, 선행 br, UTF-8/문단 스타일, 내용이 있는 rowspan,
+기본 글자 서식은 모두 통과했습니다. 동일 테스트를 1.0 변환기에서도 실행합니다.
 
 ## 기존 동작과 회귀 검사
 
@@ -17,21 +20,21 @@ mathml2docx는 `pqzx/html2docx`에서 파생됐습니다. 이 기록은 원본 �
 | 이슈 | 판정 | 근거·제약 |
 | --- | --- | --- |
 | [#1 failed to convert html table to docx](https://github.com/pqzx/html2docx/issues/1) | 검증 | tbody 및 중첩 표를 포함한 기존 데이터셋 통과. |
-| [#2 Conversion of <ol><li>: No style with name 'List Number'](https://github.com/pqzx/html2docx/issues/2) | 수정 | 목록 번호 XML 직접 생성으로 List Number 스타일 존재 여부와 무관하게 동작. |
-| [#3 Errno 36] File name too long: 'data:image/png;base64,iVBOR](https://github.com/pqzx/html2docx/issues/3) | 기존 수정 검증 | base64 이미지 처리. |
+| [#2 Conversion of &lt;ol&gt;&lt;li&gt;: No style with name 'List Number'](https://github.com/pqzx/html2docx/issues/2) | 수정 | 목록 번호 XML 직접 생성으로 List Number 스타일 존재 여부와 무관하게 동작. |
+| [#3 Errno 36\] File name too long: 'data:image/png;base64,iVBOR](https://github.com/pqzx/html2docx/issues/3) | 기존 수정 검증 | base64 이미지 처리. |
 | [#4 Does it support css styles?](https://github.com/pqzx/html2docx/issues/4) | 지원 구현 | style 태그·정적 CSS 선택자·specificity·상속·important 및 명시적 외부 CSS 로더 구현. 대응 Word 속성 범위는 사용법 표에 명시. |
 | [#6 IndexError: list index out of range](https://github.com/pqzx/html2docx/issues/6) | 원본 입력 검증 | 원문 FILE.txt를 변환·저장하고 LibreOffice PDF 렌더링 완료. 표 데이터는 병합 회귀 테스트와 함께 검증. |
 | [#10 Issue with float margins and named (vs RGB) colors](https://github.com/pqzx/html2docx/issues/10) | 수정·검증 | 실수 길이와 named color 처리. |
-| [#12 <img src="data:image/png;base64,xxxx==>](https://github.com/pqzx/html2docx/issues/12) | 기존 수정 검증 | base64 PNG 이미지 처리. |
+| [#12 &lt;img src="data:image/png;base64,xxxx==&gt;](https://github.com/pqzx/html2docx/issues/12) | 기존 수정 검증 | base64 PNG 이미지 처리. |
 | [#13 ValueError: invalid literal for int() with base 10: 'r'](https://github.com/pqzx/html2docx/issues/13) | 검증 | hr과 제목 태그를 별도로 처리. 기존 hr 테스트도 통과. |
 | [#14 Renders as more or less plain text](https://github.com/pqzx/html2docx/issues/14) | 원본 입력 검증 | 이슈 본문의 Qt HTML 5,660자를 변환·렌더링. 글꼴·크기·색상·굵기 보존. p를 글꼴 크기만 보고 Heading으로 추측하지는 않음. |
-| [#15 HTML Tag <a href=...](https://github.com/pqzx/html2docx/issues/15) | 검증 | 링크 텍스트와 관계를 DOCX 저장 후 재오픈해 검증. 구버전 python-docx의 paragraph.text 표시는 별개. |
+| [#15 HTML Tag &lt;a href=...](https://github.com/pqzx/html2docx/issues/15) | 검증 | 링크 텍스트와 관계를 DOCX 저장 후 재오픈해 검증. 구버전 python-docx의 paragraph.text 표시는 별개. |
 | [#21 Color conversion not done when a text is in bold or italic](https://github.com/pqzx/html2docx/issues/21) | 수정 | bold/italic 태그에도 CSS 색상 상속·적용. |
 | [#22 Tweak to handle links without href](https://github.com/pqzx/html2docx/issues/22) | 수정 | href 없는 링크의 텍스트 유지. |
 | [#25 Create document from Word template](https://github.com/pqzx/html2docx/issues/25) | 기능 구현·검증 | 기존 Word 템플릿, 여러 run의 인라인 마커, 문단 간 북마크 범위 교체 지원. 앞뒤 run 서식과 북마크 보존 테스트. |
 | [#27 UnicodeDecodeError:   how to convert html documents with accented characters?](https://github.com/pqzx/html2docx/issues/27) | 기존 수정 검증 | 비ASCII UTF-8 파일 읽기. |
-| [#28 Code breaks for base64 image source, saying OSError: [Errno 36] File name too long](https://github.com/pqzx/html2docx/issues/28) | 기존 수정 검증 | base64 이미지 처리. |
-| [#30 <title> attribute should be rendered with the MS Word "Title" style](https://github.com/pqzx/html2docx/issues/30) | 기능 추가 | title을 Word Title 문단으로 처리. |
+| [#28 Code breaks for base64 image source, saying OSError: \[Errno 36\] File name too long](https://github.com/pqzx/html2docx/issues/28) | 기존 수정 검증 | base64 이미지 처리. |
+| [#30 &lt;title&gt; attribute should be rendered with the MS Word "Title" style](https://github.com/pqzx/html2docx/issues/30) | 기능 추가 | title을 Word Title 문단으로 처리. |
 | [#31 Addin page breaks?](https://github.com/pqzx/html2docx/issues/31) | 기능 추가 | page-break-before/after 및 break-before/after. |
 | [#32 parse_dict_string raising excemptions in edge cases](https://github.com/pqzx/html2docx/issues/32) | 수정 | tinycss2 파서로 URL의 콜론·따옴표·공백 보존. |
 | [#33 Tab_stops](https://github.com/pqzx/html2docx/issues/33) | 지원·예제 | pre 탭 보존 검증. Word 스타일에서 탭 정지·점선 리더를 설정하는 실행 코드를 작업별 사용법에 제공. |
@@ -43,7 +46,7 @@ mathml2docx는 `pqzx/html2docx`에서 파생됐습니다. 이 기록은 원본 �
 | [#41 Add the ability to make bold, italics and Underline. Also, can you look into adding superscripts and subscripts?](https://github.com/pqzx/html2docx/issues/41) | 기존 수정 검증 | b/i/sup/sub 서식 검증. |
 | [#42 Background Color is Not working](https://github.com/pqzx/html2docx/issues/42) | 수정 | 실제 RGB 배경색을 w:shd fill로 기록. |
 | [#43 table_style = 'TableGrid'](https://github.com/pqzx/html2docx/issues/43) | 수정 | TableGrid 별칭 및 공개 TableStyle.GRID 제공. |
-| [#44 Converting block level elements like <div> into paragraphs](https://github.com/pqzx/html2docx/issues/44) | 수정 | div/section 등 블록을 문단으로 처리. |
+| [#44 Converting block level elements like &lt;div&gt; into paragraphs](https://github.com/pqzx/html2docx/issues/44) | 수정 | div/section 등 블록을 문단으로 처리. |
 | [#46 Add classes with specific styles](https://github.com/pqzx/html2docx/issues/46) | 기능 추가 | 태그·class별 Word style_map. |
 | [#47 Release Latest Version, so we can use paragraph_style support](https://github.com/pqzx/html2docx/issues/47) | mathml2docx 1.0.0에 포함 | PyPI에 배포한 mathml2docx에 문단 스타일을 포함합니다. upstream html2docx의 릴리스나 게시 권한을 변경하는 것은 아닙니다. |
 | [#48 Unable to convert html with rowspan to docx correctly](https://github.com/pqzx/html2docx/issues/48) | 기존 수정 검증·보강 | Phone 행 병합은 기존 코드 통과. 새 코드는 빈 셀 병합까지 검증. |
@@ -57,7 +60,7 @@ mathml2docx는 `pqzx/html2docx`에서 파생됐습니다. 이 기록은 원본 �
 | [#60 img without src will crash](https://github.com/pqzx/html2docx/issues/60) | 기존 수정 검증 | src 없는 img가 예외 없이 처리됨. |
 | [#61 ImportError: cannot import name 'OxmlElement' from 'docx.oxml'](https://github.com/pqzx/html2docx/issues/61) | 검증 | 지원 의존성 범위에서 import 및 문서 생성 검증; 모든 과거 버전 조합을 보장하지 않음. |
 | [#62 parser crash with a tag  without href](https://github.com/pqzx/html2docx/issues/62) | 수정 | href 없는 a의 텍스트 보존. |
-| [#66 [bug] tables containing a <td> whose first child is <br> results in a crash](https://github.com/pqzx/html2docx/issues/66) | 기존 수정 검증 | 셀 첫 자식 br 뒤 텍스트 유지. |
+| [#66 \[bug\] tables containing a &lt;td&gt; whose first child is &lt;br&gt; results in a crash](https://github.com/pqzx/html2docx/issues/66) | 기존 수정 검증 | 셀 첫 자식 br 뒤 텍스트 유지. |
 | [#67 handling base64 image](https://github.com/pqzx/html2docx/issues/67) | 기존 수정 검증 | data URL PNG를 실제 DOCX 이미지로 변환. |
 | [#68 Underline not converting into docx](https://github.com/pqzx/html2docx/issues/68) | 수정 | CSS text-decoration:underline 지원. |
 | [#70 ValueError: invalid literal for int() with base 10: '0.88'](https://github.com/pqzx/html2docx/issues/70) | 수정·검증 | RGBA 소수 알파 예외 제거 및 상위 배경색과 실제 RGB 합성. 빨강 50%와 파랑 배경의 보라색 결과를 검증. |

@@ -1,7 +1,7 @@
 # 문서 사이트 빌드
 
 문서 사이트는 Python 빌더가 Markdown을 HTML로 변환하는 정적 사이트입니다.
-Jinja2 템플릿과 Pygments 코드 강조를 사용하며 MkDocs나 JavaScript 빌드 도구는 필요하지 않습니다.
+Jinja2 템플릿과 Pygments 코드 강조를 사용합니다.
 
 이 문서는 문서 사이트를 빌드하는 기여자를 위한 안내입니다.
 패키지 설치는 [시작하기](01-getting-started.md)에서 다룹니다.
@@ -32,13 +32,36 @@ python -m http.server 8000 --directory site
 | 실행 예제 코드 | `examples/` |
 | Markdown 변환·링크 검사 | `scripts/site_builder.py` |
 
-새 페이지는 두 언어로 추가하고 각각의 목차에 등록하세요. 렌더링·레이아웃을 바꿀 때도
-기존 URL을 유지합니다. 자동 생성되는 예제 페이지는 카탈로그와 Python 코드를 수정하면
+새 페이지는 두 언어로 추가하고 각각의 목차에 등록하세요. 페이지 이름이나 목차를 바꿀 때도
+공개된 URL을 유지하세요. 자동 생성되는 예제 페이지는 카탈로그와 Python 코드를 수정하면
 다음 빌드에 반영됩니다.
 
 검색은 브라우저에서 언어별 JSON 인덱스를 조회하며 영어·한국어·API 이름의 부분 문자열을
 찾습니다. 결과는 HTML이 아닌 텍스트로 삽입합니다. JavaScript 없이도 본문과 목차를
-읽을 수 있으며, 검색과 코드 복사 기능은 JavaScript가 필요합니다.
+읽을 수 있으며, 검색·코드 복사·다이어그램 렌더링은 JavaScript가 필요합니다.
+
+## Mermaid 다이어그램
+
+`mermaid` 코드 블록으로 다이어그램을 추가할 수 있습니다.
+
+```mermaid
+flowchart LR
+    Markdown --> Builder
+    Builder --> English
+    Builder --> Korean
+```
+
+다이어그램은 문서 사이트에서 렌더링합니다. 패키지의 `parse_markdown()`은 Mermaid 코드
+블록을 코드로 보존합니다. DOCX에 다이어그램을 넣으려면 렌더링한 이미지를 삽입하세요.
+
+빌더는 npm의 Mermaid 12.3.0을 내려받아 고정된 SHA-512로 검사하고 번들과 라이선스를
+사이트에서 직접 제공합니다. 다이어그램 iframe은 스크립트 실행만 허용하며 문서 본문에는
+접근할 수 없습니다. strict 모드·텍스트 라벨·입력 크기·간선 수 제한은 사이트가 고정합니다.
+다이어그램 내부 지시문과 YAML 설정은 거절하며, 렌더링에 실패해도 원문을 확인할 수 있습니다.
+
+Markdown의 HTML은 허용 목록으로 정리합니다. 사이트는 자체 자산만 허용하는
+Content Security Policy를 적용하고 인라인 스크립트·외부 iframe·object 삽입을 차단합니다.
+검색 결과는 텍스트 노드와 사이트 내부 URL로 만듭니다.
 
 ## 배포
 

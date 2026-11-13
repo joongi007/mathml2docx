@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -131,6 +132,12 @@ def comparison(stem, text, preview):
     ]
 
 
+def fenced_block(language, source):
+    length = max([2] + [len(run) for run in re.findall(r"`+", source)]) + 1
+    fence = "`" * length
+    return [fence + language, source.rstrip(), fence]
+
+
 def example_pages(language, docs, catalog, previews):
     text = COPY[language]
     gallery = docs / "examples"
@@ -178,7 +185,7 @@ def example_pages(language, docs, catalog, previews):
         if (ROOT / "docs/assets/previews" / (stem + ".pdf")).is_file():
             content.extend([f"[{text['pdf']}](../assets/previews/{stem}.pdf)", ""])
         content.extend(
-            ["## " + text["source"], "", "```python", source.rstrip(), "```", ""]
+            ["## " + text["source"], "", *fenced_block("python", source), ""]
         )
         if stem == "21_report":
             content.extend(

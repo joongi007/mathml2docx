@@ -92,4 +92,4 @@ document.save('combined.docx')
 ```
 
 표 셀에는 `add_html_to_cell(html, cell)`을 사용합니다.
-기존 사용자라면 [1.0.0 마이그레이션](05-migration.md)을 먼저 읽으세요.
+0.x에서 업그레이드한다면 [마이그레이션 안내](05-migration.md)를 먼저 읽으세요.

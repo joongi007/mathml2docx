@@ -1737,6 +1737,7 @@ docs = [
     { name = "jinja2", version = "3.1.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "markdown", version = "3.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
     { name = "markdown", version = "3.11.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "nh3", marker = "python_full_version >= '3.10'" },
     { name = "pygments", marker = "python_full_version >= '3.10'" },
     { name = "pypdfium2", marker = "python_full_version >= '3.10'" },
 ]
@@ -1778,6 +1779,7 @@ dev = [
 docs = [
     { name = "jinja2", marker = "python_full_version >= '3.10'", specifier = ">=3.1,<4" },
     { name = "markdown", marker = "python_full_version >= '3.10'", specifier = ">=3.5,<4" },
+    { name = "nh3", marker = "python_full_version >= '3.10'", specifier = ">=0.3.7,<0.4" },
     { name = "pygments", marker = "python_full_version >= '3.10'", specifier = ">=2.18,<3" },
     { name = "pypdfium2", marker = "python_full_version >= '3.10'", specifier = ">=5.15,<6" },
 ]

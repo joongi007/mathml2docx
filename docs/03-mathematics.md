@@ -65,6 +65,8 @@ and partially empty prescripts require recovery
 because Writer 24.2 can change their display, drop marks or show placeholders.
 
 ```python
+from mathml2docx import MathmlToDocx
+
 parser = MathmlToDocx(math_target='libreoffice', unsupported_math='text')
 ```
 

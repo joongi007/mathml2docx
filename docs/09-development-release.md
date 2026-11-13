@@ -4,7 +4,7 @@
 
 For package installation and usage, start with [getting started](01-getting-started.md).
 This section is for contributors working on the source. The core supports Python
-3.6+, while development and documentation use the recent Python in `.python-version`.
+3.6+, while development and documentation use the Python pinned in `.python-version`.
 
 ```sh
 git clone https://github.com/joongi007/mathml2docx.git
@@ -70,7 +70,8 @@ uv run --no-sync --no-default-groups --python 3.8 python -m unittest discover -v
 
 Use a separate environment or `--python` when switching versions: the default
 development interpreter is 3.14. CI covers each minor from 3.6 to 3.14; 3.6/3.7 use
-Docker and modern versions use uv. Windows 3.8/3.14 and macOS 3.14 are also checked.
+Docker and modern versions use uv. Windows 3.8/3.14 and macOS 15 Arm64 with Python
+3.14 are also checked.
 uv support for an old interpreter does not imply it can download a Python 3.6
 binary; the legacy check uses an explicit container image.
 
@@ -85,7 +86,7 @@ git switch -c feature/table-layout
 # Commit, test, and open a PR targeting develop.
 ```
 
-Use a branch such as `release/1.0.1` from develop for stabilization if useful. Merge the release
+Use a branch such as `release/1.0.2` from develop for stabilization if useful. Merge the release
 branch into master when ready to exercise TestPyPI, and bring final fixes back to
 develop. A release branch is optional for a small release; develop can target
 master directly. No packages are uploaded by develop/feature PRs or pushes.
@@ -163,15 +164,15 @@ Before this setup succeeds, candidate upload/install cannot be reported as verif
    commit, a PR, develop, or only a local wheel does not qualify.
 4. Tag that commit and push the tag:
 
-For example, for a prepared `1.0.1` release (substitute the version in
+For example, for a prepared `1.0.2` release (substitute the version in
 `pyproject.toml`; existing release tags must remain unchanged):
 
 ```sh
 git switch master
 git pull --ff-only
 # Confirm this HEAD's complete TestPyPI candidate run is green first.
-git tag -a v1.0.1 -m 'Release 1.0.1'
-git push origin v1.0.1
+git tag -a v1.0.2 -m 'Release 1.0.2'
+git push origin v1.0.2
 ```
 
 `Publish to PyPI` requires the tag to match pyproject and `__version__`, the tagged
@@ -190,18 +191,19 @@ are rebuilt from the same source commit, not promoted as identical artifacts.
 ## Hotfixes
 
 Keep master on the release line; unfinished features stay on develop/release
-branches. Branch a hotfix from the current master release line:
+branches. Choose an unused patch version; the commands below use `1.0.2` as an
+example. Branch a hotfix from the current master release line:
 
 ```sh
 git switch master
 git pull --ff-only
-git switch -c hotfix/1.0.1
-# Fix, add a regression case, and update both versions plus uv.lock to 1.0.1.
+git switch -c hotfix/1.0.2
+# Fix, add a regression case, and update both versions plus uv.lock to 1.0.2.
 # Open a PR targeting master; merge after checks.
 ```
 
 Wait for the merged master commit's TestPyPI upload and installation checks, then
-tag `v1.0.1` on that commit. Merge master back into develop (or open a back-merge
+tag `v1.0.2` on that commit. Merge master back into develop (or open a back-merge
 PR) so the fix survives the next release. If develop already targets `1.1.0`,
 resolve version/lock conflicts while keeping develop's intended version.
 This flow keeps a hotfix independent of unreleased features.

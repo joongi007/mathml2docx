@@ -3,6 +3,10 @@
 Do not commit generated DOCX or binary reference DOCX files. Keep reproducible
 text inputs, independently written JSON answers, and comparison code.
 
+These are contributor checks. Prepare a checkout with the
+[development setup](https://joongi007.github.io/mathml2docx/09-development-release/)
+and run the commands below from the repository root.
+
 | Material | Location | Purpose |
 | --- | --- | --- |
 | 20 MathML inputs | `examples/assets/math-corpus/M01.html`–`M20.html` | Readable MathML HTML fragments |

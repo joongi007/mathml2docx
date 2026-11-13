@@ -1,4 +1,4 @@
-# Migrating to 1.0.0
+# Migrating from 0.x
 
 Version 1.0.0 converts MathML directly into Word's OMML without an XSL file.
 
@@ -79,7 +79,8 @@ from docx import Document
 from mathml2docx import MathmlToDocx
 
 parser = MathmlToDocx(style_map={'p': {'quotation': 'Quote'}})
-document = Document('template.docx')
+document = Document()
+document.add_paragraph('{{content}}')
 parser.add_html_to_document('<p class="quotation">A quotation</p>', document)
 # Replace a unique marker, including one split across multiple runs.
 parser.replace_html(document, '{{content}}', '<p>Inserted content</p>')

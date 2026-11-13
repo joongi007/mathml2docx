@@ -5,6 +5,8 @@
 
 ## 파일 여러 개를 한꺼번에 변환
 
+변환할 HTML 파일을 `input/` 폴더에 넣은 뒤 아래 코드를 실행하세요.
+
 ```python
 from pathlib import Path
 from mathml2docx import MathmlToDocx
@@ -42,6 +44,11 @@ document.save('styled.docx')
 Flexbox·Grid·브라우저 JavaScript 실행이나 픽셀 단위 복제는 제공하지 않습니다.
 
 ## 문장 중간의 마커·북마크
+
+`{{customer}}` 마커가 한 번만 나타나고 `result`라는 Word 북마크가 있는
+`template.docx`를 준비하세요. 아래 코드는 해당 위치의 내용을 바꿉니다.
+[마커](examples/15_markers.md)·[북마크](examples/16_bookmarks.md) 예제에서는
+시작 문서도 Python으로 만드는 방법을 볼 수 있습니다.
 
 ```python
 from docx import Document

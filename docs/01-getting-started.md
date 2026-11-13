@@ -92,4 +92,4 @@ document.save('combined.docx')
 ```
 
 Use `add_html_to_cell(html, cell)` for a table cell.
-Existing users should read [the 1.0.0 migration guide](05-migration.md).
+If upgrading from 0.x, read [the migration guide](05-migration.md).
