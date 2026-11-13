@@ -61,7 +61,7 @@ jobs:
         include:
           - {os: windows-latest, python-version: '3.8'}
           - {os: windows-latest, python-version: '3.14'}
-          - {os: macos-15, python-version: '3.14'}
+          - {os: macos-26, python-version: '3.14'}
     steps:
       - uses: actions/checkout@v6
         with:

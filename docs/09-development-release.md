@@ -70,7 +70,7 @@ uv run --no-sync --no-default-groups --python 3.8 python -m unittest discover -v
 
 Use a separate environment or `--python` when switching versions: the default
 development interpreter is 3.14. CI covers each minor from 3.6 to 3.14; 3.6/3.7 use
-Docker and modern versions use uv. Windows 3.8/3.14 and macOS 15 Arm64 with Python
+Docker and modern versions use uv. Windows 3.8/3.14 and macOS 26 Arm64 with Python
 3.14 are also checked.
 uv support for an old interpreter does not imply it can download a Python 3.6
 binary; the legacy check uses an explicit container image.

@@ -69,7 +69,7 @@ uv run --no-sync --no-default-groups --python 3.8 python -m unittest discover -v
 
 기본 개발 인터프리터는 3.14입니다. 버전을 바꿀 때는 별도 환경이나 `--python`을 사용하세요.
 CI는 3.6~3.14의 각 minor 버전을 검사합니다. 3.6·3.7은 Docker, 최신 버전은 uv를
-사용합니다. Windows의 Python 3.8·3.14와 macOS 15 Arm64의 Python 3.14도 검사합니다.
+사용합니다. Windows의 Python 3.8·3.14와 macOS 26 Arm64의 Python 3.14도 검사합니다.
 uv의 구형 인터프리터 지원이 Python 3.6 바이너리 자동 다운로드를 뜻하지는 않으므로
 명시한 컨테이너 이미지를 사용합니다.
 
