@@ -1,5 +1,7 @@
 """Exercise hostile Markdown HTML and Mermaid settings at the publishing boundary."""
 
+import importlib.util
+
 import pytest
 from bs4 import BeautifulSoup
 
@@ -9,9 +11,12 @@ from scripts.mermaid_docs import (
     prepare_bundle,
     verify_archive,
 )
+from scripts.site_security import sanitize_document
 
-pytest.importorskip("nh3", reason="Documentation sanitizer is a docs-only dependency")
-from scripts.site_security import sanitize_document  # noqa: E402
+pytestmark = pytest.mark.skipif(
+    importlib.util.find_spec("nh3") is None,
+    reason="Documentation sanitizer is a docs-only dependency",
+)
 
 
 @pytest.mark.parametrize(
