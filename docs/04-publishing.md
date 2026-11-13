@@ -57,7 +57,7 @@ Diagrams render on the documentation website. The package's `parse_markdown()`
 preserves Mermaid fences as code; insert a rendered image to put a diagram in DOCX.
 
 The builder downloads Mermaid 12.3.0 from npm, verifies the pinned SHA-512 and
-serves the bundle and its license locally. Diagrams run in an isolated iframe
+serves the bundle, its license and the bundled DOMPurify license locally. Diagrams run in an isolated iframe
 with scripts allowed and same-origin access denied. Strict mode, plain-text
 labels and size/edge limits are fixed by the site. Diagram directives and YAML
 configuration are rejected; source remains available if rendering fails.

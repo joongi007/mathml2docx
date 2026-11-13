@@ -14,6 +14,27 @@ INTEGRITY = "4113TdXeLAsMruJ79OpFL5O8+LTFXhQqZ260rF3tgUmiNAtRm4Uume04I+65PRN6yZ6
 MAX_SOURCE = 20000
 BUNDLE_SHA256 = "336df803d87a38b70a01e736e666c8f7601d2ce42f5e47c8fafe5d721074b9a3"
 LICENSE_SHA256 = "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80"
+DOMPURIFY_VERSION = "3.4.17"
+DOMPURIFY_LICENSE_SHA256 = (
+    "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+)
+
+
+def prepare_dompurify_license(assets):
+    path = assets / ("DOMPurify-" + DOMPURIFY_VERSION + "-LICENSE.txt")
+    if path.exists():
+        data = path.read_bytes()
+    else:
+        url = (
+            "https://raw.githubusercontent.com/cure53/DOMPurify/"
+            + DOMPURIFY_VERSION
+            + "/LICENSE"
+        )
+        with urlopen(url, timeout=30) as response:
+            data = response.read(100000)
+    if hashlib.sha256(data).hexdigest() != DOMPURIFY_LICENSE_SHA256:
+        raise ValueError("Bundled DOMPurify license integrity mismatch")
+    path.write_bytes(data)
 
 
 def mark_mermaid_fences(source):
@@ -65,6 +86,7 @@ def prepare_bundle(assets):
             or hashlib.sha256(license_path.read_bytes()).hexdigest() != LICENSE_SHA256
         ):
             raise ValueError("Cached Mermaid bundle/license integrity mismatch")
+        prepare_dompurify_license(assets)
         return
     with urlopen(ARCHIVE, timeout=60) as response:
         data = response.read(40 * 1024 * 1024 + 1)
@@ -77,6 +99,7 @@ def prepare_bundle(assets):
         (assets / "mermaid-LICENSE.txt").write_bytes(
             archive.extractfile("package/LICENSE").read()
         )
+    prepare_dompurify_license(assets)
 
 
 def render_mermaid(soup, assets, current, relative, language):

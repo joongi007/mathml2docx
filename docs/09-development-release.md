@@ -103,6 +103,8 @@ master directly. No packages are uploaded by develop/feature PRs or pushes.
 Master's package checks run inside `TestPyPI candidate` using the reusable Python
 workflow. They are not launched a second time as a standalone push workflow.
 The separate Documentation workflow builds both locales and deploys only master.
+Superseded develop and pull-request checks are cancelled when a newer run starts.
+Candidate and final publication workflows keep their queueing policy.
 
 ## Automatic TestPyPI installation check
 

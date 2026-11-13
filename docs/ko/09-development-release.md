@@ -102,6 +102,8 @@ develop·feature의 PR이나 푸시로는 패키지를 업로드하지 않습니
 master의 패키지 검사는 `TestPyPI candidate`에서 재사용 Python 워크플로를 호출합니다.
 같은 푸시에 독립적인 Python 워크플로를 한 번 더 실행하지 않습니다.
 별도의 Documentation 워크플로는 한·영 문서를 빌드하고 master만 배포합니다.
+develop·PR 검사는 새 실행이 시작되면 이전 실행을 취소합니다.
+후보·정식 배포 워크플로는 실행 순서를 유지합니다.
 
 ## TestPyPI 설치 자동 검증
 

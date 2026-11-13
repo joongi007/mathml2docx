@@ -50,6 +50,7 @@ if bundling or redistributing those dependencies.
 | pypdfium2 / PDFium | Documentation PDF page previews | Apache-2.0 / BSD-3-Clause bindings, with PDFium and bundled component notices; [license inventory](https://github.com/pypdfium2-team/pypdfium2/tree/main/LICENSES) |
 | nh3 | Documentation HTML sanitization | [MIT](https://github.com/messense/nh3/blob/main/LICENSE) |
 | Mermaid 12.3.0 | Documentation diagrams | [MIT](https://github.com/mermaid-js/mermaid/blob/develop/LICENSE); the locally served bundle retains bundled notices and includes `mermaid-LICENSE.txt` |
+| DOMPurify 3.4.17 (bundled by Mermaid) | Diagram SVG sanitization | [Apache-2.0 license](https://github.com/cure53/DOMPurify/blob/3.4.17/LICENSE), included as `DOMPurify-3.4.17-LICENSE.txt` with the site assets |
 | pytest | Test execution | [MIT](https://github.com/pytest-dev/pytest/blob/main/LICENSE) |
 | Ruff | Development lint/format | [MIT](https://github.com/astral-sh/ruff/blob/main/LICENSE) |
 | flit_core | Build backend | [BSD-3-Clause](https://github.com/pypa/flit/blob/main/LICENSE) |
@@ -63,7 +64,8 @@ reference PDFs into page images. The published site contains those images, not
 PDFium source or binaries. This tool is not a runtime conversion dependency.
 Its installed license inventory was checked for pypdfium2 5.15.2 on 2026-11-14.
 The documentation builder obtains Mermaid's official npm archive, verifies its
-pinned SHA-512 and serves the unmodified bundle with its license. Diagram source
+pinned SHA-512 and serves the unmodified bundle with its license and the bundled
+DOMPurify component's full license. Diagram source
 is project-authored; no third-party diagrams are copied.
 
 The independent validation scripts can download ECMA-376 and W3C XML schemas into
