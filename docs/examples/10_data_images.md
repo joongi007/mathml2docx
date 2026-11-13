@@ -4,6 +4,8 @@ Place data URL images inside a paragraph and set their display width.
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.10_data_images
 ```

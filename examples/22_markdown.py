@@ -4,7 +4,7 @@ from mathml2docx import MathmlToDocx
 
 from .support import save
 
-# Install: python -m pip install ".[markdown]"
+# Install: python -m pip install "mathml2docx[markdown]"
 source = """# Markdown example
 
 1. First

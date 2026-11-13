@@ -4,6 +4,8 @@ thead·tbody, rowspan·colspan, 셀 배경, 표 폭·테두리와 중첩 표를 
 
 ## 실행
 
+[예제 ZIP](../downloads/mathml2docx-examples.zip)의 압축을 풀고 [예제 의존성](00-index.md)을 설치한 뒤, `examples/` 폴더가 들어 있는 위치에서 실행하세요.
+
 ```sh
 python -m examples.08_tables
 ```

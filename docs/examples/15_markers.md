@@ -4,6 +4,8 @@ Replace markers spanning formatted runs and insert multiple blocks into cells.
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.15_markers
 ```

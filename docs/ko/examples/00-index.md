@@ -2,14 +2,18 @@
 
 완전한 예제 30개를 살펴보세요. Word 문서를 내려받거나 Python 코드를 직접 실행할 수 있습니다.
 
+[전체 예제 코드와 자산 (ZIP)](../downloads/mathml2docx-examples.zip)
+
+ZIP을 내려받아 압축을 풀고, `examples/` 폴더가 들어 있는 위치에서 아래 명령을 실행하세요. 예제에서 사용하는 공통 모듈과 자산도 ZIP에 포함됩니다.
+
+전체 예제를 실행하려면 LaTeX를 위해 Python 3.6.2 이상이 필요합니다. 17번 예제는 docxtpl도 사용하며 아래 설치 명령에 포함되어 있습니다.
+
 ```sh
-uv sync --locked --extra latex --extra markdown --group docs --group examples
-uv run --no-sync python -m examples.run_all
+python -m pip install "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+python -m examples.run_all
 ```
 
-위 의존성을 설치한 뒤 저장소 루트에서 실행하세요. 로컬 결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행할 수 있습니다. 실행 코드는 두 언어 문서가 공유합니다.
-
-[전체 예제 코드와 자산 (ZIP)](../downloads/mathml2docx-examples.zip)
+결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행하세요. 명령은 PyPI 배포 패키지를 사용하며, 두 언어 문서가 실행 코드를 공유합니다.
 
 PDF에서 LibreOffice 출력 결과를 살펴볼 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.
 

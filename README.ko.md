@@ -1,6 +1,6 @@
 # mathml2docx
 
-[English](README.md) · [한국어](README.ko.md) · [사용 문서](https://joongi007.github.io/mathml2docx/ko/)
+[English](https://github.com/joongi007/mathml2docx/blob/master/README.md) · [한국어](https://github.com/joongi007/mathml2docx/blob/master/README.ko.md) · [사용 문서](https://joongi007.github.io/mathml2docx/ko/)
 
 Python에서 HTML과 MathML을 Word 문서로 변환합니다. **편집 가능한 수식**, 서식 있는
 본문, 표와 이미지를 보고서·학습지·문서 템플릿에 넣을 수 있습니다.
@@ -10,16 +10,18 @@ Python 3.6 이상 · 선택 기능으로 LaTeX·Markdown 지원 · MIT 라이선
 
 ## 설치
 
-이 README는 1.0 API를 설명합니다. PyPI에 1.0이 출시되기 전에는 저장소 버전을 설치하세요.
+[PyPI](https://pypi.org/project/mathml2docx/)에 배포된 패키지를 설치하세요.
 
 ```sh
-python -m pip install 'git+https://github.com/joongi007/mathml2docx.git@master'
+python -m pip install mathml2docx
 # LaTeX·Markdown 기능도 설치:
-python -m pip install 'mathml2docx[latex,markdown] @ git+https://github.com/joongi007/mathml2docx.git@master'
+python -m pip install "mathml2docx[latex,markdown]"
 ```
 
 선택 기능인 LaTeX 변환은 Python 3.6.2 이상이 필요합니다. 라이브러리 사용에는 uv가
-필요하지 않습니다. 재현 가능한 설치를 원하면 `master` 대신 검토한 커밋이나 릴리스 태그를 지정하세요.
+필요하지 않습니다. 재현 가능한 설치를 원하면 프로젝트의 requirements나 lockfile에
+패키지 버전을 고정하세요. 라이브러리 소스를 수정하려면
+[개발 환경 설정](https://joongi007.github.io/mathml2docx/ko/09-development-release/)을 참고하세요.
 
 ## 첫 Word 문서 만들기
 
@@ -105,9 +107,9 @@ Writer만 설치하면 수식이 빈칸으로 나올 수 있습니다.
 
 개발은 `develop`에서 시작합니다. 환경 구성·테스트·배포는
 [개발과 릴리스](https://joongi007.github.io/mathml2docx/ko/09-development-release/)를,
-변경 사항은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
+변경 사항은 [CHANGELOG.md](https://github.com/joongi007/mathml2docx/blob/master/CHANGELOG.md)를 참고하세요.
 
-[MIT](LICENSE) 라이선스이며 [html2docx](https://github.com/pqzx/html2docx)에서 파생됐습니다.
-의존성의 라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 정리돼 있습니다.
+[MIT](https://github.com/joongi007/mathml2docx/blob/master/LICENSE) 라이선스이며 [html2docx](https://github.com/pqzx/html2docx)에서 파생됐습니다.
+의존성의 라이선스는 [THIRD_PARTY_NOTICES.md](https://github.com/joongi007/mathml2docx/blob/master/THIRD_PARTY_NOTICES.md)에 정리돼 있습니다.
 1.0 변환기는 OMML을 직접 생성하며 Office XSL을 포함하지 않습니다.
 과거 0.x 배포물은 별도의 [출처 기록](https://joongi007.github.io/mathml2docx/ko/06-xsl-provenance/)을 참고하세요.

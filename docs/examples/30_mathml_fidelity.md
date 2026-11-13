@@ -4,6 +4,8 @@ Inherited defaults, inline/display sums, composite scripts, equation-safe templa
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.30_mathml_fidelity
 ```

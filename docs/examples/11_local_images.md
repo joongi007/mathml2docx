@@ -4,6 +4,8 @@ Read files below an explicit base directory; paths outside it are refused.
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.11_local_images
 ```

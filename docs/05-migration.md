@@ -2,6 +2,14 @@
 
 Version 1.0.0 converts MathML directly into Word's OMML without an XSL file.
 
+Upgrade the published package from PyPI:
+
+```sh
+python -m pip install --upgrade "mathml2docx[latex,markdown]"
+```
+
+Choose only the extras your application uses; HTML/MathML needs just `mathml2docx`.
+
 ```python
 from mathml2docx import convert, MathmlToDocx, TableStyle, ParagraphStyle
 
@@ -10,7 +18,7 @@ convert('<h1>Report</h1><p>Content</p>', 'report.docx',
 
 parser = MathmlToDocx()
 parser.parse_mathml('<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>').save('fraction.docx')
-# python -m pip install 'mathml2docx[latex]'
+# python -m pip install "mathml2docx[latex]"
 parser.parse_latex(r'\frac{1}{2} + x^2').save('equation.docx')
 ```
 

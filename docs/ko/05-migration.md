@@ -1,7 +1,14 @@
 # 1.0.0으로 옮기기
 
 1.0.0은 XSL 파일 없이 MathML을 Word 수식(OMML)으로 변환합니다.
-패키지 버전은 변경했지만 PyPI 배포는 별도로 진행해야 합니다.
+
+PyPI 배포 패키지를 업그레이드하세요.
+
+```sh
+python -m pip install --upgrade "mathml2docx[latex,markdown]"
+```
+
+앱에서 사용하는 선택 기능만 설치하면 됩니다. HTML·MathML에는 `mathml2docx`만 필요합니다.
 
 ```python
 from mathml2docx import convert, MathmlToDocx, TableStyle, ParagraphStyle
@@ -11,7 +18,7 @@ convert('<h1>보고서</h1><p>내용</p>', 'report.docx',
 
 parser = MathmlToDocx()
 parser.parse_mathml('<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>').save('fraction.docx')
-# python -m pip install 'mathml2docx[latex]'
+# python -m pip install "mathml2docx[latex]"
 parser.parse_latex(r'\frac{1}{2} + x^2').save('equation.docx')
 ```
 

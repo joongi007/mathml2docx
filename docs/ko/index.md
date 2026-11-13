@@ -5,6 +5,12 @@ mathml2docx는 지원하는 HTML과 MathML을 서식 있는 본문과 편집 가
 
 ## 첫 문서 만들기
 
+PyPI에 배포된 패키지를 설치하세요.
+
+```sh
+python -m pip install mathml2docx
+```
+
 ```python
 from mathml2docx import convert
 

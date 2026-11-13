@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "mathml2docx"
-version = "1.0.0"
+version = "1.0.1"
 authors = [{ name = "joongi007" }]
 description = "Convert HTML, MathML and optional LaTeX/Markdown to Word documents"
 readme = "README.md"

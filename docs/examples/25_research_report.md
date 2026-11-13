@@ -4,6 +4,8 @@ Ten distinct advanced MathML formulas with Korean/English prose, merged and nest
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.25_research_report
 ```

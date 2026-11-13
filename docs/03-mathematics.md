@@ -4,6 +4,9 @@ Use MathML for structured equations, or install the `latex` extra for a LaTeX fr
 Supported expressions become editable Word equations. Unsupported visual notations
 can be preserved as visible source or rendered by an application-supplied callback.
 
+Install HTML/MathML support with `python -m pip install mathml2docx`, or include
+LaTeX with `python -m pip install "mathml2docx[latex]"` (Python 3.6.2+).
+
 ## Inline and display equations
 
 The default for `<math>` is `inline`, as defined by [MathML](https://www.w3.org/TR/MathML3/chapter2.html#interf.toplevel).

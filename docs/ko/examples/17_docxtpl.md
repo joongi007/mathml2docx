@@ -4,6 +4,8 @@ Jinja 템플릿을 렌더링한 뒤 HTML 문단을 추가합니다.
 
 ## 실행
 
+[예제 ZIP](../downloads/mathml2docx-examples.zip)의 압축을 풀고 [예제 의존성](00-index.md)을 설치한 뒤, `examples/` 폴더가 들어 있는 위치에서 실행하세요.
+
 ```sh
 python -m examples.17_docxtpl
 ```

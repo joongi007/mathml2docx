@@ -2,19 +2,45 @@
 
 ## Installation
 
-The core library supports Python 3.6+. Development and documentation use uv and a
-recent Python. Optional LaTeX conversion requires Python 3.6.2+.
-
-These examples describe the repository's 1.0.0 code. Until that version is
-published on PyPI, install it from the repository:
+The core library supports Python 3.6+. Install the published package from PyPI
+in your project's Python environment:
 
 ```sh
-git clone https://github.com/joongi007/mathml2docx.git
-cd mathml2docx
-python -m pip install .
-# Optional LaTeX frontend:
-python -m pip install '.[latex]'
+python -m pip install mathml2docx
 ```
+
+HTML and MathML work with the core package. Install the extras for LaTeX or
+Markdown input:
+
+```sh
+python -m pip install "mathml2docx[latex]"
+python -m pip install "mathml2docx[markdown]"
+# Both optional frontends:
+python -m pip install "mathml2docx[latex,markdown]"
+```
+
+Optional LaTeX conversion requires Python 3.6.2+. Check the installed version with:
+
+```sh
+python -c "import mathml2docx; print(mathml2docx.__version__)"
+```
+
+For a project already using uv, `uv add mathml2docx` adds the published dependency;
+use `uv add "mathml2docx[latex,markdown]"` for both extras. Library installation
+does not require Git or a repository checkout. Source and contributor setup is in
+[development and releases](09-development-release.md).
+
+### Python 3.6
+
+Use a pip version that supports Python 3.6 and its compatible dependency wheels:
+
+```sh
+python -m pip install --upgrade "pip>=21.3,<22"
+python -m pip install mathml2docx
+```
+
+pip selects dependency versions compatible with the interpreter. The optional
+LaTeX frontend still requires Python 3.6.2+.
 
 ## Convert HTML and equations
 
@@ -32,12 +58,21 @@ convert(html, 'example.docx')
 `convert()` returns a python-docx `Document`. Omit the output path to return the
 document without saving it. Neither XSL nor Microsoft Office is required.
 
+To convert an existing HTML file named `input.html`:
+
 ```python
 from mathml2docx import MathmlToDocx
 
 parser = MathmlToDocx()
 parser.parse_html_file('input.html', 'output.docx')
-parser.parse_latex(r'\frac{1}{2}').save('latex.docx')
+```
+
+After installing the `latex` extra:
+
+```python
+from mathml2docx import MathmlToDocx
+
+MathmlToDocx().parse_latex(r'\frac{1}{2}').save('latex.docx')
 ```
 
 ## Add to an existing document

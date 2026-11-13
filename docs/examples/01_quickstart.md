@@ -4,6 +4,8 @@ Save HTML with one convert() call and receive a Document.
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.01_quickstart
 ```

@@ -55,7 +55,8 @@ Debian·Ubuntu 설치 예시:
 sudo apt-get install libreoffice-writer libreoffice-math poppler-utils fonts-noto-cjk fonts-stix
 ```
 
-미리보기 생성과 검사:
+미리보기와 자동 검사를 재현하려면 [개발 환경](09-development-release.md)에 따라
+소스를 준비하고 저장소 루트에서 아래 명령을 실행하세요.
 
 ```sh
 uv run --no-sync python -m examples.run_all

@@ -2,10 +2,14 @@
 
 ## 개발 환경
 
-설치 사용자는 uv가 없어도 됩니다. core는 Python 3.6 이상을 지원하며,
+패키지 설치와 사용법은 [시작하기](01-getting-started.md)를 참고하세요.
+이 절은 소스를 수정하는 기여자를 위한 안내입니다. core는 Python 3.6 이상을 지원하며,
 개발·문서는 `.python-version`에 지정한 최신 Python을 사용합니다.
 
 ```sh
+git clone https://github.com/joongi007/mathml2docx.git
+cd mathml2docx
+git switch develop
 uv sync --locked --extra latex --extra markdown --extra test --group docs --group examples
 uv run --no-sync python -m pytest -q
 uv run --no-sync python -m unittest tests.test_docx_oracles -v
@@ -83,7 +87,7 @@ develop·feature의 PR이나 푸시로는 패키지를 업로드하지 않습니
 | --- | --- | --- |
 | develop 푸시, develop/master 대상 PR | Python 3.6~3.14·품질·문서·배포물 검사 | 없음 |
 | master 푸시·병합 | 같은 전체 검사, 고유 후보 버전 빌드, 깨끗한 wheel 설치 | TestPyPI 업로드 후 해당 인덱스의 실제 파일 설치 검사 |
-| 검증한 master 커밋의 정식 태그 `v1.0.0` 푸시 | 버전·소스·같은 커밋의 TestPyPI 성공, 전체 검사, 정식 배포물·설치 검사 | `pypi` 환경을 거쳐 PyPI |
+| 검증한 master 커밋의 정식 태그 `vX.Y.Z` 푸시 | 버전·소스·같은 커밋의 TestPyPI 성공, 전체 검사, 정식 배포물·설치 검사 | `pypi` 환경을 거쳐 PyPI |
 | 기존 태그의 GitHub Release 설명 게시 | 추가 패키지 업로드 없음 | 없음 |
 | master에서 `TestPyPI candidate` 수동 실행 | 동일한 후보 파이프라인 | TestPyPI 업로드·설치 검사 |
 | `Publish to PyPI` 수동 실행 | 검사·빌드 | 없음 |
@@ -139,17 +143,22 @@ Trusted Publishing은 OIDC `id-token: write`를 사용하므로 장기 API 키�
 
 1. Word 직접 검사와 [마이그레이션](05-migration.md)·[검증 한계](11-validation.md)·
    라이선스·변경 기록 검토를 마칩니다.
+   README와 사용자 문서의 pip 설치 명령이 배포 패키지를 가리키는지 확인하고,
+   배포 날짜와 상태를 갱신합니다.
 2. 두 버전을 배포할 정식 버전으로 맞추고 `uv.lock`을 갱신합니다. 검증 후 master에 병합합니다.
 3. 해당 master 커밋의 **TestPyPI candidate**에서 업로드·두 설치 job까지 모두 성공할 때까지
    기다립니다. 다른 커밋·PR·develop의 성공이나 로컬 wheel 검사만으로 대체하지 않습니다.
 4. 검증한 커밋에 태그를 만들고 푸시합니다.
 
+아래는 `1.0.1` 릴리스를 준비한 경우의 예시입니다. `pyproject.toml`에 지정한 버전으로
+바꿔 실행하세요. 기존 릴리스 태그는 그대로 보존합니다.
+
 ```sh
 git switch master
 git pull --ff-only
 # 먼저 이 HEAD의 전체 TestPyPI candidate 실행이 성공했는지 확인하세요.
-git tag -a v1.0.0 -m 'Release 1.0.0'
-git push origin v1.0.0
+git tag -a v1.0.1 -m 'Release 1.0.1'
+git push origin v1.0.1
 ```
 
 `Publish to PyPI`는 태그·pyproject·`__version__`의 일치, 태그 커밋의 origin/master 포함,

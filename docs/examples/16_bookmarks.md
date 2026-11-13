@@ -4,6 +4,8 @@ Replace Word bookmark ranges while preserving surrounding content and bookmarks.
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.16_bookmarks
 ```

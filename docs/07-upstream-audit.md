@@ -52,7 +52,7 @@ Those are XML/relationship checks rather than direct Word screen comparisons.
 | [#43 table_style = 'TableGrid'](https://github.com/pqzx/html2docx/issues/43) | Fixed | TableGrid alias and public TableStyle.GRID constant. |
 | [#44 Converting block level elements like <div> into paragraphs](https://github.com/pqzx/html2docx/issues/44) | Fixed | div, section, and other blocks create paragraphs. |
 | [#46 Add classes with specific styles](https://github.com/pqzx/html2docx/issues/46) | Implemented | Tag/class Word style mappings. |
-| [#47 Release Latest Version, so we can use paragraph_style support](https://github.com/pqzx/html2docx/issues/47) | Package prepared; publication separate | Built and installed 1.0.0 wheel/sdist with paragraph styles. This repository does not confer upstream PyPI publishing rights. |
+| [#47 Release Latest Version, so we can use paragraph_style support](https://github.com/pqzx/html2docx/issues/47) | Available in mathml2docx 1.0.0 | The published mathml2docx package includes paragraph styles. This does not change releases or publishing rights for the upstream html2docx project. |
 | [#48 Unable to convert html with rowspan to docx correctly](https://github.com/pqzx/html2docx/issues/48) | Existing fix verified and extended | The original Phone rowspan case already passed; empty merged cells are now covered too. |
 | [#49 margin handler cannot handle percentages](https://github.com/pqzx/html2docx/issues/49) | Fixed | Percent and fractional lengths; percent is relative to available document body width. |
 | [#50 Including tables](https://github.com/pqzx/html2docx/issues/50) | Reviewed | Withdrawn by the reporter as malformed HTML; no additional reproduction was requested. |

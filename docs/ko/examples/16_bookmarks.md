@@ -4,6 +4,8 @@ Word 북마크의 범위를 HTML로 교체하고 앞뒤 내용과 북마크를 �
 
 ## 실행
 
+[예제 ZIP](../downloads/mathml2docx-examples.zip)의 압축을 풀고 [예제 의존성](00-index.md)을 설치한 뒤, `examples/` 폴더가 들어 있는 위치에서 실행하세요.
+
 ```sh
 python -m examples.16_bookmarks
 ```

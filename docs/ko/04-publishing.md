@@ -3,6 +3,9 @@
 문서 사이트는 Python 빌더가 Markdown을 HTML로 변환하는 정적 사이트입니다.
 Jinja2 템플릿과 Pygments 코드 강조를 사용하며 MkDocs나 JavaScript 빌드 도구는 필요하지 않습니다.
 
+이 문서는 문서 사이트를 빌드하는 기여자를 위한 안내입니다.
+패키지 설치는 [시작하기](01-getting-started.md)에서 다룹니다.
+
 ## 로컬 빌드와 미리보기
 
 Python 3.10 이상과 uv 0.13.7 이상을 사용해 저장소 루트에서 실행하세요.

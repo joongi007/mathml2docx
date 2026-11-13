@@ -1,5 +1,8 @@
 # API와 옵션
 
+`python -m pip install mathml2docx`로 설치하세요. LaTeX·Markdown 선택 의존성은
+[시작하기](01-getting-started.md)에서 설명합니다.
+
 ## 공개 API
 
 ```python
@@ -19,7 +22,7 @@ parser = MathmlToDocx(table_style=TableStyle.GRID)
 | `parse_html_file(input, output=None, encoding='utf-8')` | 저장한 Path 반환. 확장자는 한 번만 추가 |
 | `parse_mathml(source)` | 네이티브 OMML 수식이 든 Document 반환 |
 | `parse_markdown(source)` | 선택 의존성 Markdown으로 제목·표·코드·취소선 변환 |
-| `parse_latex(source)` | 선택 의존성 `latex2mathml`로 변환한 Document 반환 |
+| `parse_latex(source)` | 선택 의존성 `latex2mathml`로 변환한 Document 반환. Python 3.6.2 이상 필요 |
 | `add_html_to_document(html, document)` | Document·표 셀·DocxTemplate에 추가 |
 | `add_html_to_cell(html, cell)` | 표 셀에 추가 |
 | `add_image_to_cell(cell, image)` | BytesIO 이미지를 문서·셀에 추가 |

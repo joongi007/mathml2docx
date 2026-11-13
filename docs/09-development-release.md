@@ -2,10 +2,14 @@
 
 ## Development environment
 
-Library users do not need uv. The core supports Python 3.6+, while development and
-documentation use the recent Python in `.python-version`.
+For package installation and usage, start with [getting started](01-getting-started.md).
+This section is for contributors working on the source. The core supports Python
+3.6+, while development and documentation use the recent Python in `.python-version`.
 
 ```sh
+git clone https://github.com/joongi007/mathml2docx.git
+cd mathml2docx
+git switch develop
 uv sync --locked --extra latex --extra markdown --extra test --group docs --group examples
 uv run --no-sync python -m pytest -q
 uv run --no-sync python -m unittest tests.test_docx_oracles -v
@@ -73,7 +77,7 @@ git switch -c feature/table-layout
 # Commit, test, and open a PR targeting develop.
 ```
 
-Use `release/1.0.0` from develop for stabilization if useful. Merge the release
+Use a branch such as `release/1.0.1` from develop for stabilization if useful. Merge the release
 branch into master when ready to exercise TestPyPI, and bring final fixes back to
 develop. A release branch is optional for a small release; develop can target
 master directly. No packages are uploaded by develop/feature PRs or pushes.
@@ -82,7 +86,7 @@ master directly. No packages are uploaded by develop/feature PRs or pushes.
 | --- | --- | --- |
 | Push to develop; PR targeting develop/master | Python 3.6–3.14, quality, docs, packaging checks | None |
 | Push/merge to master | Same full suite, unique candidate build, clean wheel check | TestPyPI; then installation checks from that index |
-| Push final tag `v1.0.0` on a verified master commit | Version/source gate, exact-commit TestPyPI success, full tests, final distribution/install checks | PyPI through `pypi` |
+| Push a final tag `vX.Y.Z` on a verified master commit | Version/source gate, exact-commit TestPyPI success, full tests, final distribution/install checks | PyPI through `pypi` |
 | Publish GitHub Release notes for an existing tag | No additional package upload | None |
 | Manual `TestPyPI candidate` on master | Same candidate pipeline | TestPyPI and installation checks |
 | Manual `Publish to PyPI` | Checks and build | None |
@@ -142,6 +146,8 @@ Before this setup succeeds, candidate upload/install cannot be reported as verif
 
 1. Complete Word inspection and review [migration](05-migration.md),
    [validation](11-validation.md), licensing, and the changelog.
+   Check that README and user guides use the published package's pip installation
+   commands, and update the release date and status before publication.
 2. Set both package versions to the intended stable version, update `uv.lock`,
    test, and merge the source to master.
 3. Wait for that exact master commit's **TestPyPI candidate** workflow to pass,
@@ -149,12 +155,15 @@ Before this setup succeeds, candidate upload/install cannot be reported as verif
    commit, a PR, develop, or only a local wheel does not qualify.
 4. Tag that commit and push the tag:
 
+For example, for a prepared `1.0.1` release (substitute the version in
+`pyproject.toml`; existing release tags must remain unchanged):
+
 ```sh
 git switch master
 git pull --ff-only
 # Confirm this HEAD's complete TestPyPI candidate run is green first.
-git tag -a v1.0.0 -m 'Release 1.0.0'
-git push origin v1.0.0
+git tag -a v1.0.1 -m 'Release 1.0.1'
+git push origin v1.0.1
 ```
 
 `Publish to PyPI` requires the tag to match pyproject and `__version__`, the tagged

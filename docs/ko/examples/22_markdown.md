@@ -4,6 +4,8 @@
 
 ## 실행
 
+[예제 ZIP](../downloads/mathml2docx-examples.zip)의 압축을 풀고 [예제 의존성](00-index.md)을 설치한 뒤, `examples/` 폴더가 들어 있는 위치에서 실행하세요.
+
 ```sh
 python -m examples.22_markdown
 ```
@@ -21,7 +23,7 @@ from mathml2docx import MathmlToDocx
 
 from .support import save
 
-# Install: python -m pip install ".[markdown]"
+# Install: python -m pip install "mathml2docx[markdown]"
 source = """# Markdown example
 
 1. First

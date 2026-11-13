@@ -1,5 +1,8 @@
 # API and options
 
+Install with `python -m pip install mathml2docx`. See [getting started](01-getting-started.md)
+for the optional LaTeX and Markdown dependencies.
+
 ## Public API
 
 ```python

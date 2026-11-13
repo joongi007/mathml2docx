@@ -138,7 +138,7 @@ mathml2docx input.html output.docx --force
 ```python
 from mathml2docx import MathmlToDocx
 
-# python -m pip install ".[markdown]"
+# python -m pip install "mathml2docx[markdown]"
 MathmlToDocx().parse_markdown("# 제목\n\n~~삭제~~와 `코드`").save("article.docx")
 ```
 

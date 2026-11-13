@@ -4,6 +4,9 @@
 지원하는 수식은 편집 가능한 Word 수식이 됩니다. 미지원 시각 표기는 원문을 표시하거나
 프로그램이 제공하는 콜백으로 렌더링할 수 있습니다.
 
+HTML·MathML에는 `python -m pip install mathml2docx`를 사용하세요. LaTeX도 사용하려면
+`python -m pip install "mathml2docx[latex]"`로 설치합니다(Python 3.6.2 이상).
+
 ## 인라인 수식과 표시 수식
 
 [MathML 표준](https://www.w3.org/TR/MathML3/chapter2.html#interf.toplevel)에 따라

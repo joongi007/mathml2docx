@@ -58,7 +58,8 @@ On Debian/Ubuntu:
 sudo apt-get install libreoffice-writer libreoffice-math poppler-utils fonts-noto-cjk fonts-stix
 ```
 
-Generate and verify the previews:
+To reproduce previews and automated checks, prepare a source checkout using
+[the development setup](09-development-release.md). Run these commands from its root:
 
 ```sh
 uv run --no-sync python -m examples.run_all

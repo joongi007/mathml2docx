@@ -4,6 +4,8 @@ Upright element symbols, isotope prescripts, charges, reaction arrows and native
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.28_chemistry_enclosures
 ```

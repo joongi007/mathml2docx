@@ -4,6 +4,8 @@ Convert headings, tables, lists, code, and strikethrough with the optional front
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.22_markdown
 ```
@@ -21,7 +23,7 @@ from mathml2docx import MathmlToDocx
 
 from .support import save
 
-# Install: python -m pip install ".[markdown]"
+# Install: python -m pip install "mathml2docx[markdown]"
 source = """# Markdown example
 
 1. First

@@ -2,14 +2,18 @@
 
 Explore 30 complete examples. Download a Word document or run its Python source locally.
 
+[All example source and assets (ZIP)](../downloads/mathml2docx-examples.zip)
+
+Download and extract the ZIP, then run the following commands from the folder containing `examples/`. The bundle includes helper modules and assets used by the examples.
+
+Running all examples requires Python 3.6.2+ for LaTeX. Example 17 also uses docxtpl, included in the installation command below.
+
 ```sh
-uv sync --locked --extra latex --extra markdown --group docs --group examples
-uv run --no-sync python -m examples.run_all
+python -m pip install "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+python -m examples.run_all
 ```
 
-Run from a repository checkout after installing the dependencies above. Local outputs go to `examples/output/`. Run an individual example with, for instance, `python -m examples.01_quickstart`.
-
-[All example source and assets (ZIP)](../downloads/mathml2docx-examples.zip)
+Outputs go to `examples/output/`. To run one example, use `python -m examples.01_quickstart`. The commands use the published PyPI package.
 
 PDF previews show the LibreOffice output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.
 

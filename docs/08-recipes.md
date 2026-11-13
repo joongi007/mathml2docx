@@ -143,7 +143,7 @@ python-docx's own save behavior.
 ```python
 from mathml2docx import MathmlToDocx
 
-# python -m pip install ".[markdown]"
+# python -m pip install "mathml2docx[markdown]"
 MathmlToDocx().parse_markdown("# Title\n\n~~Removed~~ and `code`").save("article.docx")
 ```
 

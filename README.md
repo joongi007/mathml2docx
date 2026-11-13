@@ -1,6 +1,6 @@
 # mathml2docx
 
-[English](README.md) · [한국어](README.ko.md) · [Documentation](https://joongi007.github.io/mathml2docx/)
+[English](https://github.com/joongi007/mathml2docx/blob/master/README.md) · [한국어](https://github.com/joongi007/mathml2docx/blob/master/README.ko.md) · [Documentation](https://joongi007.github.io/mathml2docx/)
 
 Convert HTML and MathML into Word documents with Python. Create reports, worksheets
 and templates with **editable equations**, formatted text, tables and images.
@@ -10,17 +10,18 @@ Python 3.6+ · Optional LaTeX and Markdown inputs · MIT license
 
 ## Installation
 
-This README describes the 1.0 API. Install the repository version while 1.0 is
-unreleased on PyPI:
+Install the published package from [PyPI](https://pypi.org/project/mathml2docx/):
 
 ```sh
-python -m pip install 'git+https://github.com/joongi007/mathml2docx.git@master'
+python -m pip install mathml2docx
 # With optional LaTeX and Markdown support:
-python -m pip install 'mathml2docx[latex,markdown] @ git+https://github.com/joongi007/mathml2docx.git@master'
+python -m pip install "mathml2docx[latex,markdown]"
 ```
 
 Python 3.6.2+ is required for the optional LaTeX frontend. Library users do not need uv.
-For a reproducible installation, replace `master` with a reviewed commit or release tag.
+Pin the package version in your project's requirements or lockfile for reproducible
+installations. See [development setup](https://joongi007.github.io/mathml2docx/09-development-release/)
+to work on the library's source.
 
 ## Your first Word document
 
@@ -107,9 +108,9 @@ with an explicit fallback for known enclosure differences.
 ## Contributing and license
 
 Work from `develop`; see [development and releases](https://joongi007.github.io/mathml2docx/09-development-release/)
-for setup, tests and publishing. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+for setup, tests and publishing. Changes are listed in [CHANGELOG.md](https://github.com/joongi007/mathml2docx/blob/master/CHANGELOG.md).
 
-[MIT](LICENSE), derived from [html2docx](https://github.com/pqzx/html2docx).
-Dependencies retain their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+[MIT](https://github.com/joongi007/mathml2docx/blob/master/LICENSE), derived from [html2docx](https://github.com/pqzx/html2docx).
+Dependencies retain their own licenses; see [THIRD_PARTY_NOTICES.md](https://github.com/joongi007/mathml2docx/blob/master/THIRD_PARTY_NOTICES.md).
 The 1.0 converter constructs OMML directly and includes no Office XSL. Historical
 0.x distributions are covered separately in the [provenance record](https://joongi007.github.io/mathml2docx/06-xsl-provenance/).

@@ -5,6 +5,12 @@ mathml2docx converts supported HTML and MathML into formatted text and editable 
 
 ## Start with a document
 
+Install the published package from PyPI:
+
+```sh
+python -m pip install mathml2docx
+```
+
 ```python
 from mathml2docx import convert
 

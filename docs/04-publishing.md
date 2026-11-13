@@ -4,6 +4,9 @@ The documentation is a static HTML site rendered from Markdown by the project's
 Python builder. It uses Jinja2 templates and Pygments for code highlighting;
 MkDocs and a JavaScript build toolchain are not required.
 
+This is a contributor guide for building the documentation website. Package
+installation is covered in [getting started](01-getting-started.md).
+
 ## Build and preview locally
 
 Run from a repository checkout with Python 3.10+ and uv 0.13.7+:

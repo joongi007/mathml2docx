@@ -4,6 +4,8 @@ Create editable fractions, scripts, indexed roots, delimiters, matrices, and inl
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.13_mathml
 ```

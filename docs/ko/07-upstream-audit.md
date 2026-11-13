@@ -45,7 +45,7 @@ mathml2docx는 `pqzx/html2docx`에서 파생됐습니다. 이 기록은 원본 �
 | [#43 table_style = 'TableGrid'](https://github.com/pqzx/html2docx/issues/43) | 수정 | TableGrid 별칭 및 공개 TableStyle.GRID 제공. |
 | [#44 Converting block level elements like <div> into paragraphs](https://github.com/pqzx/html2docx/issues/44) | 수정 | div/section 등 블록을 문단으로 처리. |
 | [#46 Add classes with specific styles](https://github.com/pqzx/html2docx/issues/46) | 기능 추가 | 태그·class별 Word style_map. |
-| [#47 Release Latest Version, so we can use paragraph_style support](https://github.com/pqzx/html2docx/issues/47) | 배포 준비 완료 | 1.0.0 wheel·sdist 생성 및 설치 검증, 문단 스타일 지원. upstream PyPI 프로젝트 게시 권한은 이 저장소 변경으로 확보되지 않으며 실제 게시는 별도 작업. |
+| [#47 Release Latest Version, so we can use paragraph_style support](https://github.com/pqzx/html2docx/issues/47) | mathml2docx 1.0.0에 포함 | PyPI에 배포한 mathml2docx에 문단 스타일을 포함합니다. upstream html2docx의 릴리스나 게시 권한을 변경하는 것은 아닙니다. |
 | [#48 Unable to convert html with rowspan to docx correctly](https://github.com/pqzx/html2docx/issues/48) | 기존 수정 검증·보강 | Phone 행 병합은 기존 코드 통과. 새 코드는 빈 셀 병합까지 검증. |
 | [#49 margin handler cannot handle percentages](https://github.com/pqzx/html2docx/issues/49) | 수정 | %와 실수 길이 처리; %는 문서 본문 가용 폭 기준. |
 | [#50 Including tables](https://github.com/pqzx/html2docx/issues/50) | 검토 | 보고자가 잘못된 HTML로 철회. 추가 재현 요구 없음. |

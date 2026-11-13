@@ -4,6 +4,8 @@ Compare 20 authored MathML and 24 LaTeX examples covering nested fractions, matr
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.23_complex_equations
 ```

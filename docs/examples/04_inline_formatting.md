@@ -4,6 +4,8 @@ Apply emphasis, underline, strike, scripts, code, and alpha-composited colors.
 
 ## Run
 
+Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:
+
 ```sh
 python -m examples.04_inline_formatting
 ```

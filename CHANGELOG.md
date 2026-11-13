@@ -1,6 +1,18 @@
 # Changelog
 
-## 1.0.0 — Unreleased
+## 1.0.1 — 2026-11-14
+
+### Documentation
+
+- Use published PyPI installation commands throughout English/Korean READMEs,
+  getting started, migration, recipe and example guides.
+- Run the downloadable example bundle with the installed package and explicit
+  optional dependencies; document source checkout and uv commands for contributors.
+- Update release status and verify examples outside the source checkout.
+- Use absolute README links for PyPI and include package-installation checks in
+  the documented release checklist.
+
+## 1.0.0 — 2026-11-13
 
 ### Conversion and integration
 
