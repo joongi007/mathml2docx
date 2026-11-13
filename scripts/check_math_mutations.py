@@ -14,8 +14,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MUTATIONS = [
     (
+        "accept unresolved LaTeX commands as identifiers",
+        "    _reject_unresolved_latex(root)",
+        "    pass  # deliberate missing backend validation",
+    ),
+    (
         "lose encoded mathvariant",
-        "effective = unicode_mathvariant(character) or variant",
+        "effective = encoded or variant",
         "effective = variant",
     ),
     (

@@ -23,6 +23,9 @@ python -m pip install "mathml2docx[latex,markdown]"
 패키지 버전을 고정하세요. 라이브러리 소스를 수정하려면
 [개발 환경 설정](https://joongi007.github.io/mathml2docx/ko/09-development-release/)을 참고하세요.
 
+기존 설치를 갱신하려면 `python -m pip install --upgrade mathml2docx`를 사용하세요.
+0.x에서 이전하는 경우 [마이그레이션 안내](https://joongi007.github.io/mathml2docx/ko/05-migration/)도 확인하세요.
+
 ## 첫 Word 문서 만들기
 
 ```python

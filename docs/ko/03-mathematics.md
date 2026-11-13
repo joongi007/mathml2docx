@@ -7,6 +7,11 @@
 HTML·MathML에는 `python -m pip install mathml2docx`를 사용하세요. LaTeX도 사용하려면
 `python -m pip install "mathml2docx[latex]"`로 설치합니다(Python 3.6.2 이상).
 
+1.0.1부터 백엔드가 해석하지 못한 LaTeX 명령은 수식 식별자로 저장하지 않고 `UnsupportedMathMLError`를
+발생시킵니다. `\text{...}` 안에 의도적으로 적은 명령 이름은 문자열로 보존합니다.
+백엔드 검증은 MathML 대체 처리보다 먼저 실행되므로 사용자 정의 매크로는 앱에서 미리
+펼치거나 해당 매크로를 지원하는 렌더러로 처리하세요.
+
 ## 인라인 수식과 표시 수식
 
 [MathML 표준](https://www.w3.org/TR/MathML3/chapter2.html#interf.toplevel)에 따라
@@ -152,6 +157,8 @@ Unicode 문자열 입력은 이미 디코딩된 문자를 기준으로 처리하
 하위 요소의 스타일을 우선하고, Word의 수학 글꼴 변형과 CSS 글꼴은 구분해 유지합니다.
 Unicode 수학 알파벳은 토큰과 `mtext`·`ms` 문자열에서 원래 서체를 보존하며
 일반 텍스트·공백·수학 문자를 섞을 수 있습니다.
+1.0.1부터 명시적·상속 `mathvariant`는 일반 문자에 적용하며, `ℝ`·`𝐱`·`𝑥`처럼 이미 서체를
+인코딩한 수학 문자는 원래 변형을 유지합니다. 스타일을 지정한 문자열도 텍스트 간격을 보존합니다.
 상대 크기, MathML의 `mathsize`·`mathcolor`, `currentColor`, RGBA도 지원 범위에서 계산합니다.
 `styles=False`이면 CSS 변환을 적용하지 않습니다.
 

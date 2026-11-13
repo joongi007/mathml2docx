@@ -675,24 +675,29 @@ def _convert(node, inherited):
         variant = inherited.get(
             "mathvariant", "italic" if tag == "mi" and len(value) == 1 else "normal"
         )
-        if "mathvariant" in inherited:
-            value = variant_characters(value, variant)
-        elif value:
+        if value:
             runs = []
             current_properties = None
             for character in value:
-                effective = unicode_mathvariant(character) or variant
-                literal = (
-                    tag in {"mtext", "ms"}
-                    and unicode_mathvariant(character) is not None
+                # Encoded mathematical alphabets carry their own semantics:
+                # surrounding mathvariant declarations must not restyle them
+                # (MathML 3 sections 3.2.2 and 7.5). Apply explicit variants
+                # only to ordinary characters, preserving mixed token runs.
+                encoded = unicode_mathvariant(character)
+                effective = encoded or variant
+                rendered = (
+                    character
+                    if encoded or "mathvariant" not in inherited
+                    else variant_characters(character, variant)
                 )
-                normal = tag in {"mtext", "ms"} and not literal
+                normal = tag in {"mtext", "ms"} and effective == "normal"
+                literal = tag in {"mtext", "ms"} and not normal
                 properties = (effective, normal, literal)
                 if runs and properties == current_properties:
-                    runs[-1][-1].text += character
+                    runs[-1][-1].text += rendered
                 else:
                     runs.append(
-                        text(character, effective, normal_text=normal, literal=literal)
+                        text(rendered, effective, normal_text=normal, literal=literal)
                     )
                     current_properties = properties
             return runs
@@ -1198,6 +1203,24 @@ def _group_latex_fence_scripts(root):
                 stack.clear()
 
 
+def _reject_unresolved_latex(root):
+    """Do not mistake backend passthrough control sequences for identifiers.
+
+    Explicit mtext/ms content and real backslash operators remain literal. This
+    validation belongs to the LaTeX adapter, not to user-supplied MathML tokens.
+    """
+    for node in root.iter():
+        if etree.QName(node).localname not in {"mi", "mo"}:
+            continue
+        token = normalize_token(node.text or "")
+        if re.fullmatch(r"\\[A-Za-z]+", token):
+            raise UnsupportedMathMLError(
+                "Unresolved LaTeX command: "
+                + token
+                + ". Check the input or backend support."
+            )
+
+
 def latex_to_mathml(source):
     """Normalize optional LaTeX backend output before the shared MathML pipeline."""
     # Ruff's oldest target is 3.7; the core package also supports early 3.6.
@@ -1215,6 +1238,7 @@ def latex_to_mathml(source):
         converted.encode("utf-8"),
         etree.XMLParser(resolve_entities=False, no_network=True),
     )
+    _reject_unresolved_latex(root)
     _group_latex_fence_scripts(root)
     layouts = {
         "msub": ("msub", "munder"),

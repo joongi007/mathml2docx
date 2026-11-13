@@ -22,8 +22,12 @@ python -m pip install "mathml2docx[latex,markdown]"
 Optional LaTeX conversion requires Python 3.6.2+. Check the installed version with:
 
 ```sh
-python -c "import mathml2docx; print(mathml2docx.__version__)"
+python -m pip show mathml2docx
 ```
+
+To update an existing installation, use `python -m pip install --upgrade mathml2docx`.
+See [migration](05-migration.md) when upgrading from 0.x, and include your extras
+in the upgrade command if needed.
 
 For a project already using uv, `uv add mathml2docx` adds the published dependency;
 use `uv add "mathml2docx[latex,markdown]"` for both extras. Library installation

@@ -7,6 +7,11 @@ can be preserved as visible source or rendered by an application-supplied callba
 Install HTML/MathML support with `python -m pip install mathml2docx`, or include
 LaTeX with `python -m pip install "mathml2docx[latex]"` (Python 3.6.2+).
 
+Since 1.0.1, unresolved LaTeX commands emitted by the backend raise `UnsupportedMathMLError`
+instead of becoming formula identifiers. Literal command names inside `\text{...}`
+remain text. Backend validation happens before MathML recovery; expand custom
+macros in your application or use a renderer that supports them before conversion.
+
 ## Inline and display equations
 
 The default for `<math>` is `inline`, as defined by [MathML](https://www.w3.org/TR/MathML3/chapter2.html#interf.toplevel).
@@ -160,6 +165,9 @@ native equation runs and compound control glyphs. Descendant styles override
 inherited values. Word's mathematical variants remain separate from CSS fonts. Encoded Unicode
 math alphabets retain their variants in tokens and literal `mtext`/`ms` strings,
 including mixed text, spaces and mathematical letters.
+In 1.0.1+, explicit and inherited `mathvariant` settings apply to ordinary characters;
+encoded symbols such as `ℝ`, `𝐱` and `𝑥` retain their own mathematical variants.
+Styled literal strings retain text spacing as well as their character variants.
 Relative sizes, MathML `mathsize`/`mathcolor`, `currentColor` and RGBA colors are
 resolved within the supported style subset. `styles=False` disables CSS conversion.
 

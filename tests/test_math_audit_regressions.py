@@ -13,6 +13,119 @@ from mathml2docx import (
 
 NS = {"m": "http://schemas.openxmlformats.org/officeDocument/2006/math"}
 
+# MathML 3 sections 3.2.2 and 7.5: encoded mathematical alphabets keep
+# their meaning under surrounding mathvariant declarations.
+PROTECTED_ALPHABETS = [
+    ("𝐱", "roman", "b"),
+    ("𝑥", "roman", "i"),
+    ("𝒙", "roman", "bi"),
+    ("ℝ", "double-struck", "p"),
+    ("𝔵", "fraktur", "p"),
+    ("𝖝", "fraktur", "b"),
+    ("𝓍", "script", "p"),
+    ("𝔁", "script", "b"),
+    ("𝗑", "sans-serif", "p"),
+    ("𝘅", "sans-serif", "b"),
+    ("𝘹", "sans-serif", "i"),
+    ("𝙭", "sans-serif", "bi"),
+    ("𝚡", "monospace", "p"),
+    ("ℎ", "roman", "i"),
+]
+
+
+@pytest.mark.parametrize("character,script,style", PROTECTED_ALPHABETS)
+@pytest.mark.parametrize("token", ["mi", "mn", "mo", "mtext", "ms"])
+@pytest.mark.parametrize("scope", ["math", "mstyle", "token"])
+def test_encoded_alphabets_survive_mathvariant_declarations(
+    character, script, style, token, scope
+):
+    body = "<{0}{1}>{2}</{0}>".format(
+        token, ' mathvariant="normal"' if scope == "token" else "", character
+    )
+    if scope == "mstyle":
+        body = '<mstyle mathvariant="normal">' + body + "</mstyle>"
+    root = equation(body, 'mathvariant="normal"' if scope == "math" else "")
+    runs = [
+        run
+        for run in root.findall(".//m:r", NS)
+        if character in "".join(run.xpath("./m:t/text()", namespaces=NS))
+    ]
+    assert len(runs) == 1
+    assert runs[0].xpath("./m:rPr/m:scr/@m:val", namespaces=NS) == [script]
+    assert runs[0].xpath("./m:rPr/m:sty/@m:val", namespaces=NS) == [style]
+    assert not runs[0].findall("m:rPr/m:nor", NS)
+    if token in {"mtext", "ms"}:
+        assert runs[0].xpath("./m:rPr/m:lit/@m:val", namespaces=NS) == ["1"]
+
+
+@pytest.mark.parametrize("token", ["mtext", "ms"])
+def test_styled_literal_text_keeps_literal_spacing(token):
+    root = equation(f'<{token} mathvariant="bold">a + b</{token}>')
+    expected = "𝐚 + 𝐛" if token == "mtext" else '"𝐚 + 𝐛"'
+    assert "".join(root.xpath(".//m:t/text()", namespaces=NS)) == expected
+    for run in root.findall(".//m:r", NS):
+        assert run.xpath("./m:rPr/m:sty/@m:val", namespaces=NS) == ["b"]
+        assert run.xpath("./m:rPr/m:lit/@m:val", namespaces=NS) == ["1"]
+
+
+def test_local_variant_changes_plain_characters_but_not_encoded_symbols():
+    root = equation('<mi mathvariant="normal">ℝ𝐱x</mi>', 'mathvariant="bold"')
+    assert root.xpath(".//m:t/text()", namespaces=NS) == ["ℝ", "𝐱", "x"]
+    assert root.xpath(".//m:scr/@m:val", namespaces=NS) == [
+        "double-struck",
+        "roman",
+        "roman",
+    ]
+    assert root.xpath(".//m:sty/@m:val", namespaces=NS) == ["p", "b", "p"]
+
+
+@pytest.mark.parametrize(
+    "source", [r"\notarealcommand{x}", r"\frac{1}{\notarealcommand}"]
+)
+@pytest.mark.parametrize("frontend", ["mathml", "omml", "document"])
+def test_unresolved_latex_commands_are_not_published_as_formula_text(source, frontend):
+    from mathml2docx.math import latex_to_mathml, latex_to_omml
+
+    convert = {
+        "mathml": latex_to_mathml,
+        "omml": latex_to_omml,
+        "document": MathmlToDocx().parse_latex,
+    }[frontend]
+    with pytest.raises(UnsupportedMathMLError, match="Unresolved LaTeX command"):
+        convert(source)
+
+
+@pytest.mark.parametrize("literal", [r"\notarealcommand", r"\middle"])
+def test_unresolved_latex_guard_preserves_explicit_text(literal):
+    document = MathmlToDocx().parse_latex(r"\text{" + literal + "}")
+    assert document._element.xpath("//m:t/text()") == [literal]
+
+
+def test_unresolved_latex_guard_preserves_a_real_backslash_symbol():
+    document = MathmlToDocx().parse_latex(r"\backslash x")
+    assert document._element.xpath("//m:t/text()") == ["\\", "x"]
+
+
+def test_unresolved_latex_guard_does_not_change_literal_mathml_tokens():
+    root = equation(r"<mi>\notarealcommand</mi>")
+    assert root.xpath(".//m:t/text()", namespaces=NS) == [r"\notarealcommand"]
+
+
+def test_unresolved_latex_cli_fails_without_writing_a_docx(tmp_path, monkeypatch):
+    import sys
+
+    from mathml2docx.__main__ import main
+
+    source = tmp_path / "unknown.tex"
+    output = tmp_path / "unknown.docx"
+    source.write_text(r"\notarealcommand{x}", encoding="utf-8")
+    monkeypatch.setattr(
+        sys, "argv", ["mathml2docx", str(source), str(output), "--format", "latex"]
+    )
+    with pytest.raises(UnsupportedMathMLError, match="Unresolved LaTeX command"):
+        main()
+    assert not output.exists()
+
 
 def equation(body, attributes=""):
     return mathml_to_omml("<math " + attributes + ">" + body + "</math>")

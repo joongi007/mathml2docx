@@ -128,3 +128,11 @@ otherwise decode those characters while losing their intended style.
 Token whitespace and string escaping follow MathML rules. XML encoding declarations
 do not alter decoded Unicode input. CSS equation styling and XML-aware template
 boundaries preserve the selected text, math and surrounding content.
+
+### 1.0.1 corrections
+
+Encoded mathematical alphabets retain their variants under explicit or inherited
+`mathvariant`; styled literal strings also retain text spacing. Unresolved LaTeX
+command tokens now raise `UnsupportedMathMLError` instead of being saved as
+identifiers. Expand custom macros before conversion. This backend validation
+precedes MathML fallback; explicit `\text{...}` content remains literal text.

@@ -23,6 +23,9 @@ Pin the package version in your project's requirements or lockfile for reproduci
 installations. See [development setup](https://joongi007.github.io/mathml2docx/09-development-release/)
 to work on the library's source.
 
+Update an existing installation with `python -m pip install --upgrade mathml2docx`.
+Users upgrading from 0.x should read the [migration guide](https://joongi007.github.io/mathml2docx/05-migration/).
+
 ## Your first Word document
 
 ```python

@@ -82,7 +82,7 @@ parser.add_html_to_document("<h2>Unicode and string literals</h2>", document)
 paragraph = document.add_paragraph("Unicode label: ")
 paragraph._p.append(
     mathml_to_omml(
-        '<?xml version="1.0" encoding="ISO-8859-1"?><math><mtext>café: 𝐱 + ℝ</mtext></math>'
+        '<?xml version="1.0" encoding="ISO-8859-1"?><math mathvariant="normal"><mtext>café: 𝐱 + ℝ</mtext></math>'
     )
 )
 parser.add_html_to_document(

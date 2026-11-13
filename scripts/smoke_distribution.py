@@ -84,6 +84,22 @@ def main():
         "roman",
     ]
     assert encoded._element.xpath("//m:r/m:rPr/m:sty/@m:val") == ["p", "b"]
+    protected = parser.parse_mathml(
+        '<math mathvariant="normal"><mtext>ℝ + 𝐱</mtext></math>'
+    )
+    assert protected._element.xpath('//m:r[m:t="ℝ"]/m:rPr/m:scr/@m:val') == [
+        "double-struck"
+    ]
+    assert protected._element.xpath('//m:r[m:t="𝐱"]/m:rPr/m:sty/@m:val') == ["b"]
+    assert len(protected._element.xpath("//m:lit")) == 2
+    try:
+        parser.parse_latex(r"\notarealcommand{x}")
+    except mathml2docx.UnsupportedMathMLError:
+        pass
+    else:
+        raise AssertionError("Unresolved LaTeX commands must not become formula text")
+    literal_command = parser.parse_latex(r"\text{\notarealcommand}")
+    assert literal_command._element.xpath("//m:t/text()") == [r"\notarealcommand"]
     existing_math = parser.convert(
         "<p><math><mi>x</mi></math>{{content}}<math><mi>y</mi></math></p>"
     )

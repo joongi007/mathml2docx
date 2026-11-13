@@ -2,6 +2,14 @@
 
 ## 1.0.1 — 2026-11-14
 
+### Conversion fixes
+
+- Preserve encoded mathematical alphabets under explicit or inherited
+  `mathvariant`, including mixed tokens and literal strings. Keep styled
+  `mtext`/`ms` spacing literal when Word imports or resaves an equation.
+- Reject unresolved LaTeX command tokens instead of saving them as formula
+  identifiers; preserve explicit text and real backslash symbols.
+
 ### Documentation
 
 - Use published PyPI installation commands throughout English/Korean READMEs,
