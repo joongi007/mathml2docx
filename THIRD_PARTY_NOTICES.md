@@ -47,6 +47,7 @@ if bundling or redistributing those dependencies.
 | docxtpl | Optional tests/examples and user-selected integration | [Project](https://github.com/elapouya/python-docx-template), LGPL-2.1-only in tested 0.20.2 metadata |
 | Jinja2 | Static documentation templates | [BSD-3-Clause](https://github.com/pallets/jinja/blob/main/LICENSE.txt) |
 | Pygments | Documentation code highlighting | [BSD-2-Clause](https://github.com/pygments/pygments/blob/master/LICENSE) |
+| pypdfium2 / PDFium | Documentation PDF page previews | Apache-2.0 / BSD-3-Clause bindings, with PDFium and bundled component notices; [license inventory](https://github.com/pypdfium2-team/pypdfium2/tree/main/LICENSES) |
 | pytest | Test execution | [MIT](https://github.com/pytest-dev/pytest/blob/main/LICENSE) |
 | Ruff | Development lint/format | [MIT](https://github.com/astral-sh/ruff/blob/main/LICENSE) |
 | flit_core | Build backend | [BSD-3-Clause](https://github.com/pypa/flit/blob/main/LICENSE) |
@@ -54,6 +55,11 @@ if bundling or redistributing those dependencies.
 Development, documentation and example dependency groups are not mandatory runtime
 requirements. This table is not an exhaustive inventory of every transitive package;
 `uv.lock` records the resolved versions, and each distribution supplies its own terms.
+
+The documentation build uses pypdfium2/PDFium to render the project-authored
+reference PDFs into page images. The published site contains those images, not
+PDFium source or binaries. This tool is not a runtime conversion dependency.
+Its installed license inventory was checked for pypdfium2 5.15.2 on 2026-11-14.
 
 The independent validation scripts can download ECMA-376 and W3C XML schemas into
 an explicitly selected external directory. Those schemas retain their original

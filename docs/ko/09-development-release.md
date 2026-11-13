@@ -25,6 +25,13 @@ uv 0.13.7 이상이 필요합니다. 의존성은 `pyproject.toml`에서 관리�
 `uv.lock`은 Python 버전별 의존성 해석 결과를 고정합니다. 의존성이나 버전을 바꾸면
 `uv lock`을 실행하세요. 중복된 requirements.txt 설정은 없습니다.
 
+문서 빌드는 예제를 실행하면서 HTML/MathML 입력을 수집해 격리된 브라우저 미리보기를
+만듭니다. 기존 문서를 다루는 예제는 삽입한 조각을 표시하며 Word 템플릿을 재구성하지
+않습니다. 참조 PDF는 LibreOffice로 내보낸 파일입니다. 예제 출력을 바꾸면
+[검증 도구](11-validation.md)로 PDF도 갱신하세요. 문서 전용 의존성인 pypdfium2는 PDF의
+모든 페이지를 이미지로 만들어 내장 PDF 뷰어가 없는 브라우저도 지원합니다.
+미리보기 HTML·페이지 이미지·DOCX는 빌드 산출물입니다.
+
 - `[project.dependencies]`: 실행 의존성
 - `[project.optional-dependencies]`: LaTeX·Markdown·테스트 extra
 - `[dependency-groups]`: 개발·문서·예제 도구. 설치 사용자에게 강제하지 않음

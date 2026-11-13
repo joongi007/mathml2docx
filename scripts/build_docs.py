@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from html import escape
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -26,10 +27,20 @@ COPY = {
         "requirements": "Running all examples requires Python 3.6.2+ for LaTeX. Example 17 also uses docxtpl, included in the installation command below.",
         "output": "Outputs go to `examples/output/`. To run one example, use `python -m examples.01_quickstart`. The commands use the published PyPI package.",
         "setup": "Extract the [example bundle](../downloads/mathml2docx-examples.zip), install the [example dependencies](00-index.md), and run this command from the folder containing `examples/`:",
-        "previews": "PDF previews show the LibreOffice output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.",
+        "previews": "Open an example to compare its HTML/MathML in the browser with the LibreOffice PDF output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.",
         "notes": "Visual comparison notes",
         "limits": "Some equation properties vary between Word and LibreOffice, particularly phantom spacing, bevelled fractions and string quotes. Compare the input with the generated document when those details matter.",
         "validation": "Validation scope and limitations",
+        "compare": "Compare input and output",
+        "browser": "Browser · HTML / MathML",
+        "rendered": "LibreOffice · PDF",
+        "open_html": "Open HTML preview",
+        "open_pdf": "Open PDF",
+        "compare_note": "Compare the actual HTML/MathML input in your browser with the generated DOCX exported to PDF by LibreOffice. Open the DOCX in Word to inspect editable equations.",
+        "compare_details": "For Markdown and LaTeX examples, the browser shows the generated HTML or MathML. Browser MathML support, Word styles, fonts and page layout can produce different results.",
+        "partial": "This example also builds content directly in Word. The browser panel shows only the inserted HTML/MathML fragments, in call order; the PDF includes the surrounding Word document and its styles.",
+        "no_html": "This example applies styles directly to Word objects and has no HTML input. Its result is shown in the PDF.",
+        "pdf_help": "The PDF panel shows page images. Open the original PDF to zoom, search or select text, or download the DOCX to edit it.",
     },
     "ko": {
         "overview": "실행 예제",
@@ -44,15 +55,83 @@ COPY = {
         "requirements": "전체 예제를 실행하려면 LaTeX를 위해 Python 3.6.2 이상이 필요합니다. 17번 예제는 docxtpl도 사용하며 아래 설치 명령에 포함되어 있습니다.",
         "output": "결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행하세요. 명령은 PyPI 배포 패키지를 사용하며, 두 언어 문서가 실행 코드를 공유합니다.",
         "setup": "[예제 ZIP](../downloads/mathml2docx-examples.zip)의 압축을 풀고 [예제 의존성](00-index.md)을 설치한 뒤, `examples/` 폴더가 들어 있는 위치에서 실행하세요.",
-        "previews": "PDF에서 LibreOffice 출력 결과를 살펴볼 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.",
+        "previews": "예제를 열면 브라우저의 HTML/MathML과 LibreOffice에서 만든 PDF를 비교할 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.",
         "notes": "화면 비교 시 참고할 점",
         "limits": "phantom의 예약 공간, 기울어진 분수, 문자열 따옴표 등은 Word와 LibreOffice에서 다르게 표시될 수 있습니다. 이런 세부 표현이 중요하면 입력과 생성된 문서를 함께 비교하세요.",
         "validation": "검증 범위와 한계",
+        "compare": "입력과 출력 비교",
+        "browser": "브라우저 · HTML / MathML",
+        "rendered": "LibreOffice · PDF",
+        "open_html": "HTML 미리보기 열기",
+        "open_pdf": "PDF 열기",
+        "compare_note": "실제 HTML/MathML 입력을 브라우저에서 보고, 생성된 DOCX를 LibreOffice로 내보낸 PDF와 비교하세요. 수식 편집은 DOCX를 Word에서 열어 확인할 수 있습니다.",
+        "compare_details": "Markdown·LaTeX 예제는 변환 과정에서 만든 HTML·MathML을 표시합니다. 브라우저의 MathML 지원, Word 스타일, 글꼴, 페이지 배치에 따라 표시가 달라질 수 있습니다.",
+        "partial": "이 예제는 Word 객체로 직접 만든 내용도 포함합니다. 브라우저에는 삽입한 HTML/MathML 조각만 호출 순서대로 표시하며, PDF에는 주변 Word 문서와 해당 스타일도 포함합니다.",
+        "no_html": "이 예제는 Word 객체에 직접 스타일을 적용하므로 HTML 입력이 없습니다. PDF에서 결과를 확인하세요.",
+        "pdf_help": "PDF 패널은 페이지 이미지를 표시합니다. 확대·검색·텍스트 선택은 원본 PDF 열기를, 편집은 DOCX 다운로드를 이용하세요.",
     },
 }
 
 
-def example_pages(language, docs, catalog):
+def comparison(stem, text, preview):
+    panels = []
+    if preview["kind"] != "none":
+        url = "../assets/inputs/" + stem + ".html"
+        panels.append(
+            '<section class="example-preview"><div class="preview-heading">'
+            "<h3>"
+            + text["browser"]
+            + '</h3><a href="'
+            + url
+            + '">'
+            + text["open_html"]
+            + '</a></div><iframe src="'
+            + url
+            + '" title="'
+            + escape(text["browser"], quote=True)
+            + '" loading="lazy" sandbox="" referrerpolicy="no-referrer"></iframe>'
+            "</section>"
+        )
+    pdf = ROOT / "docs/assets/previews" / (stem + ".pdf")
+    if pdf.is_file():
+        url = "../assets/previews/" + stem + ".pdf"
+        panels.append(
+            '<section class="example-preview"><div class="preview-heading">'
+            "<h3>"
+            + text["rendered"]
+            + '</h3><a href="'
+            + url
+            + '">'
+            + text["open_pdf"]
+            + '</a></div><iframe src="'
+            + "../assets/pdf-pages/"
+            + stem
+            + ".html"
+            + '" title="'
+            + escape(text["rendered"], quote=True)
+            + '" loading="lazy" sandbox="" referrerpolicy="no-referrer"></iframe>'
+            "</section>"
+        )
+    note = text["compare_note"]
+    if preview["kind"] == "fragments":
+        note += " " + text["partial"]
+    elif preview["kind"] == "none":
+        note = text["no_html"]
+    return [
+        "## " + text["compare"],
+        "",
+        note,
+        "",
+        '<div class="example-comparison">' + "\n".join(panels) + "</div>",
+        "",
+        text["compare_details"],
+        "",
+        text["pdf_help"],
+        "",
+    ]
+
+
+def example_pages(language, docs, catalog, previews):
     text = COPY[language]
     gallery = docs / "examples"
     gallery.mkdir(exist_ok=True)
@@ -84,6 +163,7 @@ def example_pages(language, docs, catalog):
             "",
             description,
             "",
+            *comparison(stem, text, previews[stem]),
             "## " + text["run"],
             "",
             text["setup"],
@@ -210,21 +290,23 @@ def main():
     }
     if catalogs["en"].keys() != catalogs["ko"].keys():
         raise ValueError("English and Korean catalogs must cover the same examples")
-    page_sets = {}
-    for language in ("en", "ko"):
-        local_docs = docs if language == "en" else docs / "ko"
-        example_pages(language, local_docs, catalogs[language])
-        page_sets[language] = source_pages(local_docs)
-    if page_sets["en"] != page_sets["ko"]:
-        raise ValueError(
-            "Missing translated pages: " + str(page_sets["en"] ^ page_sets["ko"])
-        )
     with tempfile.TemporaryDirectory(prefix="mathml2docx-site-") as tmp:
         stage = Path(tmp) / "site"
         downloads = stage / "downloads"
         downloads.mkdir(parents=True)
+        inputs = stage / "assets/inputs"
         subprocess.run(
-            [sys.executable, "-m", "examples.run_all"],
+            [
+                sys.executable,
+                "-m",
+                "scripts.example_previews",
+                "--output",
+                str(downloads / "examples"),
+                "--previews",
+                str(inputs),
+                "--pdf-source",
+                str(docs / "assets/previews"),
+            ],
             cwd=ROOT,
             env=dict(
                 os.environ, MATHML2DOCX_EXAMPLE_OUTPUT=str(downloads / "examples")
@@ -232,6 +314,16 @@ def main():
             check=True,
             stdout=subprocess.DEVNULL,
         )
+        previews = json.loads((inputs / "manifest.json").read_text(encoding="utf-8"))
+        if previews.keys() != catalogs["en"].keys():
+            raise ValueError("Every example needs an input-preview status")
+        page_sets = {}
+        for language in ("en", "ko"):
+            local_docs = docs if language == "en" else docs / "ko"
+            example_pages(language, local_docs, catalogs[language], previews)
+            page_sets[language] = source_pages(local_docs)
+        if page_sets["en"] != page_sets["ko"]:
+            raise ValueError("Missing translated pages")
         with ZipFile(
             downloads / "mathml2docx-examples.zip", "w", ZIP_DEFLATED
         ) as archive:
@@ -244,7 +336,12 @@ def main():
                     archive.write(path, path.relative_to(ROOT))
             for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
                 archive.write(ROOT / name, name)
-        shutil.copytree(docs / "assets", stage / "assets")
+        shutil.copytree(docs / "assets", stage / "assets", dirs_exist_ok=True)
+        pdfs = json.loads(
+            (stage / "assets/pdf-pages/manifest.json").read_text(encoding="utf-8")
+        )
+        if pdfs.keys() != catalogs["en"].keys():
+            raise ValueError("Every example needs a rendered reference PDF")
         shutil.copytree(stage / "assets", stage / "ko/assets")
         shutil.copytree(downloads, stage / "ko/downloads")
         build_static_site(ROOT, stage, page_sets["en"])

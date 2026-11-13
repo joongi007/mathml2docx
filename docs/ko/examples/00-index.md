@@ -15,7 +15,7 @@ python -m examples.run_all
 
 결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행하세요. 명령은 PyPI 배포 패키지를 사용하며, 두 언어 문서가 실행 코드를 공유합니다.
 
-PDF에서 LibreOffice 출력 결과를 살펴볼 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.
+예제를 열면 브라우저의 HTML/MathML과 LibreOffice에서 만든 PDF를 비교할 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.
 
 - [빠른 시작](01_quickstart.md): convert() 한 번으로 HTML을 저장하고 Document를 반환받습니다.
 - [파일·인코딩·다국어](02_files_unicode.md): UTF-8 입력, 한글·일본어·악센트 문자와 정확한 출력 확장자를 다룹니다.

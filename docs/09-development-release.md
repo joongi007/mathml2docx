@@ -25,6 +25,14 @@ Use uv 0.13.7+. `pyproject.toml` is the dependency source of truth; `uv.lock` re
 interpreter-specific resolution. Run `uv lock` after dependency/version changes.
 There is no duplicate requirements.txt configuration.
 
+The documentation build runs the examples and records their HTML/MathML inputs
+for sandboxed browser previews. Existing-document examples show input fragments,
+not a reconstruction of their Word templates. Reference PDFs are exported with
+LibreOffice; regenerate them with the [validation tools](11-validation.md) after
+changing an example's output. The docs-only pypdfium2 dependency renders every
+PDF page for browsers without an embedded PDF viewer. Generated preview HTML,
+page images and DOCX are build artifacts.
+
 - `[project.dependencies]`: runtime requirements.
 - `[project.optional-dependencies]`: LaTeX, Markdown, and test extras.
 - `[dependency-groups]`: development, docs, and example tools, not forced on users.

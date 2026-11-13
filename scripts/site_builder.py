@@ -70,7 +70,7 @@ def rewrite_links(html, source, pages):
     """Resolve Markdown-relative references before moving each page to a folder."""
     soup = BeautifulSoup(html, "html.parser")
     current = page_url(source)
-    for tag, attr in [("a", "href"), ("img", "src")]:
+    for tag, attr in [("a", "href"), ("img", "src"), ("iframe", "src")]:
         for node in soup.find_all(tag):
             value = node.get(attr, "")
             parts = urlsplit(value)
@@ -250,6 +250,8 @@ def build_static_site(root, site, pages):
                 edit_url=REPO + "/edit/master/docs/" + prefix + source,
                 previous=neighbor(-1),
                 next=neighbor(1),
+                comparison_page=source.startswith("examples/")
+                and source != "examples/00-index.md",
             )
             destination = site / current / "index.html"
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -301,6 +303,11 @@ def validate_site(site, pages):
                 raise ValueError("Invalid template dictionary lookup: " + str(path))
             if soup.html["lang"] != language or len(soup.select("main h1")) != 1:
                 raise ValueError("Invalid language or page title: " + str(path))
+            for frame in soup.select(".example-preview iframe"):
+                if not frame.get("title") or frame.get("loading") != "lazy":
+                    raise ValueError("Preview needs a title and lazy loading")
+                if frame["src"].endswith(".html") and frame.get("sandbox") != []:
+                    raise ValueError("HTML preview must use an empty sandbox")
             language_links = soup.select("a[hreflang]")
             if len(language_links) != 2 or [
                 n["hreflang"] for n in language_links if n.get("aria-current") == "page"

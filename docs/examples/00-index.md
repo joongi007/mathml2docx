@@ -15,7 +15,7 @@ python -m examples.run_all
 
 Outputs go to `examples/output/`. To run one example, use `python -m examples.01_quickstart`. The commands use the published PyPI package.
 
-PDF previews show the LibreOffice output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.
+Open an example to compare its HTML/MathML in the browser with the LibreOffice PDF output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.
 
 - [Quick start](01_quickstart.md): Save HTML with one convert() call and receive a Document.
 - [Files, encoding, and Unicode](02_files_unicode.md): Use UTF-8 input, Korean/Japanese/accented text, and exact output extensions.

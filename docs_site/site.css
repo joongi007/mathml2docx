@@ -95,6 +95,19 @@ code,kbd,pre {font-family:var(--font-mono)}
 .prose blockquote {margin:1.5rem 0;padding:1rem 1.3rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);font-size:.95em}
 .prose blockquote p:last-child {margin:0}
 .prose img {max-width:100%;height:auto}
+.comparison-page {grid-template-columns:220px minmax(0,1fr)}
+.comparison-page main {max-width:none}
+.comparison-page .page-toc {display:none}
+.comparison-page .prose>p {max-width:75ch}
+.example-comparison {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-6);margin:var(--space-6) 0}
+.example-preview {min-width:0}
+.example-preview:only-child {grid-column:1/-1}
+.preview-heading {display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3)}
+.prose .preview-heading h3 {font-size:1rem;letter-spacing:0;margin:0}
+.preview-heading a {font-size:13px;white-space:nowrap}
+.example-preview iframe {display:block;width:100%;height:680px;border:1px solid var(--line);border-radius:var(--radius);background:Canvas;color-scheme:light}
+@media(max-width:1050px) {.example-comparison {grid-template-columns:minmax(0,1fr)}.example-preview iframe {height:580px}}
+@media(max-width:760px) {.example-preview iframe {height:480px}}
 .prose hr {border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 .page-toc {position:sticky;top:72px;align-self:start;max-height:calc(100dvh - 72px);overflow:auto;padding-top:3.6rem;font-size:12px;line-height:1.6}
 .page-toc>p {font-weight:650;margin:0 0 1rem}
