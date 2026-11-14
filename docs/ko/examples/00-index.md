@@ -15,6 +15,18 @@ python -m examples.run_all
 
 결과는 `examples/output/`에 저장됩니다. 개별 예제는 `python -m examples.01_quickstart`처럼 실행하세요. 명령은 PyPI 배포 패키지를 사용하며, 두 언어 문서가 실행 코드를 공유합니다.
 
+초기화된 uv·Poetry 프로젝트에서는 아래에서 사용하는 도구에 맞는 명령으로 설치·실행하세요. 프로젝트 초기화는 [설치 안내](../01-getting-started.md)를 참고하세요. 개별 예제는 `examples.run_all` 대신 해당 모듈 이름을 지정합니다.
+
+```sh
+uv add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+uv run python -m examples.run_all
+```
+
+```sh
+poetry add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+poetry run python -m examples.run_all
+```
+
 예제를 열면 브라우저의 HTML/MathML과 LibreOffice에서 만든 PDF를 비교할 수 있습니다. Word에서 수식을 편집하려면 DOCX를 내려받으세요. 글꼴과 문서 프로그램에 따라 줄바꿈·페이지 배치가 달라질 수 있습니다.
 
 - [빠른 시작](01_quickstart.md): convert() 한 번으로 HTML을 저장하고 Document를 반환받습니다.

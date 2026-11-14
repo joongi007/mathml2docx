@@ -10,21 +10,24 @@ Python 3.6+ · Optional LaTeX and Markdown inputs · MIT license
 
 ## Installation
 
-Install the published package from [PyPI](https://pypi.org/project/mathml2docx/):
+Install from [PyPI](https://pypi.org/project/mathml2docx/) using your project's package manager:
 
-```sh
-python -m pip install mathml2docx
-# With optional LaTeX and Markdown support:
-python -m pip install "mathml2docx[latex,markdown]"
-```
+| Tool | HTML / MathML | With LaTeX and Markdown |
+| --- | --- | --- |
+| pip | `python -m pip install mathml2docx` | `python -m pip install "mathml2docx[latex,markdown]"` |
+| uv | `uv add mathml2docx` | `uv add "mathml2docx[latex,markdown]"` |
+| Poetry | `poetry add mathml2docx` | `poetry add "mathml2docx[latex,markdown]"` |
 
-Python 3.6.2+ is required for the optional LaTeX frontend. Library users do not need uv.
-Pin the package version in your project's requirements or lockfile for reproducible
-installations. See [development setup](https://joongi007.github.io/mathml2docx/09-development-release/)
-to work on the library's source.
+Use pip in your Python environment, or run `add` in an initialized uv/Poetry project.
+Run your script with `python report.py`, `uv run python report.py`, or
+`poetry run python report.py`, respectively. See [installation and updates](https://joongi007.github.io/mathml2docx/01-getting-started/)
+for project setup, individual extras and Python 3.6 instructions.
 
-Update an existing installation with `python -m pip install --upgrade mathml2docx`.
-Users upgrading from 0.x should read the [migration guide](https://joongi007.github.io/mathml2docx/05-migration/).
+The library supports Python 3.6+; optional LaTeX requires 3.6.2+.
+Package managers have their own Python requirements. Pin dependencies in your
+requirements or lockfile for reproducible installations. Users upgrading from 0.x
+should read the [migration guide](https://joongi007.github.io/mathml2docx/05-migration/).
+To modify the library, see [development setup](https://joongi007.github.io/mathml2docx/09-development-release/).
 
 ## Your first Word document
 

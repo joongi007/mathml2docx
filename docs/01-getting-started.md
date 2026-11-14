@@ -2,15 +2,22 @@
 
 ## Installation
 
-The core library supports Python 3.6+. Install the published package from PyPI
-in your project's Python environment:
+The core library supports Python 3.6+; optional LaTeX requires 3.6.2+.
+Choose one of the following methods to install the published PyPI package.
+HTML and MathML work with the core package; extras add LaTeX and Markdown input.
+Git and a repository checkout are not required.
+
+### pip
+
+Install in your project's Python environment. If needed, create one with
+`python -m venv .venv` and [activate it](https://docs.python.org/3/library/venv.html#how-venvs-work)
+using the command for your operating system.
 
 ```sh
 python -m pip install mathml2docx
 ```
 
-HTML and MathML work with the core package. Install the extras for LaTeX or
-Markdown input:
+For optional inputs, choose the extras you need:
 
 ```sh
 python -m pip install "mathml2docx[latex]"
@@ -19,19 +26,65 @@ python -m pip install "mathml2docx[markdown]"
 python -m pip install "mathml2docx[latex,markdown]"
 ```
 
-Optional LaTeX conversion requires Python 3.6.2+. Check the installed version with:
+Check the installed version with:
 
 ```sh
 python -m pip show mathml2docx
 ```
 
-To update an existing installation, use `python -m pip install --upgrade mathml2docx`.
-See [migration](05-migration.md) when upgrading from 0.x, and include your extras
-in the upgrade command if needed.
+Update with `python -m pip install --upgrade mathml2docx`, or
+`python -m pip install --upgrade "mathml2docx[latex,markdown]"` if using both extras.
+Run your saved Python script with `python report.py`.
 
-For a project already using uv, `uv add mathml2docx` adds the published dependency;
-use `uv add "mathml2docx[latex,markdown]"` for both extras. Library installation
-does not require Git or a repository checkout. Source and contributor setup is in
+### uv
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) separately.
+For a new project, run `uv init --bare report-project`, then `cd report-project`.
+In an existing uv project, use its directory directly.
+
+```sh
+uv add mathml2docx
+# Or include both optional inputs:
+uv add "mathml2docx[latex,markdown]"
+uv run python -c "import mathml2docx; print(mathml2docx.__version__)"
+```
+
+For a single extra, use `uv add "mathml2docx[latex]"` or
+`uv add "mathml2docx[markdown]"`. uv manages the environment and records dependencies
+in `pyproject.toml` and `uv.lock`. Run your saved script with `uv run python report.py`.
+
+Update within your declared version constraints:
+
+```sh
+uv lock --upgrade-package mathml2docx
+uv sync
+```
+
+### Poetry
+
+Install [Poetry](https://python-poetry.org/docs/#installation) separately;
+the current Poetry tool requires Python 3.10+. In a new project directory,
+run `poetry init` and set the Python range to match the interpreters you support.
+In an existing Poetry project, use its directory directly.
+
+```sh
+poetry add mathml2docx
+# Or include both optional inputs:
+poetry add "mathml2docx[latex,markdown]"
+poetry run python -c "import mathml2docx; print(mathml2docx.__version__)"
+```
+
+For a single extra, use `poetry add "mathml2docx[latex]"` or
+`poetry add "mathml2docx[markdown]"`. Poetry records dependencies in `pyproject.toml`
+and `poetry.lock`. Run your saved script with `poetry run python report.py`.
+Update within your declared version constraints with `poetry update mathml2docx`.
+
+### Version compatibility
+
+Package managers have their own Python requirements; the library's Python 3.6
+support does not require installing a modern tool on Python 3.6. Keep your project's
+requirements or lockfile for repeatable installs. See [migration](05-migration.md)
+when upgrading from 0.x. Source and contributor setup is in
 [development and releases](09-development-release.md).
 
 ### Python 3.6

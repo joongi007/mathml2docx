@@ -85,7 +85,7 @@ git switch -c feature/table-layout
 # 커밋·검증 후 develop 대상 PR을 만듭니다.
 ```
 
-안정화 기간이 필요하면 develop에서 `release/1.0.2`을 만드세요. 준비되면 master에
+안정화 기간이 필요하면 develop에서 `release/1.0.3`을 만드세요. 준비되면 master에
 병합해 TestPyPI를 검증하고, 최종 수정은 develop에도 반영합니다. 작은 릴리스는
 release 브랜치 없이 develop에서 master로 병합해도 됩니다.
 develop·feature의 PR이나 푸시로는 패키지를 업로드하지 않습니다.
@@ -159,15 +159,15 @@ Trusted Publishing은 OIDC `id-token: write`를 사용하므로 장기 API 키�
    기다립니다. 다른 커밋·PR·develop의 성공이나 로컬 wheel 검사만으로 대체하지 않습니다.
 4. 검증한 커밋에 태그를 만들고 푸시합니다.
 
-아래는 `1.0.2` 릴리스를 준비한 경우의 예시입니다. `pyproject.toml`에 지정한 버전으로
+아래는 `1.0.3` 릴리스를 준비한 경우의 예시입니다. `pyproject.toml`에 지정한 버전으로
 바꿔 실행하세요. 기존 릴리스 태그는 그대로 보존합니다.
 
 ```sh
 git switch master
 git pull --ff-only
 # 먼저 이 HEAD의 전체 TestPyPI candidate 실행이 성공했는지 확인하세요.
-git tag -a v1.0.2 -m 'Release 1.0.2'
-git push origin v1.0.2
+git tag -a v1.0.3 -m 'Release 1.0.3'
+git push origin v1.0.3
 ```
 
 `Publish to PyPI`는 태그·pyproject·`__version__`의 일치, 태그 커밋의 origin/master 포함,
@@ -185,17 +185,17 @@ git push origin v1.0.2
 
 master는 릴리스 계열로 유지하고 미완료 기능은 develop·release 브랜치에 둡니다.
 핫픽스는 현재 master 릴리스 계열에서 분기합니다. 게시하지 않은 패치 버전을
-선택하세요. 아래 명령은 `1.0.2`를 예시로 사용합니다.
+선택하세요. 아래 명령은 `1.0.3`를 예시로 사용합니다.
 
 ```sh
 git switch master
 git pull --ff-only
-git switch -c hotfix/1.0.2
-# 수정·회귀 사례를 추가하고 두 버전과 uv.lock을 1.0.2로 갱신합니다.
+git switch -c hotfix/1.0.3
+# 수정·회귀 사례를 추가하고 두 버전과 uv.lock을 1.0.3로 갱신합니다.
 # master 대상 PR을 만들고 검사를 거쳐 병합합니다.
 ```
 
-병합한 master 커밋의 TestPyPI 업로드·설치 검사 후 해당 커밋에 `v1.0.2`를 만듭니다.
+병합한 master 커밋의 TestPyPI 업로드·설치 검사 후 해당 커밋에 `v1.0.3`를 만듭니다.
 master를 develop에 다시 병합하거나 back-merge PR을 만들어 수정이 다음 릴리스에도
 남도록 하세요. develop이 이미 `1.1.0`을 목표로 한다면 버전·lock 충돌을 해결하면서
 개발 중인 버전을 유지합니다. 이 흐름으로 미출시 기능과 핫픽스를 분리할 수 있습니다.

@@ -15,6 +15,18 @@ python -m examples.run_all
 
 Outputs go to `examples/output/`. To run one example, use `python -m examples.01_quickstart`. The commands use the published PyPI package.
 
+In an initialized uv or Poetry project, use the corresponding commands below instead. See [installation](../01-getting-started.md) for project setup. For a single example, replace `examples.run_all` with its module name.
+
+```sh
+uv add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+uv run python -m examples.run_all
+```
+
+```sh
+poetry add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+poetry run python -m examples.run_all
+```
+
 Open an example to compare its HTML/MathML in the browser with the LibreOffice PDF output. Use the DOCX download to edit equations in Word. Fonts and document applications can change line wrapping and pagination.
 
 - [Quick start](01_quickstart.md): Save HTML with one convert() call and receive a Document.

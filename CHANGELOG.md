@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.0.2 — 2026-11-14
+
+### Documentation and installation
+
+- Document pip, uv and Poetry installation, optional extras, script execution and
+  updates in English and Korean. Retain the Python 3.6 pip instructions.
+- Add uv and Poetry commands to the downloadable example bundle and gallery.
+- Compare actual HTML/MathML inputs with paginated LibreOffice PDF previews across
+  the example gallery, including mobile layouts and original PDF/DOCX downloads.
+- Render Mermaid diagrams in isolated frames with a pinned, self-hosted bundle;
+  sanitize documentation HTML and enforce restrictive content security policies.
+- Clarify example prerequisites, migration snippets and release instructions for
+  public readers; fix nested code fences and escape imported issue titles.
+- Validate the bilingual site, local links, example inputs and security boundaries;
+  keep documentation-only tests compatible with the minimal runtime test environment.
+
+The HTML/MathML conversion behavior is unchanged from 1.0.1. Python 3.6 core
+compatibility is retained.
+
 ## 1.0.1 — 2026-11-14
 
 ### Conversion fixes

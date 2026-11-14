@@ -17,6 +17,22 @@ Python 3.6.2 이상이 필요합니다. 라이브러리 core는 Python 3.6.0 이
 docxtpl은 17번 예제에서 사용합니다. 개별 선택 기능과 Python 3.6의 pip 설정은
 [설치 안내](https://joongi007.github.io/mathml2docx/ko/01-getting-started/)를 참고하세요.
 
+기존 uv·Poetry 프로젝트에서는 프로젝트 안에 예제 압축을 풀고,
+사용하는 도구에 맞는 명령으로 설치·실행할 수 있습니다.
+
+```sh
+uv add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+uv run python -m examples.run_all
+```
+
+```sh
+poetry add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+poetry run python -m examples.run_all
+```
+
+새 프로젝트라면 먼저 [프로젝트 설정 안내](https://joongi007.github.io/mathml2docx/ko/01-getting-started/)를
+따르세요. 하나만 실행하려면 `examples.run_all` 대신 `examples.01_quickstart`를 지정합니다.
+
 결과는 `examples/output/`에 저장됩니다. 패키지 내부의 상대 import가 동작하도록
 `python -m`으로 실행하세요. 코드를 자신의 앱으로 옮길 때는 `.support`의 공통 함수를
 자신의 경로와 `document.save(...)` 호출로 바꾸면 됩니다.

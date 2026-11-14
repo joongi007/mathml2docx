@@ -10,21 +10,24 @@ Python 3.6 이상 · 선택 기능으로 LaTeX·Markdown 지원 · MIT 라이선
 
 ## 설치
 
-[PyPI](https://pypi.org/project/mathml2docx/)에 배포된 패키지를 설치하세요.
+[PyPI](https://pypi.org/project/mathml2docx/)에 배포된 패키지를 프로젝트에서 사용하는 도구로 설치하세요.
 
-```sh
-python -m pip install mathml2docx
-# LaTeX·Markdown 기능도 설치:
-python -m pip install "mathml2docx[latex,markdown]"
-```
+| 도구 | HTML·MathML | LaTeX·Markdown도 함께 설치 |
+| --- | --- | --- |
+| pip | `python -m pip install mathml2docx` | `python -m pip install "mathml2docx[latex,markdown]"` |
+| uv | `uv add mathml2docx` | `uv add "mathml2docx[latex,markdown]"` |
+| Poetry | `poetry add mathml2docx` | `poetry add "mathml2docx[latex,markdown]"` |
 
-선택 기능인 LaTeX 변환은 Python 3.6.2 이상이 필요합니다. 라이브러리 사용에는 uv가
-필요하지 않습니다. 재현 가능한 설치를 원하면 프로젝트의 requirements나 lockfile에
-패키지 버전을 고정하세요. 라이브러리 소스를 수정하려면
-[개발 환경 설정](https://joongi007.github.io/mathml2docx/ko/09-development-release/)을 참고하세요.
+pip는 사용할 Python 환경에서, uv·Poetry의 `add`는 초기화된 프로젝트에서 실행합니다.
+스크립트는 각각 `python report.py`, `uv run python report.py`,
+`poetry run python report.py`로 실행하세요. 프로젝트 초기화, 개별 선택 기능,
+Python 3.6 환경 설정은 [설치와 업데이트 안내](https://joongi007.github.io/mathml2docx/ko/01-getting-started/)에서 다룹니다.
 
-기존 설치를 갱신하려면 `python -m pip install --upgrade mathml2docx`를 사용하세요.
-0.x에서 이전하는 경우 [마이그레이션 안내](https://joongi007.github.io/mathml2docx/ko/05-migration/)도 확인하세요.
+라이브러리는 Python 3.6 이상, 선택 기능인 LaTeX는 3.6.2 이상을 지원합니다.
+패키지 관리 도구의 Python 요구사항은 별개입니다. 재현 가능한 설치를 원하면
+requirements나 lockfile에 의존성 버전을 고정하세요. 0.x에서 이전한다면
+[마이그레이션 안내](https://joongi007.github.io/mathml2docx/ko/05-migration/)를 확인하세요.
+라이브러리 소스를 수정하려면 [개발 환경 설정](https://joongi007.github.io/mathml2docx/ko/09-development-release/)을 참고하세요.
 
 ## 첫 Word 문서 만들기
 

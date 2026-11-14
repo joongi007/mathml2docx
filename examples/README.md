@@ -18,6 +18,22 @@ The installation uses the published PyPI package. All examples require Python
 docxtpl is used by example 17. See [installation](https://joongi007.github.io/mathml2docx/01-getting-started/)
 for individual extras and Python 3.6 pip setup.
 
+For an existing uv or Poetry project, extract the bundle into the project and
+use the matching commands instead:
+
+```sh
+uv add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+uv run python -m examples.run_all
+```
+
+```sh
+poetry add "mathml2docx[latex,markdown]" "docxtpl>=0.16,<1"
+poetry run python -m examples.run_all
+```
+
+For a new project, follow the [project setup instructions](https://joongi007.github.io/mathml2docx/01-getting-started/)
+first. To run one example, replace `examples.run_all` with `examples.01_quickstart`.
+
 Outputs go to `examples/output/`. Run examples as modules with `python -m` so
 their package-relative imports work. To use a snippet in your own application,
 replace `.support` helpers with your own paths and `document.save(...)` calls.
